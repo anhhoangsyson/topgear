@@ -9,8 +9,8 @@ export default function Header() {
             url: '/'
         },
         {
-            name: 'Danh mục',
-            url: '/categories'
+            name: 'Tất cả sản phẩm',
+            url: '/tat-ca-san-pham'
         },
         {
             name: 'Blogs',
@@ -18,7 +18,7 @@ export default function Header() {
         },
         {
             name: 'Liên hệ',
-            url: '/contact'
+            url: '/lien-he'
         }
     ]
     return (
