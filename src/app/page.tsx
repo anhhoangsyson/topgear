@@ -7,13 +7,79 @@ import img4 from '../../public/9481555.png'
 import img5 from '../../public/chuyenphatnhanh.jpg'
 import bookingonl from '../../public/bookingonline.png'
 import cardgift from '../../public/cardgift.png'
-
+import banner from '../../public/banner.png'
+import flashsaleimg from '../../public/flashsale.png'
+import returnIcon from '../../public/returnICon.png'
+import maintainIcon from '../../public/maintainIcon.png'
+import freeShipIcon from '../../public/freeShipIcon.png'
+import bannerfFashSale1 from '../../public/bannerfFashSale1.png'
 import Link from "next/link";
+import FlashSaleProductCard from "@/components/UI/FlashSaleProductCard";
 
 export default function Home() {
   return (
     <div>
-      <div className="w-11/12 mx-auto">
+      {/* Banner */}
+      <div>
+        <Image
+          className="w-screen"
+          alt="banner"
+          src={banner}>
+
+        </Image>
+      </div>
+
+      <div className="mx-auto">
+
+        {/* flash sale*/}
+        <div className="mt-8">
+          {/* flash sale banner */}
+          <div className="flex justify-center items-center gap-x-2.5">
+            <Image
+              src={flashsaleimg}
+              alt="flashsale"
+            ></Image>
+            <div className="flex justify-center items-center gap-x-2">
+              <Image
+                src={returnIcon}
+                alt="hoan-hang-mien-phi-trong-15-ngay"
+              >
+              </Image>
+              <p className="font-normal text-base">Trả hàng miễn phí 15 ngày</p>
+            </div>
+            <div className="flex justify-center items-center gap-x-2">
+              <Image
+                src={maintainIcon}
+                alt="bao-hanh-chinh-hang"
+              >
+              </Image>
+              <p className="font-normal text-base">Hàng chính hãng 100%</p>
+            </div>
+            <div className="flex justify-center items-center gap-x-2">
+              <Image
+                src={freeShipIcon}
+                alt="Mien-phi-van-chuyen"
+              >
+              </Image>
+              <p className="font-normal text-base">Miễn phí vận chuyển</p>
+            </div>
+          </div>
+
+          {/* section flash sale 1 */}
+          <div className="mx-auto 2xl:w-10/12 h-96 border-2 border-[#F96262] rounded-xl">
+            <div className="w-full">
+              <Image
+              className="w-full h-auto"
+                src={bannerfFashSale1}
+                alt="bannerfFashSale1">
+              </Image>
+            </div>
+            <FlashSaleProductCard data={'dd'}/>
+          </div>
+
+        </div>
+
+
         <div className="grid grid-cols-2 my-8">
           <div className="flex flex-col justify-center">
             <h3 className="text-4xl text-blue-500 font-semibold">Thương mại điện tử</h3>
@@ -28,6 +94,8 @@ export default function Home() {
             <Image src={img1} alt="hero" width={800} height={400} />
           </div>
         </div>
+
+
         {/* san pham ban chay */}
         <div>
           <h2 className="text-center text-5xl font-bold text-blue-600">Sản phẩm bán chạy</h2>
@@ -649,7 +717,7 @@ export default function Home() {
               </div>
               <div className="pt-4">
                 <h1 className="text-base font-medium text-left">Thẻ quà tặng</h1>
-                <p className="pt-2 text-sm font-normal text-left text-gray-500">Tặng quà ẩm thực đặc sắc với Thẻ quà tặng từ 8 bit store</p>
+                <p className="pt-2 text-sm font-normal text-left text-gray-500">Tặng quà ẩm thực đặc sắc với Thẻ quà tặng từ Top Gear</p>
               </div>
             </div>
           </div>
