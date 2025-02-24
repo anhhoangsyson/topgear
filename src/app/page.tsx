@@ -14,7 +14,7 @@ import maintainIcon from '../../public/maintainIcon.png'
 import freeShipIcon from '../../public/freeShipIcon.png'
 import bannerfFashSale1 from '../../public/bannerfFashSale1.png'
 import Link from "next/link";
-import FlashSaleProductCard from "@/components/UI/FlashSaleProductCard";
+import FlashSaleProductCard from "@/components/ui/FlashSaleProductCard";
 
 export default function Home() {
   return (

@@ -1,9 +1,8 @@
 import { cn } from "@/lib/utils";
-import exp from "constants";
 
 import { ButtonHTMLAttributes } from "react";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'default' | 'danger',
+    variant?: 'default' | 'danger'| 'outline',
     size?: 'sm' | 'md' | 'lg',
 }
 
@@ -11,8 +10,9 @@ const Button = ({ variant = 'default', size = 'sm', children, className, ...prop
     const baseStyle = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
 
     const variantStyle = {
-        default: 'bg-blue-500 text-white hover:bg-[#d2d2d2] focus:ring-blue-500',
-        danger: 'bg-red-500 text-white hover:bg-[#d2d2d2] focus:ring-red-500',
+        default: 'bg-blue-500 text-white focus:ring-blue-500',
+        outline: 'border border-blue-500 text-blue focus:ring-gray-500',
+        danger: 'bg-red-500 text-white focus:ring-red-500',
     }
 
     const sizeStyle = {
