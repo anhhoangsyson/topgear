@@ -33,9 +33,8 @@ export default function Header() {
             {menuNavData.map((item, index) => (
               <li
                 key={index}
-                className={`px-4 py-2 ${
-                  index === 0 ? "text-blue-600 font-bold" : ""
-                }`}
+                className={`px-4 py-2 ${index === 0 ? "text-blue-600 font-bold" : ""
+                  }`}
               >
                 <Link href={item.url}>{item.name}</Link>
               </li>
@@ -86,7 +85,8 @@ export default function Header() {
               </Link>
             </div>
             <div className="flex items-center bg-blue-600 text-white rounded-md">
-              <button className="flex items-center gap-x-1 px-6 py-4 bg-blue-500 text-white rounded-md text-base">
+              <Link href={"/login"}
+                className="flex items-center gap-x-1 px-6 py-4 bg-blue-500 text-white rounded-md text-base">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -102,7 +102,7 @@ export default function Header() {
                   />
                 </svg>
                 Đăng nhập
-              </button>
+              </Link>
             </div>
           </div>
         </div>

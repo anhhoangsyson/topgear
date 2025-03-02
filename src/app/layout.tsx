@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import { SidebarProvider } from "@/context/admin/SidebarContext";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -23,13 +24,11 @@ export default function RootLayout({
       <body
         className={`${inter.className} antialiased`}
       >
-        <Header />
-        <div className="w-11/12 mx-auto">
-          {children}
-          {/* use toaster for gender notification for action. Ex: login success or login failed */}
-          <Toaster />
-        </div>
-        <Footer />
+        <SidebarProvider>
+        {children}
+        </SidebarProvider>
+        {/* use toaster for gender notification for action. Ex: login success or login failed */}
+        <Toaster />
       </body>
     </html>
   );
