@@ -1,8 +1,3 @@
-interface Category {
-  id: string;
-  name: string;
-}
-
 interface Product {
   imageUrl?: string | StaticImageData;
   id: number;
@@ -20,4 +15,18 @@ interface ProductRelated {
   name: string;
   price: string;
   imageUrl: string | StaticImport;
+}
+
+type ProductData = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+};
+
+interface Category {
+  id: number;
+  label: string;
+  link: string;
 }

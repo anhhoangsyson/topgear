@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { Toaster } from "@/components/ui/toaster";
 import { SidebarProvider } from "@/context/admin/SidebarContext";
+import { Toaster } from "@/components/UI/toaster";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -21,12 +18,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} antialiased`}
-      >
-        <SidebarProvider>
-        {children}
-        </SidebarProvider>
+      <body className={`${inter.className} antialiased`}>
+        <SidebarProvider>{children}</SidebarProvider>
         {/* use toaster for gender notification for action. Ex: login success or login failed */}
         <Toaster />
       </body>

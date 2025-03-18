@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "biome format --write"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.0",
@@ -29,6 +30,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "biome": "^0.3.3",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "postcss": "^8",
