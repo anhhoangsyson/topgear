@@ -1,23 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
-import img1 from "@/../../public/1607431213-guide-to-finding-out-phone-name.avif";
-import img2 from "@/../../public/5 reasons you should buy a mid range phone over an expensive one.webp";
-import img3 from "../../../public/34b5bf180145769.6505ae7623131.webp";
-import img4 from "../../../public/9481555.png";
-import img5 from "../../../public/chuyenphatnhanh.jpg";
-import bookingOnl from "../../../public/bookingonline.png";
-import cardGift from "../../../public/cardgift.png";
-import banner from "../../../public/banner.png";
-import flashsaleImg from "../../../public/flashsale.png";
-import returnIcon from "../../../public/returnICon.png";
-import maintainIcon from "../../../public/maintainIcon.png";
-import freeShipIcon from "../../../public/freeShipIcon.png";
-import bannerFlashSale1 from "../../../public/bannerfFashSale1.png";
+import img1 from "/public/1607431213-guide-to-finding-out-phone-name.avif";
+import img2 from "/public/5 reasons you should buy a mid range phone over an expensive one.webp";
+import img3 from "/public/34b5bf180145769.6505ae7623131.webp";
+import img4 from "/public/9481555.png";
+import img5 from "/public/chuyenphatnhanh.jpg";
+import bookingOnl from "/public/bookingonline.png";
+import cardGift from "/public/cardgift.png";
+import banner from "/public/banner.png";
+import bannerFlashSale1 from "/public/bannerfFashSale1.png";
+import gamepad from "/public/gamepad.png";
+import keyboard from "/public/keyboard.png";
 import FlashSaleSection from "@/components/home/FlashSaleSection";
 import ServiceCard from "@/components/home/ServiceCard";
 import BenefitCard from "@/components/home/BenefitCard";
 import ProductCard from "@/components/home/ProductCard";
 import Category from "@/components/home/Category";
+import { ItemCard } from "@/components/home/ItemCard";
 
 const products: ProductData[] = [
   {
@@ -125,6 +124,54 @@ const categories: Category[] = [
   { id: 8, label: "Hàng trưng bày", link: "/category/hang-trung-bay" },
 ];
 
+const items: Item[] = [
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: true },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: true },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: true },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: false },
+  { name: "Bàn phím", img: keyboard, hot: false },
+];
+
+const FlashSale: CartFlashSale[] = [
+  {
+    id: 1,
+    image: gamepad,
+    name: "Máy chơi Game cầm tay",
+    price: "4.290.000 VNĐ",
+    sale: "4.000.000 VNĐ",
+  },
+  {
+    id: 1,
+    image: gamepad,
+    name: "Máy chơi Game cầm tay",
+    price: "4.290.000 VNĐ",
+    sale: "4.000.000 VNĐ",
+  },
+  {
+    id: 1,
+    image: gamepad,
+    name: "Máy chơi Game cầm tay",
+    price: "4.290.000 VNĐ",
+    sale: "4.000.000 VNĐ",
+  },
+  {
+    id: 1,
+    image: gamepad,
+    name: "Máy chơi Game cầm tay",
+    price: "4.290.000 VNĐ",
+    sale: "4.000.000 VNĐ",
+  },
+];
+
 export default function Home() {
   return (
     <>
@@ -137,13 +184,16 @@ export default function Home() {
         <Image className="size-full object-cover" alt="banner" src={banner} />
       </div>
 
+      <div className="w-full my-4 bg-white rounded-lg grid lg:grid-cols-7 gap-4 p-4 md:grid-cols-4 sm:grid-cols-2">
+        {items.map((item, index) => (
+          <ItemCard key={index} {...item} />
+        ))}
+      </div>
+
       <div className="mx-auto">
         <FlashSaleSection
-          flashsaleImg={flashsaleImg}
-          returnIcon={returnIcon}
-          maintainIcon={maintainIcon}
-          freeShipIcon={freeShipIcon}
           bannerFlashSale1={bannerFlashSale1}
+          data={FlashSale}
         />
 
         <div className="grid grid-cols-2 my-8">

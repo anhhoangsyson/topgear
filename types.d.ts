@@ -30,3 +30,17 @@ interface Category {
   label: string;
   link: string;
 }
+
+interface Item {
+  name: string;
+  img: string | StaticImageData;
+  hot: boolean;
+}
+
+interface CartFlashSale {
+  id: number;
+  name: string;
+  price: number | string;
+  sale: number | string;
+  image: string | StaticImageData;
+}
