@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+<<<<<<< Updated upstream
 import img1 from "/public/1607431213-guide-to-finding-out-phone-name.avif";
 import img2 from "/public/5 reasons you should buy a mid range phone over an expensive one.webp";
 import img3 from "/public/34b5bf180145769.6505ae7623131.webp";
@@ -171,9 +172,108 @@ const FlashSale: CartFlashSale[] = [
     sale: "4.000.000 VNĐ",
   },
 ];
+=======
+import FlashSaleProductCard from "@/components/ui/FlashSaleProductCard";
+import Navbar from "@/components/Navbar";
+import ProductCategoryShowcase from "@/components/section/ProductCategoryShowcase";
+import ProductCarousel from "@/components/section/ProductCarousel";
+>>>>>>> Stashed changes
 
 export default function Home() {
+  // data for product categories show case 
+  const productCategories = [
+    {
+      id: "1",
+      name: "Bàn phím",
+      image: "", // Đường dẫn đến hình ảnh của bạn
+      isHot: true,
+      href: "/category/ban-phim",
+    },
+    {
+      id: "2",
+      name: "Máy chơi game",
+      image: "",
+      isHot: true,
+      href: "/category/may-choi-game",
+    },
+    {
+      id: "3",
+      name: "Màn hình",
+      image: "",
+      href: "/category/man-hinh",
+    },
+    {
+      id: "4",
+      name: "Bàn phím",
+      image: "",
+      href: "/category/ban-phim",
+    },
+    {
+      id: "5",
+      name: "Chuột",
+      image: "",
+      href: "/category/chuot",
+    },
+    {
+      id: "6",
+      name: "Màn hình",
+      image: "",
+      href: "/category/man-hinh",
+    },
+    {
+      id: "7",
+      name: "Laptop",
+      image: "",
+      href: "/category/laptop",
+    },
+    {
+      id: "8",
+      name: "Tai nghe",
+      image: "",
+      isHot: true,
+      href: "/category/tai-nghe",
+    },
+    {
+      id: "9",
+      name: "Laptop",
+      image: "",
+      isHot: true,
+      href: "/category/laptop",
+    },
+    {
+      id: "10",
+      name: "Tivi",
+      image: "",
+      href: "/category/tivi",
+    },
+    {
+      id: "11",
+      name: "Bàn phím",
+      image: "",
+      href: "/category/ban-phim",
+    },
+    {
+      id: "12",
+      name: "Chuột",
+      image: "",
+      href: "/category/chuot",
+    },
+    {
+      id: "13",
+      name: "Máy chơi game",
+      image: "",
+      href: "/category/may-choi-game",
+    },
+    {
+      id: "14",
+      name: "Loa",
+      image: "",
+      href: "/category/loa",
+    },
+  ]
+
   return (
+<<<<<<< Updated upstream
     <>
       <div className="flex items-center justify-between max-w-[700px] mx-auto py-3">
         {categories.map((category) => (
@@ -189,8 +289,20 @@ export default function Home() {
           <ItemCard key={index} {...item} />
         ))}
       </div>
+=======
+    <div className="bg-[#F2F4F7]">
+      {/* Menu bar */}
+      <Navbar />
+      {/* Banner */}
+      
+>>>>>>> Stashed changes
 
+      {/* product categories show case */}
+      <section className="mx-auto my-8">
+        <ProductCategoryShowcase categories={productCategories} />
+      </section>
       <div className="mx-auto">
+<<<<<<< Updated upstream
         <FlashSaleSection
           bannerFlashSale1={bannerFlashSale1}
           data={FlashSale}
@@ -226,6 +338,14 @@ export default function Home() {
         </div>
 
         {/* Best selling products */}
+=======
+
+        {/* ProdcutCarousel sectionF */}
+        <section className="mx-auto my-8">
+          <ProductCarousel />
+        </section>
+        {/* san pham ban chay */}
+>>>>>>> Stashed changes
         <div>
           <h2 className="text-center text-5xl font-bold text-blue-600">
             Sản phẩm bán chạy

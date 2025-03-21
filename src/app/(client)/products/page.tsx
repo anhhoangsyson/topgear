@@ -200,7 +200,7 @@ export default function ProductsPage() {
             {products.map((item, index) => (
               <figure
                 key={index}
-                className="w-80 grid grid-cols-1 gap-y-2 shadow-2xl py-8"
+                className="w-72 grid grid-cols-1 gap-y-2 shadow-2xl py-8"
               >
                 <div className="h-[270px]">
                   <Link href={`/products/${item?.id}`}>
