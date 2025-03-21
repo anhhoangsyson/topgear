@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-<<<<<<< Updated upstream
 import img1 from "/public/1607431213-guide-to-finding-out-phone-name.avif";
 import img2 from "/public/5 reasons you should buy a mid range phone over an expensive one.webp";
 import img3 from "/public/34b5bf180145769.6505ae7623131.webp";
@@ -18,6 +17,7 @@ import BenefitCard from "@/components/home/BenefitCard";
 import ProductCard from "@/components/home/ProductCard";
 import Category from "@/components/home/Category";
 import { ItemCard } from "@/components/home/ItemCard";
+import Navbar from "@/components/Navbar";
 
 const products: ProductData[] = [
   {
@@ -172,12 +172,9 @@ const FlashSale: CartFlashSale[] = [
     sale: "4.000.000 VNĐ",
   },
 ];
-=======
 import FlashSaleProductCard from "@/components/ui/FlashSaleProductCard";
-import Navbar from "@/components/Navbar";
 import ProductCategoryShowcase from "@/components/section/ProductCategoryShowcase";
 import ProductCarousel from "@/components/section/ProductCarousel";
->>>>>>> Stashed changes
 
 export default function Home() {
   // data for product categories show case 
@@ -273,7 +270,6 @@ export default function Home() {
   ]
 
   return (
-<<<<<<< Updated upstream
     <>
       <div className="flex items-center justify-between max-w-[700px] mx-auto py-3">
         {categories.map((category) => (
@@ -289,288 +285,276 @@ export default function Home() {
           <ItemCard key={index} {...item} />
         ))}
       </div>
-=======
-    <div className="bg-[#F2F4F7]">
-      {/* Menu bar */}
-      <Navbar />
-      {/* Banner */}
-      
->>>>>>> Stashed changes
 
-      {/* product categories show case */}
-      <section className="mx-auto my-8">
-        <ProductCategoryShowcase categories={productCategories} />
-      </section>
-      <div className="mx-auto">
-<<<<<<< Updated upstream
-        <FlashSaleSection
-          bannerFlashSale1={bannerFlashSale1}
-          data={FlashSale}
-        />
+      <div className="bg-[#F2F4F7]">
+        {/* Menu bar */}
+        <Navbar />
+        {/* Banner */}
 
-        <div className="grid grid-cols-2 my-8">
-          <div className="flex flex-col justify-center">
-            <h3 className="text-4xl text-blue-500 font-semibold">
-              Thương mại điện tử
-            </h3>
-            <p className="mt-3 w-9/12 break-words text-gray-500">
-              Khám phá thế giới công nghệ với những sản phẩm đa dạng tại 8bit!
-              Dù bạn là game thủ, người làm việc sáng tạo, hay chỉ đơn giản muốn
-              nâng cấp chiếc máy tính cá nhân của mình, chúng tôi đều có các sản
-              phẩm phù hợp. Các sản phẩm của chúng tôi đều được nhập khẩu chính
-              hãng, bảo đảm chất lượng và đa dạng mẫu mã từ các thương hiệu uy
-              tín như Apple, Dell, HP, Asus, và nhiều hãng khác.
-            </p>
+
+        {/* product categories show case */}
+
+        <div className="mx-auto">
+          <FlashSaleSection
+            bannerFlashSale1={bannerFlashSale1}
+            data={FlashSale}
+          />
+
+          <div className="grid grid-cols-2 my-8">
+            <div className="flex flex-col justify-center">
+              <h3 className="text-4xl text-blue-500 font-semibold">
+                Thương mại điện tử
+              </h3>
+              <p className="mt-3 w-9/12 break-words text-gray-500">
+                Khám phá thế giới công nghệ với những sản phẩm đa dạng tại 8bit!
+                Dù bạn là game thủ, người làm việc sáng tạo, hay chỉ đơn giản muốn
+                nâng cấp chiếc máy tính cá nhân của mình, chúng tôi đều có các sản
+                phẩm phù hợp. Các sản phẩm của chúng tôi đều được nhập khẩu chính
+                hãng, bảo đảm chất lượng và đa dạng mẫu mã từ các thương hiệu uy
+                tín như Apple, Dell, HP, Asus, và nhiều hãng khác.
+              </p>
+              <div>
+                <button className="px-4 py-2 mt-3 text-white text-sm bg-blue-600 rounded-md uppercase">
+                  Mua hàng ngay
+                </button>
+              </div>
+            </div>
             <div>
-              <button className="px-4 py-2 mt-3 text-white text-sm bg-blue-600 rounded-md uppercase">
-                Mua hàng ngay
-              </button>
+              <Image
+                src={img1 || "/placeholder.svg"}
+                alt="hero"
+                width={800}
+                height={400}
+              />
             </div>
           </div>
-          <div>
-            <Image
-              src={img1 || "/placeholder.svg"}
-              alt="hero"
-              width={800}
-              height={400}
-            />
-          </div>
-        </div>
 
-        {/* Best selling products */}
-=======
+          {/* Best selling products */}
 
-        {/* ProdcutCarousel sectionF */}
-        <section className="mx-auto my-8">
-          <ProductCarousel />
-        </section>
-        {/* san pham ban chay */}
->>>>>>> Stashed changes
-        <div>
-          <h2 className="text-center text-5xl font-bold text-blue-600">
-            Sản phẩm bán chạy
-          </h2>
-          <div className="grid grid-cols-4 gap-y-8 my-9">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
+          {/* ProdcutCarousel sectionF */}
 
-        {/* Electronics and laptops */}
-        <div className="grid grid-col-4 gap-y-8 my-9">
           <div>
             <h2 className="text-center text-5xl font-bold text-blue-600">
               Sản phẩm bán chạy
             </h2>
-            <h4 className="text-center text-xl font-light my-3">
-              Các sản phẩm điện tử đang giảm giá
-            </h4>
-
-            {/* Products list */}
             <div className="grid grid-cols-4 gap-y-8 my-9">
-              {[...products, ...products].map((product, index) => (
-                <ProductCard key={`electronics-${index}`} product={product} />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-center gap-x-2">
-              {[1, 2, 3, 4].map((page, index) => (
-                <Link
-                  key={`page-${page}`}
-                  className={`flex justify-center px-4 py-2 flex-wrap gap-x-2 ${
-                    index === 0 ? "bg-blue-500" : "bg-gray-300"
-                  } rounded-full`}
-                  href={"/"}
-                >
-                  {page}
-                </Link>
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Banner 2 */}
-        <div className="grid grid-cols-2 my-32 gap-x-8">
-          {/* Left banner */}
-          <div>
+          {/* Electronics and laptops */}
+          <div className="grid grid-col-4 gap-y-8 my-9">
+            <div>
+              <h2 className="text-center text-5xl font-bold text-blue-600">
+                Sản phẩm bán chạy
+              </h2>
+              <h4 className="text-center text-xl font-light my-3">
+                Các sản phẩm điện tử đang giảm giá
+              </h4>
+
+              {/* Products list */}
+              <div className="grid grid-cols-4 gap-y-8 my-9">
+                {[...products, ...products].map((product, index) => (
+                  <ProductCard key={`electronics-${index}`} product={product} />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <div className="flex justify-center gap-x-2">
+                {[1, 2, 3, 4].map((page, index) => (
+                  <Link
+                    key={`page-${page}`}
+                    className={`flex justify-center px-4 py-2 flex-wrap gap-x-2 ${index === 0 ? "bg-blue-500" : "bg-gray-300"
+                      } rounded-full`}
+                    href={"/"}
+                  >
+                    {page}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Banner 2 */}
+          <div className="grid grid-cols-2 my-32 gap-x-8">
+            {/* Left banner */}
+            <div>
+              <Image
+                src={img2 || "/placeholder.svg"}
+                alt="hero"
+                width={800}
+                height={400}
+              />
+            </div>
+            {/* Right banner */}
+            <div className="flex gap-9">
+              <div className="flex flex-col gap-y-2 justify-center">
+                {[0, 1, 2, 3].map((index) => (
+                  <button
+                    key={`dot-${index}`}
+                    className={`w-3 h-3 rounded-full ${index === 0 ? "bg-blue-500" : "bg-gray-300"
+                      }`}
+                  />
+                ))}
+              </div>
+              <div className="flex flex-col justify-center">
+                <p className="mt-3 w-9/12 break-words text-gray-500">
+                  Đừng bỏ lỡ những chương trình khuyến mãi và ưu đãi đặc biệt tại
+                  Top Gear! Với mong muốn mang lại giá trị tốt nhất cho khách
+                  hàng, chúng tôi thường xuyên cập nhật các chương trình giảm giá,
+                  quà tặng và ưu đãi đặc biệt cho từng dòng sản phẩm. Hãy theo dõi
+                  trang web hoặc đăng ký nhận tin từ chúng tôi để không bỏ lỡ bất
+                  kỳ ưu đãi nào.
+                </p>
+                <div>
+                  <button className="px-4 py-2 mt-3 text-white text-sm bg-blue-600 rounded-md uppercase">
+                    mua sắm apple watch ngay
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* TV and accessories */}
+          <div className="grid grid-col-4 gap-y-8 py-32">
+            <div>
+              <h2 className="text-center text-5xl font-bold text-blue-600">
+                Sản phẩm Tivi và Phụ kiện
+              </h2>
+              <h4 className="text-center text-xl font-light my-3">
+                Các sản phẩm Tivi và Phụ kiện với giá ưu đãi
+              </h4>
+
+              {/* Products list */}
+              <div className="grid grid-cols-4 gap-y-8 my-9">
+                {[...products, ...products].map((product, index) => (
+                  <ProductCard key={`tv-${index}`} product={product} />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <div className="flex justify-center gap-x-2">
+                {[1, 2].map((page, index) => (
+                  <Link
+                    key={`tv-page-${page}`}
+                    className={`flex justify-center px-4 py-2 flex-wrap gap-x-2 ${index === 0 ? "bg-blue-500" : "bg-gray-300"
+                      } rounded-full`}
+                    href={"/"}
+                  >
+                    {page}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Banner 3 */}
+          <div className="grid grid-cols-1 gap-y-12">
             <Image
-              src={img2 || "/placeholder.svg"}
+              className="h-[300px] w-full object-cover rounded-md"
+              src={img3 || "/placeholder.svg"}
               alt="hero"
               width={800}
-              height={400}
+              height={300}
             />
-          </div>
-          {/* Right banner */}
-          <div className="flex gap-9">
-            <div className="flex flex-col gap-y-2 justify-center">
-              {[0, 1, 2, 3].map((index) => (
-                <button
-                  key={`dot-${index}`}
-                  className={`w-3 h-3 rounded-full ${
-                    index === 0 ? "bg-blue-500" : "bg-gray-300"
-                  }`}
+            <div className="text-center">
+              <p className="font-semibold text-3xl uppercase inline-block">
+                Khám phá các lựa chọn &nbsp;
+              </p>
+              <h1 className="font-semibold text-3xl uppercase text-blue-500 inline-block">
+                laptop đẳng cấp &nbsp;
+              </h1>
+              <p className="font-semibold text-3xl uppercase inline-block">
+                của chúng tôi
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-x-16">
+              {benefits.map((benefit, index) => (
+                <BenefitCard
+                  key={`benefit-${index}`}
+                  title={benefit.title}
+                  description={benefit.description}
                 />
               ))}
             </div>
-            <div className="flex flex-col justify-center">
-              <p className="mt-3 w-9/12 break-words text-gray-500">
-                Đừng bỏ lỡ những chương trình khuyến mãi và ưu đãi đặc biệt tại
-                Top Gear! Với mong muốn mang lại giá trị tốt nhất cho khách
-                hàng, chúng tôi thường xuyên cập nhật các chương trình giảm giá,
-                quà tặng và ưu đãi đặc biệt cho từng dòng sản phẩm. Hãy theo dõi
-                trang web hoặc đăng ký nhận tin từ chúng tôi để không bỏ lỡ bất
-                kỳ ưu đãi nào.
+          </div>
+
+          {/* Services section */}
+          <div className="pt-12">
+            <div>
+              <h4 className="mt-2 text-base font-semibold text-blue-500">
+                Dịch vụ của chúng tôi
+              </h4>
+              <h2 className="mt-2 text-3xl font-semibold">
+                Đem đến trải nghiệm tốt nhất cho bạn
+              </h2>
+              <p className="mt-2 text-sm font-normal text-gray-500">
+                Chúng tôi luôn sẵn sàng phục vụ với các dịch vụ chất lượng cao.
               </p>
+            </div>
+            <div className="mt-12 grid grid-cols-4 gap-x-8">
+              {services.map((service, index) => (
+                <ServiceCard
+                  key={`service-${index}`}
+                  icon={service.icon}
+                  title={service.title}
+                  description={service.description}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Contact section */}
+          <div className="grid grid-cols-3 mt-24">
+            <div className="col-span-1">
               <div>
-                <button className="px-4 py-2 mt-3 text-white text-sm bg-blue-600 rounded-md uppercase">
-                  mua sắm apple watch ngay
-                </button>
+                {contactInfo.map((info, index) => (
+                  <div key={`contact-${index}`} className="mb-11">
+                    <div className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-50">
+                      <svg
+                        width="18"
+                        height="15"
+                        viewBox="0 0 18 15"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M17.125 2.95508V11.7051C17.125 12.2024 16.9275 12.6793 16.5758 13.0309C16.2242 13.3825 15.7473 13.5801 15.25 13.5801H2.75C2.25272 13.5801 1.77581 13.3825 1.42417 13.0309C1.07254 12.6793 0.875 12.2024 0.875 11.7051V2.95508M17.125 2.95508C17.125 2.4578 16.9275 1.98088 16.5758 1.62925C16.2242 1.27762 15.7473 1.08008 15.25 1.08008H2.75C2.25272 1.08008 1.77581 1.27762 1.42417 1.62925C1.07254 1.98088 0.875 2.4578 0.875 2.95508M17.125 2.95508V3.15758C17.125 3.4777 17.0431 3.7925 16.887 4.07199C16.7309 4.35148 16.5059 4.58636 16.2333 4.75425L9.98333 8.60008C9.68767 8.78219 9.34725 8.87862 9 8.87862C8.65275 8.87862 8.31233 8.78219 8.01667 8.60008L1.76667 4.75508C1.4941 4.58719 1.26906 4.35232 1.11297 4.07282C0.95689 3.79333 0.874965 3.47853 0.875 3.15841V2.95508"
+                          stroke="#3B82F6"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="mt-2 text-base font-bold">{info.title}</p>
+                      <p className="mt-2 text-sm font-normal">{info.subtitle}</p>
+                      <p className="mt-2 text-sm font-normal text-blue-400">
+                        {info.contact}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="col-span-2">
+              <div className="w-full h-full">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1959.2173532270174!2d106.622246!3d10.854504!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752bee0b0ef9e5%3A0x5b4da59e47aa97a8!2zQ8O0bmcgVmnDqm4gUGjhuqduIE3hu4FtIFF1YW5nIFRydW5n!5e0!3m2!1svi!2sus!4v1739176826639!5m2!1svi!2sus"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
               </div>
             </div>
           </div>
         </div>
-
-        {/* TV and accessories */}
-        <div className="grid grid-col-4 gap-y-8 py-32">
-          <div>
-            <h2 className="text-center text-5xl font-bold text-blue-600">
-              Sản phẩm Tivi và Phụ kiện
-            </h2>
-            <h4 className="text-center text-xl font-light my-3">
-              Các sản phẩm Tivi và Phụ kiện với giá ưu đãi
-            </h4>
-
-            {/* Products list */}
-            <div className="grid grid-cols-4 gap-y-8 my-9">
-              {[...products, ...products].map((product, index) => (
-                <ProductCard key={`tv-${index}`} product={product} />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-center gap-x-2">
-              {[1, 2].map((page, index) => (
-                <Link
-                  key={`tv-page-${page}`}
-                  className={`flex justify-center px-4 py-2 flex-wrap gap-x-2 ${
-                    index === 0 ? "bg-blue-500" : "bg-gray-300"
-                  } rounded-full`}
-                  href={"/"}
-                >
-                  {page}
-                </Link>
-              ))}
-            </div>
-          </div>
         </div>
-
-        {/* Banner 3 */}
-        <div className="grid grid-cols-1 gap-y-12">
-          <Image
-            className="h-[300px] w-full object-cover rounded-md"
-            src={img3 || "/placeholder.svg"}
-            alt="hero"
-            width={800}
-            height={300}
-          />
-          <div className="text-center">
-            <p className="font-semibold text-3xl uppercase inline-block">
-              Khám phá các lựa chọn &nbsp;
-            </p>
-            <h1 className="font-semibold text-3xl uppercase text-blue-500 inline-block">
-              laptop đẳng cấp &nbsp;
-            </h1>
-            <p className="font-semibold text-3xl uppercase inline-block">
-              của chúng tôi
-            </p>
-          </div>
-          <div className="grid grid-cols-3 gap-x-16">
-            {benefits.map((benefit, index) => (
-              <BenefitCard
-                key={`benefit-${index}`}
-                title={benefit.title}
-                description={benefit.description}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Services section */}
-        <div className="pt-12">
-          <div>
-            <h4 className="mt-2 text-base font-semibold text-blue-500">
-              Dịch vụ của chúng tôi
-            </h4>
-            <h2 className="mt-2 text-3xl font-semibold">
-              Đem đến trải nghiệm tốt nhất cho bạn
-            </h2>
-            <p className="mt-2 text-sm font-normal text-gray-500">
-              Chúng tôi luôn sẵn sàng phục vụ với các dịch vụ chất lượng cao.
-            </p>
-          </div>
-          <div className="mt-12 grid grid-cols-4 gap-x-8">
-            {services.map((service, index) => (
-              <ServiceCard
-                key={`service-${index}`}
-                icon={service.icon}
-                title={service.title}
-                description={service.description}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Contact section */}
-        <div className="grid grid-cols-3 mt-24">
-          <div className="col-span-1">
-            <div>
-              {contactInfo.map((info, index) => (
-                <div key={`contact-${index}`} className="mb-11">
-                  <div className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-50">
-                    <svg
-                      width="18"
-                      height="15"
-                      viewBox="0 0 18 15"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M17.125 2.95508V11.7051C17.125 12.2024 16.9275 12.6793 16.5758 13.0309C16.2242 13.3825 15.7473 13.5801 15.25 13.5801H2.75C2.25272 13.5801 1.77581 13.3825 1.42417 13.0309C1.07254 12.6793 0.875 12.2024 0.875 11.7051V2.95508M17.125 2.95508C17.125 2.4578 16.9275 1.98088 16.5758 1.62925C16.2242 1.27762 15.7473 1.08008 15.25 1.08008H2.75C2.25272 1.08008 1.77581 1.27762 1.42417 1.62925C1.07254 1.98088 0.875 2.4578 0.875 2.95508M17.125 2.95508V3.15758C17.125 3.4777 17.0431 3.7925 16.887 4.07199C16.7309 4.35148 16.5059 4.58636 16.2333 4.75425L9.98333 8.60008C9.68767 8.78219 9.34725 8.87862 9 8.87862C8.65275 8.87862 8.31233 8.78219 8.01667 8.60008L1.76667 4.75508C1.4941 4.58719 1.26906 4.35232 1.11297 4.07282C0.95689 3.79333 0.874965 3.47853 0.875 3.15841V2.95508"
-                        stroke="#3B82F6"
-                        strokeWidth="1.25"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="mt-2 text-base font-bold">{info.title}</p>
-                    <p className="mt-2 text-sm font-normal">{info.subtitle}</p>
-                    <p className="mt-2 text-sm font-normal text-blue-400">
-                      {info.contact}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="col-span-2">
-            <div className="w-full h-full">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1959.2173532270174!2d106.622246!3d10.854504!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752bee0b0ef9e5%3A0x5b4da59e47aa97a8!2zQ8O0bmcgVmnDqm4gUGjhuqduIE3hu4FtIFF1YW5nIFRydW5n!5e0!3m2!1svi!2sus!4v1739176826639!5m2!1svi!2sus"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
+      </>
+  )}
