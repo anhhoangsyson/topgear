@@ -18,7 +18,7 @@ interface ProductRelated {
 }
 
 type ProductData = {
-  id: string;
+  id?: string;
   name: string;
   description: string;
   price: number;

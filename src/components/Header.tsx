@@ -51,9 +51,8 @@ export default function Header() {
             {menuNavData.map((item, index) => (
               <li
                 key={index}
-                className={`px-4 py-2 ${
-                  index === 0 ? "text-blue-600 font-bold" : ""
-                }`}
+                className={`px-4 py-2 ${index === 0 ? "text-blue-600 font-bold" : ""
+                  }`}
               >
                 <Link href={item.url}>{item.name}</Link>
               </li>

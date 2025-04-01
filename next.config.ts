@@ -4,7 +4,10 @@ const withSvgr = require('@svgr/webpack');
 
 const nextConfig: NextConfig = {
   /* config options here */
-
+  images: {
+    domains: ["res.cloudinary.com"], // ✅ Thêm Cloudinary vào đây
+  },
+  
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

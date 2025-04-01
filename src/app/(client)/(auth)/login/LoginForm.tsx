@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { toast, useToast } from "@/hooks/use-toast"
-import Button from "@/components/ui/Button";
+import {Button} from "@/components/ui/Button";
 import Link from "next/link";
 
 export default function LoginForm() {
@@ -30,7 +30,7 @@ export default function LoginForm() {
 
         try {
             console.log('data', data);
-
+            
 
             toast({
                 title: "Uh oh! Something went wrong.",
@@ -97,7 +97,7 @@ export default function LoginForm() {
                     </Button>
 
                     <Button
-                        variant="danger"
+                        variant="destructive"
                         className="w-full text-white"
                     >
                         Login with Google

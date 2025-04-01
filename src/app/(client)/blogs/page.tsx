@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import img1 from "../../../public/1607431213-guide-to-finding-out-phone-name.avif";
+import img1 from "../../../../public/1607431213-guide-to-finding-out-phone-name.avif";
 import Wraper from "@/components/core/Wraper";
 export default function BlogPage() {
   return (

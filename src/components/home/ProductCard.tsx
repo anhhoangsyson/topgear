@@ -1,34 +1,58 @@
-import { ProductData } from "@/app/(client)/page";
+'use client'
+import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import Link from "next/link";
+import useCartStore from '@/store/cartStore'
+import { toast, useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
-  product: ProductData;
+  product: {
+    _id: string;
+    variantName: string,
+    variantStock: number,
+    variantPrice: number,
+    variantPriceSale: number,
+    images: [
+      {
+        imageUrl: string;
+      }
+    ]
+  };
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { id, name, description, price, image } = product;
-
+  const { toast } = useToast();
+  const addToCart = useCartStore((state) => state.addToCart);
+  const handleAddToCart = () => {
+    addToCart({ ...product, quantity: 1, image: product.images[0]?.imageUrl || "/placeholder.svg" })
+    toast({
+      description: `Đã thêm "${product.variantName}" vào giỏ hàng!`,
+      duration: 1000, // Thời gian hiển thị (3 giây)
+    });
+  }
+  const { _id, variantName, variantPrice, variantPriceSale, images } = product;
   // Format price with commas
-  const formattedPrice = new Intl.NumberFormat("vi-VN").format(price);
+
+  const formattedPrice = new Intl.NumberFormat("vi-VN").format(variantPrice);
 
   return (
-    <figure className="w-80 grid grid-cols-1 gap-y-2 shadow-2xl py-8">
-      <div className="h-[270px]">
-        <Link href={`/product/${id}`}>
-          <Image
-            className="h-auto"
-            src={image || "/placeholder.svg"}
-            alt={name}
-            width={320}
-            height={300}
-          />
+    <figure className="w-60 grid grid-cols-1 gap-y-2 shadow-sm py-8 bg-white">
+      <div className="h-[250px]">
+        <Link href={`/products/${_id}`}>
+          <div className="w-full h-full flex justify-center items-center">
+            <Image
+              className="h-auto"
+              src={images[0]?.imageUrl || "/placeholder.svg"}
+              alt={variantName}
+              width={180}
+              height={300}
+            />
+          </div>
         </Link>
       </div>
       {/* Product name and detail */}
       <div className="w-11/12 mx-auto">
-        <p className="text-lg font-semibold">{name}</p>
-        <p className="text-md font-normal truncate">{description}</p>
+        <p className="text-base font-semibold">{variantName}</p>
       </div>
       {/* Product price */}
       <div className="w-11/12 mx-auto flex gap-x-1 items-end justify-start">
@@ -37,12 +61,24 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
       {/* Product action */}
       <div className="flex justify-around">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-xl">
-          Thêm vào giỏ hàng
-        </button>
-        <button className="px-4 py-2 bg-red-500 text-white rounded-xl">
-          Mua ngay
-        </button>
+        <Button
+          variant="ghost"
+          size={"sm"}
+        >
+          <Link href={`/products/${_id}`}>
+
+            <span className="text-sm">Xem chi tiết</span>
+          </Link>
+        </Button>
+
+        <Button
+          variant={"default"}
+          size={"sm"}
+          onClick={handleAddToCart}
+          disabled={product.variantStock <= 0}
+        >
+          <span className="text-sm">Thêm vào giỏ</span>
+        </Button>
       </div>
     </figure>
   );

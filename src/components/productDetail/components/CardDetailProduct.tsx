@@ -1,32 +1,49 @@
+'use client';
 import Image from "next/image";
 import Frame_48 from "/public/Frame 48.png";
 import { cn } from "@/lib/utils";
+import { ProductVariantDetail } from "@/types";
+import { useState } from "react";
+import { Button } from "@/components/ui/Button";
 
-const CardDetailProduct = () => {
+const CardDetailProduct = ({ data }: { data: ProductVariantDetail }) => {
+  const [thumbnail, setThumbnail] = useState(data.images[0].imageUrl);
+  const [isRender, setIsRender] = useState(0); // State to manage the image click rendering
+
+  const handleClickImage = (index: number) => {
+    // Handle image click logic here
+    setThumbnail(data.images[index].imageUrl);
+    setIsRender(index)
+  }
   return (
     <div className="w-[75%] p-6 bg-white rounded-lg shadow-sm">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Product Images Section */}
         <div className="space-y-4">
-          <div className="bg-gray-50 rounded-xl p-8 flex items-center justify-center">
+          <div className="min-h-72 rounded-xl p-8 flex items-center justify-center">
             <Image
-              src={Frame_48}
+              src={thumbnail}
+              width={300}
+              height={300}
               alt="Mac Mini M4"
               className="size-full object-cover"
             />
           </div>
           <div className="flex space-x-4">
-            {[1, 2, 3, 4].map((index) => (
+            {data.images.map((img, index) => (
               <button
                 key={index}
                 className={cn(
                   "border rounded p-2 w-16 h-16 flex items-center justify-center",
-                  index === 1 && "border-blue-600"
+                  isRender === index && "border-blue-600"
                 )}
+                onClick={() => { handleClickImage(index) }}
               >
                 <Image
-                  src={Frame_48}
+                  src={img.imageUrl}
                   alt={`Mac Mini view ${index}`}
+                  width={50}
+                  height={50}
                   className="w-12 h-12 object-contain"
                 />
               </button>
@@ -54,23 +71,23 @@ const CardDetailProduct = () => {
         <div className="space-y-6">
           <div>
             <h1 className="text-2xl font-bold mb-2">
-              Mac mini M4 (10C CPU/10C GPU/16GB/256GB)
+              {data.variantName}
             </h1>
             <div className="flex items-center space-x-2 text-sm text-gray-600">
               <span>Thương hiệu</span>
               <a href="#" className="text-blue-600 underline">
-                APPLE
+                {null}
               </a>
-              <span>SKU: 24110612</span>
+              {/* <span>SKU: 24110612</span> */}
             </div>
           </div>
 
           <div className="space-y-1">
             <span className="text-2xl font-bold text-blue-600">
-              14.790.000đ
+              {data.variantPrice.toLocaleString("vi-VN", {})}đ
             </span>
             <span className="block text-gray-500 line-through">
-              15.479.000đ
+              {data.variantPrice.toLocaleString("vi-VN", {})}đ
             </span>
           </div>
 
@@ -80,7 +97,11 @@ const CardDetailProduct = () => {
             <h3 className="text-lg mb-4">Chọn Voucher giảm giá</h3>
             <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
               <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <Image src={Frame_48} alt="Voucher icon" className="w-8 h-8" />
+                <Image src={data.images[0].imageUrl}
+                  alt="Voucher icon"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8" />
               </div>
               <div className="flex-1">
                 <p className="font-medium">
@@ -102,12 +123,12 @@ const CardDetailProduct = () => {
 
           {/* Action Buttons */}
           <div className="flex space-x-4">
-            <button className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
+            <Button className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
               MUA NGAY
-            </button>
-            <button className="flex-1 border border-blue-600 text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition-colors">
-              THÊM VÀO GIỎ HÀNG
-            </button>
+            </Button>
+            <Button className="flex-1 border border-blue-600 bg-white text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition-colors">
+              MUA NGAY
+            </Button>
           </div>
         </div>
       </div>

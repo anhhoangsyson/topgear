@@ -4,9 +4,10 @@ import React from "react";
 
 import img1 from "../../../../public/1607431213-guide-to-finding-out-phone-name.avif";
 import Wraper from "@/components/core/Wraper";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
+import ProductCard from "@/components/home/ProductCard";
 
-const categories: Category[] = [
+const categories: any[] = [
   { id: "0", name: "Tất cả" },
   { id: "1", name: "Laptop" },
   { id: "2", name: "PC, Màn hình, Máy in" },
@@ -129,17 +130,36 @@ const products: Product[] = [
     isAvailable: true,
   },
 ];
+// call api to get prodduct
+async function fetchProductVariants() {
+  const res = await fetch('http://localhost:3000/api/v1/pvariants', {
+    cache: 'no-store',
+  })
 
-export default function ProductsPage() {
+  if (!res.ok) {
+    console.log("Error fetching data:", res.statusText);
+
+    throw new Error("Failed to fetch data")
+  }
+  const data = await res.json()
+  return data
+}
+
+
+export default async function ProductsPage() {
+
+  const productVariants = await fetchProductVariants()
+  
   return (
-    <Wraper>
+
+    <>
       {/* store products  */}
       <div className="py-24">
         <div className="text-center">
           <span className="text-5xl font-bold text-black text-center">
             Sản phẩm tại &nbsp;
             <span className="text-5xl font-bold text-blue-500 text-center">
-              8 Bit Store
+              Top Gear
             </span>
           </span>
         </div>
@@ -195,86 +215,15 @@ export default function ProductsPage() {
           </div>
         </div>
         {/* products */}
-        <>
-          <div className="grid grid-cols-4 gap-y-8 my-9">
-            {products.map((item, index) => (
-              <figure
-                key={index}
-                className="w-72 grid grid-cols-1 gap-y-2 shadow-2xl py-8"
-              >
-                <div className="h-[270px]">
-                  <Link href={`/products/${item?.id}`}>
-                    <Image
-                      className="h-auto"
-                      src={item?.image}
-                      alt="product"
-                      width={320}
-                      height={300}
-                    />
-                  </Link>
-                </div>
-                {/* product name and detail */}
-                <div className="w-11/12 mx-auto">
-                  <p className="text-lg font-semibold">{item?.name}</p>
-                  <p className="text-md font-normalF truncate">
-                    {item?.description}
-                  </p>
-                </div>
-                {/* product price */}
-                <div className="w-11/12 mx-auto flex gap-x-1 items-end justify-start">
-                  <p className="text-xs text-gray-500">Giá tiền: </p>
-                  <strong className="text-sm text-red-600">
-                    {" "}
-                    {item?.price} {item?.currency}
-                  </strong>
-                </div>
-                {/* product action */}
-                <div className="flex justify-around">
-                  <button className="px-4 py-2 bg-blue-500 text-white rounded-xl">
-                    Thêm vào giỏ hàng
-                  </button>
-                  <button className="px-4 py-2 bg-red-500 text-white rounded-xl">
-                    Mua ngay
-                  </button>
-                </div>
-              </figure>
-            ))}
-          </div>
-          {/* panigatation */}
-          <div className="flex justify-center gap-x-2">
-            <Link
-              className="flex justify-center px-4 py-2 flex-wrap gap-x-2 bg-blue-500 rounded-full"
-              href={"#"}
-            >
-              1
-            </Link>
-            <Link
-              className="flex justify-center px-4 py-2 flex-wrap gap-x-2 bg-gray-300 rounded-full"
-              href={"#"}
-            >
-              2
-            </Link>
-            <Link
-              className="flex justify-center px-4 py-2 flex-wrap gap-x-2 bg-gray-300 rounded-full"
-              href={"#"}
-            >
-              3
-            </Link>
-            <Link
-              className="flex justify-center px-4 py-2 flex-wrap gap-x-2 bg-gray-300 rounded-full"
-              href={"#"}
-            >
-              4
-            </Link>
-            <Link
-              className="flex justify-center px-4 py-2 flex-wrap gap-x-2 bg-gray-300 rounded-full"
-              href={"#"}
-            >
-              5
-            </Link>
-          </div>
-        </>
+                     <div
+                     className="grid grid-cols-4 gap-y-4 my-9"
+                     >
+                       {productVariants.data.map((variant: any, index:any) => (
+                         <ProductCard key={`product-variant-${index}`} product={variant} />
+                       ))
+                       }
+                     </div>
       </div>
-    </Wraper>
+    </>
   );
 }

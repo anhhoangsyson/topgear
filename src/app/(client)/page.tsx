@@ -7,7 +7,6 @@ import img4 from "/public/9481555.png";
 import img5 from "/public/chuyenphatnhanh.jpg";
 import bookingOnl from "/public/bookingonline.png";
 import cardGift from "/public/cardgift.png";
-import banner from "/public/banner.png";
 import bannerFlashSale1 from "/public/bannerfFashSale1.png";
 import gamepad from "/public/gamepad.png";
 import keyboard from "/public/keyboard.png";
@@ -15,7 +14,6 @@ import FlashSaleSection from "@/components/home/FlashSaleSection";
 import ServiceCard from "@/components/home/ServiceCard";
 import BenefitCard from "@/components/home/BenefitCard";
 import ProductCard from "@/components/home/ProductCard";
-import Category from "@/components/home/Category";
 import { ItemCard } from "@/components/home/ItemCard";
 import Navbar from "@/components/Navbar";
 
@@ -114,16 +112,16 @@ const contactInfo = [
   },
 ];
 
-const categories: Category[] = [
-  { id: 1, label: "Laptop", link: "/category/laptop" },
-  { id: 2, label: "Iphone", link: "/category/iphone" },
-  { id: 3, label: "Đồng hồ", link: "/category/dong-ho" },
-  { id: 4, label: "Tivi", link: "/category/tivi" },
-  { id: 5, label: "Tai nghe", link: "/category/tai-nghe" },
-  { id: 6, label: "Bàn phím", link: "/category/ban-phim" },
-  { id: 7, label: "Chuột", link: "/category/chuot" },
-  { id: 8, label: "Hàng trưng bày", link: "/category/hang-trung-bay" },
-];
+// const categories: Category[] = [
+//   { id: 1, label: "Laptop", link: "/category/laptop" },
+//   { id: 2, label: "Iphone", link: "/category/iphone" },
+//   { id: 3, label: "Đồng hồ", link: "/category/dong-ho" },
+//   { id: 4, label: "Tivi", link: "/category/tivi" },
+//   { id: 5, label: "Tai nghe", link: "/category/tai-nghe" },
+//   { id: 6, label: "Bàn phím", link: "/category/ban-phim" },
+//   { id: 7, label: "Chuột", link: "/category/chuot" },
+//   { id: 8, label: "Hàng trưng bày", link: "/category/hang-trung-bay" },
+// ];
 
 const items: Item[] = [
   { name: "Bàn phím", img: keyboard, hot: false },
@@ -176,121 +174,50 @@ import FlashSaleProductCard from "@/components/ui/FlashSaleProductCard";
 import ProductCategoryShowcase from "@/components/section/ProductCategoryShowcase";
 import ProductCarousel from "@/components/section/ProductCarousel";
 
-export default function Home() {
-  // data for product categories show case 
-  const productCategories = [
-    {
-      id: "1",
-      name: "Bàn phím",
-      image: "", // Đường dẫn đến hình ảnh của bạn
-      isHot: true,
-      href: "/category/ban-phim",
-    },
-    {
-      id: "2",
-      name: "Máy chơi game",
-      image: "",
-      isHot: true,
-      href: "/category/may-choi-game",
-    },
-    {
-      id: "3",
-      name: "Màn hình",
-      image: "",
-      href: "/category/man-hinh",
-    },
-    {
-      id: "4",
-      name: "Bàn phím",
-      image: "",
-      href: "/category/ban-phim",
-    },
-    {
-      id: "5",
-      name: "Chuột",
-      image: "",
-      href: "/category/chuot",
-    },
-    {
-      id: "6",
-      name: "Màn hình",
-      image: "",
-      href: "/category/man-hinh",
-    },
-    {
-      id: "7",
-      name: "Laptop",
-      image: "",
-      href: "/category/laptop",
-    },
-    {
-      id: "8",
-      name: "Tai nghe",
-      image: "",
-      isHot: true,
-      href: "/category/tai-nghe",
-    },
-    {
-      id: "9",
-      name: "Laptop",
-      image: "",
-      isHot: true,
-      href: "/category/laptop",
-    },
-    {
-      id: "10",
-      name: "Tivi",
-      image: "",
-      href: "/category/tivi",
-    },
-    {
-      id: "11",
-      name: "Bàn phím",
-      image: "",
-      href: "/category/ban-phim",
-    },
-    {
-      id: "12",
-      name: "Chuột",
-      image: "",
-      href: "/category/chuot",
-    },
-    {
-      id: "13",
-      name: "Máy chơi game",
-      image: "",
-      href: "/category/may-choi-game",
-    },
-    {
-      id: "14",
-      name: "Loa",
-      image: "",
-      href: "/category/loa",
-    },
-  ]
+// func to fetch data from next server
+async function fetchProductVariants() {
+  const res = await fetch('http://localhost:3000/api/v1/pvariants', {
+    cache: 'no-store',
+  })
 
+  if (!res.ok) {
+    console.log("Error fetching data:", res.statusText);
+
+    throw new Error("Failed to fetch data")
+  }
+  const data = await res.json()
+  return data
+}
+
+export default async function Home() {
+
+  // call fetchProductVariants() above
+
+  const productVariants = await fetchProductVariants()
+  console.log("Product variants data:", productVariants.data);
   return (
     <>
-      <div className="flex items-center justify-between max-w-[700px] mx-auto py-3">
+      {/* <div className="flex items-center justify-between max-w-[700px] mx-auto py-3">
         {categories.map((category) => (
           <Category key={category.id} {...category} />
         ))}
-      </div>
-      <div className="w-full max-h-[280px] overflow-hidden rounded-lg">
+      </div> */}
+      {/* <div className="w-full max-h-[280px] overflow-hidden rounded-lg">
         <Image className="size-full object-cover" alt="banner" src={banner} />
-      </div>
+      </div> */}
 
-      <div className="w-full my-4 bg-white rounded-lg grid lg:grid-cols-7 gap-4 p-4 md:grid-cols-4 sm:grid-cols-2">
-        {items.map((item, index) => (
-          <ItemCard key={index} {...item} />
-        ))}
-      </div>
+
 
       <div className="bg-[#F2F4F7]">
         {/* Menu bar */}
         <Navbar />
         {/* Banner */}
 
+        <div className="w-full my-4 bg-white rounded-lg grid lg:grid-cols-7 gap-4 p-4 md:grid-cols-4 sm:grid-cols-2">
+          {items.map((item, index) => (
+            <ItemCard key={index} {...item} />
+          ))}
+        </div>
 
         {/* product categories show case */}
 
@@ -329,19 +256,17 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Best selling products */}
 
-          {/* ProdcutCarousel sectionF */}
 
           <div>
             <h2 className="text-center text-5xl font-bold text-blue-600">
               Sản phẩm bán chạy
             </h2>
-            <div className="grid grid-cols-4 gap-y-8 my-9">
+            {/* <div className="grid grid-cols-4 gap-y-8 my-9">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Electronics and laptops */}
@@ -355,11 +280,11 @@ export default function Home() {
               </h4>
 
               {/* Products list */}
-              <div className="grid grid-cols-4 gap-y-8 my-9">
+              {/* <div className="grid grid-cols-4 gap-y-8 my-9">
                 {[...products, ...products].map((product, index) => (
                   <ProductCard key={`electronics-${index}`} product={product} />
                 ))}
-              </div>
+              </div> */}
 
               {/* Pagination */}
               <div className="flex justify-center gap-x-2">
@@ -428,10 +353,13 @@ export default function Home() {
               </h4>
 
               {/* Products list */}
-              <div className="grid grid-cols-4 gap-y-8 my-9">
-                {[...products, ...products].map((product, index) => (
-                  <ProductCard key={`tv-${index}`} product={product} />
-                ))}
+              <div
+              className="grid xl:grid-cols-5 sm:grid-cols-2 md:grid-cols-4 gap-y-8 my-9"
+              >
+                {productVariants.data.map((variant: any, index:any) => (
+                  <ProductCard key={`product-variant-${index}`} product={variant} />
+                ))
+                }
               </div>
 
               {/* Pagination */}
@@ -555,6 +483,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        </div>
-      </>
-  )}
+      </div>
+    </>
+  )
+}

@@ -5,9 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { toast, useToast } from "@/hooks/use-toast"
-import Button from "@/components/ui/Button";
-import { Key } from "lucide-react";
+import { toast } from "@/hooks/use-toast"
+import {Button} from "@/components/ui/Button";
 
 export default function RegisterForm() {
     const [loading, setLoading] = useState(false);

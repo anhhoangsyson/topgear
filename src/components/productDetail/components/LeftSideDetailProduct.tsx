@@ -1,48 +1,12 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-interface DetailProduct {
-  title: string;
-  content: string;
-}
-
-const ListDetail: DetailProduct[] = [
-  {
-    title: "Thương hiệu",
-    content: "Apple",
-  },
-  {
-    title: "Thương hiệu",
-    content: "Apple",
-  },
-  {
-    title: "Thương hiệu",
-    content: "Apple",
-  },
-  {
-    title: "Thương hiệu",
-    content: "Apple",
-  },
-  {
-    title: "Thương hiệu",
-    content: "Apple",
-  },
-  {
-    title: "Thương hiệu",
-    content: "Apple",
-  },
-  {
-    title: "Thương hiệu",
-    content: "Apple",
-  },
-];
-
-const LeftSideDetailProduct = () => {
+const LeftSideDetailProduct = ({ data }: { data: { attributeName: string, attributeValue: string }[] }) => {
   return (
-    <div className="bg-white p-4 space-y-8 w-[25%]">
+    <div className="bg-white p-4 space-y-8 w-[30%]">
       <h2 className="font-semibold text-xl">Thông tin chi tiết</h2>
-      <div>
-        {ListDetail.map((item, index) => (
+      <div className="max-h-[700px]">
+        {data.map((item, index) => (
           <div
             key={index}
             className={cn(
@@ -50,8 +14,8 @@ const LeftSideDetailProduct = () => {
               index % 2 === 0 && "bg-gray-100"
             )}
           >
-            <span className="text-sm">{item.title}</span>
-            <span className="text-sm font-semibold">{item.content}</span>
+            <span className="min-w-[30%] text-sm text-nowrap">{item.attributeName}</span>
+            <span className="text-sm font-semibold text-nowrap truncate">{item.attributeValue}</span>
           </div>
         ))}
       </div>
