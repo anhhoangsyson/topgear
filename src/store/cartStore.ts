@@ -28,10 +28,21 @@ export interface ProductVariantDetail {
   _id: string;
 }
 
-export interface CartItem extends Omit<ProductVariantDetail, 'status' | 'images'| 'variantAttributes'|'variantStock'> {
+// Dữ liệu lưu trong cookie (chỉ chứa các trường cần thiết)
+interface CartCookieItem {
+  _id: string;
+  variantName: string;
+  variantPrice: number;
+  variantPriceSale: number;
+  isSelected: boolean;
   quantity: number;
   image: string;
-  isSelected: boolean; // chosse product to check out
+}
+
+export interface CartItem extends Omit<ProductVariantDetail, 'status' | 'images' | 'variantAttributes' | 'variantStock'> {
+  quantity: number;
+  image: string;
+  isSelected: boolean;
 }
 
 export interface CartState {
@@ -42,8 +53,8 @@ export interface CartState {
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  toggleSelectItem: (productId: string) => void; // Hàm mới để chọn/bỏ chọn
-  toggleSelectAll: (isSelected: boolean) => void; // Hàm mới để chọn/bỏ chọn tất cả
+  toggleSelectItem: (productId: string) => void;
+  toggleSelectAll: (isSelected: boolean) => void;
 }
 
 const CART_COOKIE_NAME = 'cart';
@@ -54,10 +65,14 @@ const useCartStore = create<CartState>((set) => ({
     if (typeof window === 'undefined') return [];
     try {
       const cookieData = Cookies.get(CART_COOKIE_NAME);
-      const items = cookieData ? JSON.parse(cookieData) : [];
-      // Đảm bảo tất cả sản phẩm có isSelected, mặc định là true
-      return items.map((item: CartItem) => ({
-        ...item,
+      const cookieItems: CartCookieItem[] = cookieData ? JSON.parse(cookieData) : [];
+      return cookieItems.map((item) => ({
+        _id: item._id,
+        variantName: item.variantName,
+        variantPrice: item.variantPrice,
+        variantPriceSale: item.variantPriceSale,
+        quantity: item.quantity,
+        image: item.image,
         isSelected: item.isSelected !== undefined ? item.isSelected : true,
       }));
     } catch (error) {
@@ -76,17 +91,48 @@ const useCartStore = create<CartState>((set) => ({
           item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
-        newCart = [...state.cartItems, { ...product, quantity: product.quantity || 1, isSelected: true }];
+        newCart = [
+          ...state.cartItems,
+          {
+            _id: product._id,
+            variantName: product.variantName,
+            variantPrice: product.variantPrice,
+            variantPriceSale: product.variantPriceSale,
+            quantity: product.quantity || 1,
+            image: product.image, // Lấy URL ảnh đầu tiên từ product.images[0].imageUrl nếu không có product.image
+            isSelected: true,
+          },
+        ];
       }
 
-      Cookies.set(CART_COOKIE_NAME, JSON.stringify(newCart), { expires: COOKIE_EXPIRES });
+      // Chỉ lưu các trường cần thiết vào cookie
+      const cookieCart: CartCookieItem[] = newCart.map((item) => ({
+        _id: item._id,
+        variantName: item.variantName,
+        variantPrice: item.variantPrice,
+        variantPriceSale: item.variantPriceSale,
+        isSelected: item.isSelected,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+      const jsonCart = JSON.stringify(cookieCart);
+      Cookies.set(CART_COOKIE_NAME, jsonCart, { expires: COOKIE_EXPIRES, path: '/' });
       return { cartItems: newCart };
     }),
 
   removeFromCart: (productId) =>
     set((state) => {
       const newCart = state.cartItems.filter((item) => item._id !== productId);
-      Cookies.set(CART_COOKIE_NAME, JSON.stringify(newCart), { expires: COOKIE_EXPIRES });
+      const cookieCart: CartCookieItem[] = newCart.map((item) => ({
+        _id: item._id,
+        variantName: item.variantName,
+        variantPrice: item.variantPrice,
+        variantPriceSale: item.variantPriceSale,
+        isSelected: item.isSelected,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+      Cookies.set(CART_COOKIE_NAME, JSON.stringify(cookieCart), { expires: COOKIE_EXPIRES, path: '/' });
       return { cartItems: newCart };
     }),
 
@@ -95,7 +141,16 @@ const useCartStore = create<CartState>((set) => ({
       const newCart = state.cartItems.map((item) =>
         item._id === productId ? { ...item, quantity } : item
       );
-      Cookies.set(CART_COOKIE_NAME, JSON.stringify(newCart), { expires: COOKIE_EXPIRES });
+      const cookieCart: CartCookieItem[] = newCart.map((item) => ({
+        _id: item._id,
+        variantName: item.variantName,
+        variantPrice: item.variantPrice,
+        variantPriceSale: item.variantPriceSale,
+        isSelected: item.isSelected,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+      Cookies.set(CART_COOKIE_NAME, JSON.stringify(cookieCart), { expires: COOKIE_EXPIRES, path: '/' });
       return { cartItems: newCart };
     }),
 
@@ -104,19 +159,37 @@ const useCartStore = create<CartState>((set) => ({
     return { cartItems: [] };
   },
 
-  toggleSelectItem: (productId: string) =>
+  toggleSelectItem: (productId) =>
     set((state) => {
       const newCart = state.cartItems.map((item) =>
         item._id === productId ? { ...item, isSelected: !item.isSelected } : item
       );
-      Cookies.set(CART_COOKIE_NAME, JSON.stringify(newCart), { expires: COOKIE_EXPIRES });
+      const cookieCart: CartCookieItem[] = newCart.map((item) => ({
+        _id: item._id,
+        variantName: item.variantName,
+        variantPrice: item.variantPrice,
+        variantPriceSale: item.variantPriceSale,
+        isSelected: item.isSelected,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+      Cookies.set(CART_COOKIE_NAME, JSON.stringify(cookieCart), { expires: COOKIE_EXPIRES, path: '/' });
       return { cartItems: newCart };
     }),
 
-  toggleSelectAll: (isSelected: boolean) =>
+  toggleSelectAll: (isSelected) =>
     set((state) => {
       const newCart = state.cartItems.map((item) => ({ ...item, isSelected }));
-      Cookies.set(CART_COOKIE_NAME, JSON.stringify(newCart), { expires: COOKIE_EXPIRES });
+      const cookieCart: CartCookieItem[] = newCart.map((item) => ({
+        _id: item._id,
+        variantName: item.variantName,
+        variantPrice: item.variantPrice,
+        variantPriceSale: item.variantPriceSale,
+        isSelected: item.isSelected,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+      Cookies.set(CART_COOKIE_NAME, JSON.stringify(cookieCart), { expires: COOKIE_EXPIRES, path: '/' });
       return { cartItems: newCart };
     }),
 }));

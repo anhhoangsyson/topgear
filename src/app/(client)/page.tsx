@@ -194,7 +194,6 @@ export default async function Home() {
   // call fetchProductVariants() above
 
   const productVariants = await fetchProductVariants()
-  console.log("Product variants data:", productVariants.data);
   return (
     <>
       {/* <div className="flex items-center justify-between max-w-[700px] mx-auto py-3">

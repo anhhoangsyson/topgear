@@ -10,7 +10,6 @@ const Cart = () => {
 
     useEffect(() => {
         setIsHydrated(true);
-        console.log('cartiem',cartItems);
         
     }, []);
 

@@ -19,7 +19,6 @@ export default function Navbar() {
         const fetchData = async () => {
             const data = await fetch('http://localhost:3000/api/v1/categories/tree')
             const categories = await data.json()
-            console.log(categories.data);
             setCategoriesMenu(categories.data)
 
         }
