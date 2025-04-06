@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { ProductVariantDetail } from "@/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import useCartStore from "@/store/cartStore";
+import { toast, useToast } from "@/hooks/use-toast";
 
 const CardDetailProduct = ({ data }: { data: ProductVariantDetail }) => {
   const [thumbnail, setThumbnail] = useState(data.images[0].imageUrl);
@@ -14,6 +16,46 @@ const CardDetailProduct = ({ data }: { data: ProductVariantDetail }) => {
     // Handle image click logic here
     setThumbnail(data.images[index].imageUrl);
     setIsRender(index)
+  }
+
+  const addToCart = useCartStore((state) => state.addToCart);
+
+  const handleAddToCart = () => {
+    const product = {
+      _id: data._id,
+      variantName: data.variantName,
+      variantPrice: data.variantPrice,
+      variantPriceSale: data.variantPriceSale,
+      variantStock: data.variantStock, // Include the variantStock property
+      quantity: 1,
+      image: data.images[0].imageUrl, // Use the selected thumbnail image
+    };
+    addToCart(product);
+
+    toast({
+      description: `Đã thêm "${product.variantName}" vào giỏ hàng!`,
+      duration: 1000, // Thời gian hiển thị (1 giây)
+    });
+
+  };
+
+  const handleBuyNow = () => {
+    const product = {
+      _id: data._id,
+      variantName: data.variantName,
+      variantPrice: data.variantPrice,
+      variantPriceSale: data.variantPriceSale,
+      variantStock: data.variantStock, 
+      quantity: 1,
+      image: data.images[0].imageUrl,
+    };
+    addToCart(product);
+    toast({
+      description: `Đã thêm "${product.variantName}" vào giỏ hàng!`,
+      duration: 1000, // Thời gian hiển thị (1 giây)
+    });
+    // Redirect to checkout page
+    window.location.href = "/cart";
   }
   return (
     <div className="w-[75%] p-6 bg-white rounded-lg shadow-sm">
@@ -123,10 +165,14 @@ const CardDetailProduct = ({ data }: { data: ProductVariantDetail }) => {
 
           {/* Action Buttons */}
           <div className="flex space-x-4">
-            <Button className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
-              MUA NGAY
+            <Button
+              onClick={handleAddToCart}
+              className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
+              THÊM VÀO GIỎ HÀNG
             </Button>
-            <Button className="flex-1 border border-blue-600 bg-white text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition-colors">
+            <Button
+              onClick={handleBuyNow}
+              className="flex-1 border border-blue-600 bg-white text-blue-600 py-3 rounded-lg hover:bg-blue-50 transition-colors">
               MUA NGAY
             </Button>
           </div>

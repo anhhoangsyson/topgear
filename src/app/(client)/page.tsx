@@ -17,40 +17,7 @@ import ProductCard from "@/components/home/ProductCard";
 import { ItemCard } from "@/components/home/ItemCard";
 import Navbar from "@/components/Navbar";
 
-const products: ProductData[] = [
-  {
-    id: "1",
-    name: "Điện thoại đẹp trai số 1 thế giới",
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorum, ducimus officiis repellat quibusdam pariatur nesciunt dolor ipsam?",
-    price: 135000000,
-    image: "/1607431213-guide-to-finding-out-phone-name.avif",
-  },
-  {
-    id: "2",
-    name: "Điện thoại đẹp trai số 1 thế giới",
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorum, ducimus officiis repellat quibusdam pariatur nesciunt dolor ipsam?",
-    price: 135000000,
-    image: "/1607431213-guide-to-finding-out-phone-name.avif",
-  },
-  {
-    id: "3",
-    name: "Điện thoại đẹp trai số 1 thế giới",
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorum, ducimus officiis repellat quibusdam pariatur nesciunt dolor ipsam?",
-    price: 135000000,
-    image: "/1607431213-guide-to-finding-out-phone-name.avif",
-  },
-  {
-    id: "4",
-    name: "Điện thoại đẹp trai số 1 thế giới",
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorum, ducimus officiis repellat quibusdam pariatur nesciunt dolor ipsam?",
-    price: 135000000,
-    image: "/1607431213-guide-to-finding-out-phone-name.avif",
-  },
-];
+
 
 const services = [
   {
@@ -112,16 +79,6 @@ const contactInfo = [
   },
 ];
 
-// const categories: Category[] = [
-//   { id: 1, label: "Laptop", link: "/category/laptop" },
-//   { id: 2, label: "Iphone", link: "/category/iphone" },
-//   { id: 3, label: "Đồng hồ", link: "/category/dong-ho" },
-//   { id: 4, label: "Tivi", link: "/category/tivi" },
-//   { id: 5, label: "Tai nghe", link: "/category/tai-nghe" },
-//   { id: 6, label: "Bàn phím", link: "/category/ban-phim" },
-//   { id: 7, label: "Chuột", link: "/category/chuot" },
-//   { id: 8, label: "Hàng trưng bày", link: "/category/hang-trung-bay" },
-// ];
 
 const items: Item[] = [
   { name: "Bàn phím", img: keyboard, hot: false },
@@ -176,7 +133,7 @@ import ProductCarousel from "@/components/section/ProductCarousel";
 
 // func to fetch data from next server
 async function fetchProductVariants() {
-  const res = await fetch('http://localhost:3000/api/v1/pvariants', {
+  const res = await fetch('https://top-gear-be.vercel.app/api/v1/pvariants', {
     cache: 'no-store',
   })
 
@@ -196,17 +153,6 @@ export default async function Home() {
   const productVariants = await fetchProductVariants()
   return (
     <>
-      {/* <div className="flex items-center justify-between max-w-[700px] mx-auto py-3">
-        {categories.map((category) => (
-          <Category key={category.id} {...category} />
-        ))}
-      </div> */}
-      {/* <div className="w-full max-h-[280px] overflow-hidden rounded-lg">
-        <Image className="size-full object-cover" alt="banner" src={banner} />
-      </div> */}
-
-
-
       <div className="bg-[#F2F4F7]">
         {/* Menu bar */}
         <Navbar />
@@ -225,6 +171,42 @@ export default async function Home() {
             bannerFlashSale1={bannerFlashSale1}
             data={FlashSale}
           />
+
+          {/* TV and accessories */}
+          <div className="grid grid-col-4 gap-y-8 py-32">
+            <div>
+              <h2 className="text-center text-5xl font-bold text-blue-600">
+                Sản phẩm cua Top Gear
+              </h2>
+              <h4 className="text-center text-xl font-light my-3">
+                Các sản phẩm và Phụ kiện với giá ưu đãi
+              </h4>
+
+              {/* Products list */}
+              <div
+                className="grid xl:grid-cols-4 sm:grid-cols-2 md:grid-cols-3 gap-y-8 my-9"
+              >
+                {productVariants.data.map((variant: any, index: any) => (
+                  <ProductCard key={`product-variant-${index}`} product={variant} />
+                ))
+                }
+              </div>
+
+              {/* Pagination */}
+              <div className="flex justify-center gap-x-2">
+                {[1, 2].map((page, index) => (
+                  <Link
+                    key={`tv-page-${page}`}
+                    className={`flex justify-center px-4 py-2 flex-wrap gap-x-2 ${index === 0 ? "bg-blue-500" : "bg-gray-300"
+                      } rounded-full`}
+                    href={"/"}
+                  >
+                    {page}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 my-8">
             <div className="flex flex-col justify-center">
@@ -269,37 +251,7 @@ export default async function Home() {
           </div>
 
           {/* Electronics and laptops */}
-          <div className="grid grid-col-4 gap-y-8 my-9">
-            <div>
-              <h2 className="text-center text-5xl font-bold text-blue-600">
-                Sản phẩm bán chạy
-              </h2>
-              <h4 className="text-center text-xl font-light my-3">
-                Các sản phẩm điện tử đang giảm giá
-              </h4>
 
-              {/* Products list */}
-              {/* <div className="grid grid-cols-4 gap-y-8 my-9">
-                {[...products, ...products].map((product, index) => (
-                  <ProductCard key={`electronics-${index}`} product={product} />
-                ))}
-              </div> */}
-
-              {/* Pagination */}
-              <div className="flex justify-center gap-x-2">
-                {[1, 2, 3, 4].map((page, index) => (
-                  <Link
-                    key={`page-${page}`}
-                    className={`flex justify-center px-4 py-2 flex-wrap gap-x-2 ${index === 0 ? "bg-blue-500" : "bg-gray-300"
-                      } rounded-full`}
-                    href={"/"}
-                  >
-                    {page}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
 
           {/* Banner 2 */}
           <div className="grid grid-cols-2 my-32 gap-x-8">
@@ -337,42 +289,6 @@ export default async function Home() {
                     mua sắm apple watch ngay
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* TV and accessories */}
-          <div className="grid grid-col-4 gap-y-8 py-32">
-            <div>
-              <h2 className="text-center text-5xl font-bold text-blue-600">
-                Sản phẩm Tivi và Phụ kiện
-              </h2>
-              <h4 className="text-center text-xl font-light my-3">
-                Các sản phẩm Tivi và Phụ kiện với giá ưu đãi
-              </h4>
-
-              {/* Products list */}
-              <div
-              className="grid xl:grid-cols-5 sm:grid-cols-2 md:grid-cols-4 gap-y-8 my-9"
-              >
-                {productVariants.data.map((variant: any, index:any) => (
-                  <ProductCard key={`product-variant-${index}`} product={variant} />
-                ))
-                }
-              </div>
-
-              {/* Pagination */}
-              <div className="flex justify-center gap-x-2">
-                {[1, 2].map((page, index) => (
-                  <Link
-                    key={`tv-page-${page}`}
-                    className={`flex justify-center px-4 py-2 flex-wrap gap-x-2 ${index === 0 ? "bg-blue-500" : "bg-gray-300"
-                      } rounded-full`}
-                    href={"/"}
-                  >
-                    {page}
-                  </Link>
-                ))}
               </div>
             </div>
           </div>

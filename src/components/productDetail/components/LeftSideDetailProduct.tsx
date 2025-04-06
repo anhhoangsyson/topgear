@@ -19,9 +19,9 @@ const LeftSideDetailProduct = ({ data }: { data: { attributeName: string, attrib
           </div>
         ))}
       </div>
-      <button className="w-full text-blue-500 py-2 rounded-lg">
+      {/* <button className="w-full text-blue-500 py-2 rounded-lg">
         Xem thêm nội dung
-      </button>
+      </button> */}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { toast, useToast } from "@/hooks/use-toast"
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { IUser, UserType, UserValidationSchema } from "@/schemaValidations/user.schema";
 
 export default function FormAccountInfo() {

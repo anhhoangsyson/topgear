@@ -24,7 +24,6 @@ export default function RegisterForm() {
     // ✅ Xử lý submit form
     const onSubmit = async (data: RegisterType) => {
         setLoading(true);
-
         setErrorMessage("");
 
         try {

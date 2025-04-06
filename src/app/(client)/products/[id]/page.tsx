@@ -2,7 +2,7 @@ import DetailProductPage from "@/components/productDetail";
 import { ProductVariantDetail } from "@/types";
 
 async function fetchProductVariant(id: string) {
-  const res = await fetch(`http://localhost:3000/api/v1/pvariants/${id}`, {
+  const res = await fetch(`https://top-gear-be.vercel.app/api/v1/pvariants/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

@@ -1,16 +1,18 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
+import { useRouter } from "next/navigation";
 import useCartStore, { CartItem } from '@/store/cartStore';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-
+import { AiOutlineDelete } from "react-icons/ai";
 const Cart = () => {
+    const router = useRouter();
     const { cartItems, toggleSelectItem, toggleSelectAll } = useCartStore();
     const [isHydrated, setIsHydrated] = useState<boolean>(false);
+    const removeFromCart = useCartStore((state) => state.removeFromCart);
 
     useEffect(() => {
         setIsHydrated(true);
-        
     }, []);
 
     if (!isHydrated) {
@@ -20,12 +22,23 @@ const Cart = () => {
     // Kiểm tra xem tất cả sản phẩm có được chọn không
     const allSelected = cartItems.length > 0 && cartItems.every((item) => item.isSelected);
 
+
+    const handleBooking = () => {
+        const selectedItems = cartItems.filter((item) => item.isSelected);
+        console.log('Selected items:', selectedItems);
+
+
+        const encodedItems = encodeURIComponent(JSON.stringify(selectedItems));
+        router.push(`/checkout?cartItems=${encodedItems}`);
+
+    }
+
     return (
         <div className="w-full grid grid-cols-12 my-8 gap-x-4">
             <div className="col-span-9 bg-white rounded p-4 px-4 border border-gray-300">
                 {/* Header của grid con */}
                 <div className="grid grid-cols-9 pb-4 pl-4">
-                    <div className="col-span-6 font-bold text-base">
+                    <div className="col-span-5 font-bold text-base">
                         <label className="flex items-center gap-2">
                             <input
                                 type="checkbox"
@@ -38,12 +51,13 @@ const Cart = () => {
                     <div className="col-span-1 font-semibold text-base text-center">Đơn giá</div>
                     <div className="col-span-1 font-semibold text-base text-center">Thành tiền</div>
                     <div className="col-span-1 font-semibold text-base text-center">Số lượng</div>
+                    <div className="col-span-1 font-semibold text-base text-center">delete</div>
                 </div>
 
                 {/* Danh sách cartItems */}
                 {cartItems.map((item: CartItem) => (
                     <div key={item._id} className="col-span-9 max-h-[113px] grid grid-cols-9 border-t p-4">
-                        <div className="col-span-6 font-bold text-base truncate">
+                        <div className="col-span-5 font-bold text-[15px] truncate pr-2 text-wrap">
                             <div className="flex items-center justify-start align-middle gap-4">
                                 <input
                                     type="checkbox"
@@ -81,6 +95,15 @@ const Cart = () => {
                                 currency: 'VND',
                             })}
                         </div>
+                        <div
+                            className='col-span-1 flex items-center justify-end text-base text-center font-semibold'
+                        >
+                            <Button
+                                onClick={() => removeFromCart(item._id)}
+                                variant={'outline'}>
+                                <AiOutlineDelete />
+                            </Button>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -117,10 +140,12 @@ const Cart = () => {
                     </div>
                     <div className='w-full'>
                         <Button
+                            disabled={cartItems.filter((item) => item.isSelected).length === 0}
                             className='w-full mt-4 bg-blue-500 text-white'
                             variant={'outline'}
+                            onClick={handleBooking}
                         >
-                            Tiếp Tục
+                            Đặt hàng
                         </Button>
                     </div>
                 </div>

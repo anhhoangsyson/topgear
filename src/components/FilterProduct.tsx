@@ -34,7 +34,7 @@ export default function FilterProduct({ id, onFilter }: { id: string, onFilter: 
 
     useEffect(() => {
         const fetchFilter = async () => {
-            const res = await fetch(`http://localhost:3000/api/v1/categories/categoriesByChildId/${id}`);
+            const res = await fetch(`https://top-gear-be.vercel.app/api/v1/categories/categoriesByChildId/${id}`);
             const filterData = await res.json()
             console.log('filter at cpm', filterData);
 

@@ -1,5 +1,5 @@
 const BreadCrumb = () => {
-  return <div>Trang chủ {">"} Giỏ Hàng</div>;
+  return <div>Trang chủ {">"} Sản phẩm </div>;
 };
 
 export default BreadCrumb;

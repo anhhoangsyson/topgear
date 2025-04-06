@@ -10,7 +10,7 @@ import type {
 } from "@/types"
 
 // Base URL cho API
-const API_BASE_URL = "http://localhost:3000/api/v1"
+const API_BASE_URL = "https://top-gear-be.vercel.app/api/v1"
 
 // Helper function để xử lý response
 async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {

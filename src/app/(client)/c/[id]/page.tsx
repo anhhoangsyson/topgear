@@ -21,14 +21,14 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
       try {
         // Lấy danh sách sản phẩm
         const productsResponse = await fetch(
-          `http://localhost:3000/api/v1/pvariants/pvariantsByChildId/${id}`
+          `https://top-gear-be.vercel.app/api/v1/pvariants/pvariantsByChildId/${id}`
         );
         const products = await productsResponse.json();
         setProductsData(products.data);
 
         // Lấy dữ liệu filter
         const filtersResponse = await fetch(
-          `http://localhost:3000/api/v1/categories/categoriesByChildId/${id}`
+          `https://top-gear-be.vercel.app/api/v1/categories/categoriesByChildId/${id}`
         );
         const filters = await filtersResponse.json();
         setFilterData(filters.data);
@@ -50,7 +50,7 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
       console.log(filter);
       
 
-      const res = await fetch(`http://localhost:3000/api/v1/pvariants/filter/?${filterKeys.map((key) => `filterData=${key}`).join('&')}`);
+      const res = await fetch(`https://top-gear-be.vercel.app/api/v1/pvariants/filter/?${filterKeys.map((key) => `filterData=${key}`).join('&')}`);
       const data = await res.json();
       setProductsData(data.data); // Cập nhật lại danh sách sản phẩm
     } catch (error) {

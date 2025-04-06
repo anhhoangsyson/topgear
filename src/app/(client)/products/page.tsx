@@ -132,7 +132,7 @@ const products: Product[] = [
 ];
 // call api to get prodduct
 async function fetchProductVariants() {
-  const res = await fetch('http://localhost:3000/api/v1/pvariants', {
+  const res = await fetch('https://top-gear-be.vercel.app/api/v1/pvariants', {
     cache: 'no-store',
   })
 

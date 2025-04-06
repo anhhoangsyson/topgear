@@ -147,6 +147,7 @@ export interface ProductVariantDetail {
   variantAttributes?: IProductAttribute[]
   variantName: string
   variantPrice: number
+  variantPriceSale: number
   variantStock: number
   _id: string
   // productId: string
