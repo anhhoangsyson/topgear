@@ -15,7 +15,9 @@ export default function CheckoutPage() {
         email: "",
         phone: "",
         address: "",
+        note: "",
     })
+
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
     useEffect(() => {
         const items = searchParams.get("cartItems");
@@ -33,8 +35,28 @@ export default function CheckoutPage() {
         }
     }, [searchParams]);
 
+
+    const handleStep1Submit = (data: {
+        fullName: string;
+        phone: string;
+        email?: string;
+        shippingAddress: { province: string; district: string; ward: string; street: string };
+        note?: string;
+    }) => {
+        console.log('cc ');
+        
+        const formattedAddress = `${data.shippingAddress.street}, ${data.shippingAddress.ward}, ${data.shippingAddress.district}, ${data.shippingAddress.province}`;
+        setCustomerInfo({
+            name: data.fullName,
+            email: data.email || "",
+            phone: data.phone,
+            address: formattedAddress,
+            note: data.note || "",
+        });
+        currentStep === 1 && setCurrentStep(2); // Chuyển sang bước 2 nếu đang ở bước 1
+    };
     return (
-        <div className='w-[600px] h-screen  mx-auto '>
+        <div className='w-[600px] min-h-screen  mx-auto mt-8 '>
             {/* Header     */}
             <div className='grid grid-cols-2 gap-4 mb-6'>
                 <div className={`col-span-1 text-center ${currentStep === 1 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>1. Thông tin</div>
@@ -45,12 +67,17 @@ export default function CheckoutPage() {
             {currentStep === 1 && (
                 <Step1
                     selectedItems={selectedItems}
+                    onSubmitStep1={handleStep1Submit}
+                // shippingInfo={customerInfo}
                 />
             )}
 
             {/* form step 2 */}
             {currentStep === 2 && (
-                <Step2 />
+                <Step2
+                    customerInfo={customerInfo}
+                    selectedItems={selectedItems}
+                />
             )}
         </div>
     )

@@ -48,7 +48,7 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
     try {
       const filterKeys = Object.keys(filter);
       console.log(filter);
-      
+
 
       const res = await fetch(`https://top-gear-be.vercel.app/api/v1/pvariants/filter/?${filterKeys.map((key) => `filterData=${key}`).join('&')}`);
       const data = await res.json();
@@ -61,12 +61,16 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
   };
 
   return (
-    <div>
-      <FilterProduct id={id} onFilter={handleFilter} />
+    <div className='flex w-screen  max-w-none'>
+      <div
+        className=''>
+        <FilterProduct id={id} onFilter={handleFilter} />
+
+      </div>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div className="grid grid-cols-4 gap-y-8 my-9">
+        <div className="grid grid-cols-4 gap-x-3 gap-y-8 my-9">
           {productsData && productsData.length > 0 ? (
             productsData.map((variant, index) => (
               <ProductCard key={`product-variant-${index}`} product={variant} />

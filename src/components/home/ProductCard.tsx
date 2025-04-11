@@ -27,37 +27,46 @@ export default function ProductCard({ product }: ProductCardProps) {
     addToCart({ ...product, quantity: 1, image: product.images[0]?.imageUrl || "/placeholder.svg" })
     toast({
       description: `Đã thêm "${product.variantName}" vào giỏ hàng!`,
-      duration: 1000, // Thời gian hiển thị (3 giây)
+      duration: 1000,
     });
   }
   const { _id, variantName, variantPrice, variantPriceSale, images } = product;
+  const salePercent = (100 - (variantPriceSale / variantPrice * 100)).toFixed(0) + "%";
   // Format price with commas
-
-  const formattedPrice = new Intl.NumberFormat("vi-VN").format(variantPrice);
+  const formattedPrice = new Intl.NumberFormat("vi-VN").format(variantPriceSale);
 
   return (
-    <figure className="w-60 grid grid-cols-1 gap-y-2 shadow-sm py-8 bg-white">
-      <div className="h-[250px]">
+    <figure className="relative w-60 grid grid-cols-1 gap-y-2 shadow-sm pb-8 bg-white rounded">
+      <div className="h-[240px] flex justify-center items-center">
         <Link href={`/products/${_id}`}>
           <div className="w-full h-full flex justify-center items-center">
             <Image
-              className="h-auto"
+              className=" h-auto "
               src={images[0]?.imageUrl || "/placeholder.svg"}
               alt={variantName}
               width={180}
               height={300}
             />
+            <p
+            className="absolute top-0 right-0 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded"
+            >-{salePercent}</p>
           </div>
         </Link>
       </div>
       {/* Product name and detail */}
       <div className="w-11/12 mx-auto">
-        <p className="text-base font-semibold">{variantName}</p>
+        <p className="text-[13.5px] font-semibold">{variantName}</p>
       </div>
       {/* Product price */}
-      <div className="w-11/12 mx-auto flex gap-x-1 items-end justify-start">
-        <p className="text-xs text-gray-500">Giá tiền: </p>
-        <strong className="text-sm text-red-600">{formattedPrice} VND</strong>
+      <div className="w-11/12 mx-auto flex gap-x-8 items-center justify-start">
+        <strong className="text-[12px] text-red-600">{formattedPrice} VND</strong>
+        <p className="text-[12px] text-gray-800 line-through">{variantPrice.toLocaleString(
+          "vi-VN",
+          {
+            style: "currency",
+            currency: "VND",
+          }
+        )}</p>
       </div>
       {/* Product action */}
       <div className="flex justify-around">
@@ -67,7 +76,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         >
           <Link href={`/products/${_id}`}>
 
-            <span className="text-sm">Xem chi tiết</span>
+            <span className="text-xs">Xem chi tiết</span>
           </Link>
         </Button>
 
@@ -77,7 +86,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           onClick={handleAddToCart}
           disabled={product.variantStock <= 0}
         >
-          <span className="text-sm">Thêm vào giỏ</span>
+          <span className="text-[13px]">Thêm vào giỏ</span>
         </Button>
       </div>
     </figure>

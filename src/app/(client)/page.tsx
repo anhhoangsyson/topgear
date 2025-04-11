@@ -184,7 +184,7 @@ export default async function Home() {
 
               {/* Products list */}
               <div
-                className="grid xl:grid-cols-4 sm:grid-cols-2 md:grid-cols-3 gap-y-8 my-9"
+                className="grid xl:grid-cols-5 sm:grid-cols-2 md:grid-cols-4 gap-y-8 my-9"
               >
                 {productVariants.data.map((variant: any, index: any) => (
                   <ProductCard key={`product-variant-${index}`} product={variant} />
