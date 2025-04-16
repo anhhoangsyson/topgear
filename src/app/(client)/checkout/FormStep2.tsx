@@ -1,8 +1,13 @@
 'use client';
-
+import { RiCashLine } from "react-icons/ri";
+import { SiZalo } from "react-icons/si";
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import useCartStore from "@/store/cartStore";
+import { Toast } from "@radix-ui/react-toast";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 type PaymentMethod = 'cash' | 'zalopay';
 
@@ -24,9 +29,12 @@ interface Step2Props {
     note: string;
   };
   selectedItems: CartItem[];
+  onBack: () => void; // Callback function to go back to Step 1
 }
 
-export default function Step2({ customerInfo, selectedItems }: Step2Props) {
+export default function Step2({ customerInfo, selectedItems, onBack }: Step2Props) {
+  const router = useRouter()
+ 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>(''); // Lưu phương thức thanh toán
   const [voucherCode, setVoucherCode] = useState<string | null>(null); // Lưu mã giảm giá
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false); // Điều khiển modal
@@ -37,9 +45,19 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
 
   const handlePayment = async () => {
     if (!paymentMethod) {
-      alert('Vui lòng chọn phương thức thanh toán!');
+      toast({
+        title: 'Chưa chọn phương thức thanh toán',
+        description: 'Vui lòng chọn phương thức thanh toán trước khi đặt hàng',
+        duration: 3000,
+        variant: 'destructive',
+      })
       return;
     }
+    if (selectedItems.length === 0) {
+      alert('Giỏ hàng trống!');
+      return;
+    }
+
 
     const orderData = {
       address: customerInfo.address,
@@ -53,7 +71,7 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
         quantity: item.quantity,
         image: item.image,
       })),
-      // note: customerInfo.note || '',
+      note: customerInfo.note || '',
     };
 
     try {
@@ -68,6 +86,8 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
       });
 
       if (response.ok) {
+        selectedItems.map((item) => { useCartStore.getState().removeFromCart(item._id) }); // Xóa sản phẩm đã chọn khỏi giỏ hàng
+
         const result = await response.json();
 
         if (paymentMethod === 'zalopay') {
@@ -75,13 +95,25 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
           const paymentUrl = result.data.payment.paymentUrl;
           window.location.href = paymentUrl;
         } else {
-          window.location.href = '/order-success'; 
+          const orderId = result?.data?.data?._id;
+          toast({
+            title: 'Đặt hàng thành công',
+            description: 'Cảm ơn bạn đã đặt hàng tại Top Gear!',
+            duration: 3000,
+            variant: 'default',
+          })
+          router.push(`/checkout/success/${orderId}`)
+          
         }
       }
       else {
         const errorData = await response.json();
-        console.error('Error creating order:', errorData);
-        alert('Có lỗi khi đặt hàng: ' + errorData.message);
+        toast({
+          title: 'Đặt hàng thất bại',
+          description: errorData.message || 'Có lỗi xảy ra trong quá trình đặt hàng',
+          duration: 3000,
+          variant: 'destructive',
+        })
       }
     } catch (error) {
       console.error('Error submitting order:', error);
@@ -148,6 +180,7 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
               variant='outline'
               className='w-full'
             >
+              <RiCashLine className='mr-2' />
               Thanh toán khi nhận hàng
             </Button>
             <Button
@@ -155,7 +188,9 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
               variant='outline'
               className='w-full'
             >
-              ZaloPay
+              <SiZalo className="mr-2" />
+              Thanh toán qua ZaloPay
+
             </Button>
           </div>
           <DialogFooter>

@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation"; // Import useRouter
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export default function LoginForm() {
   const router = useRouter(); // Create an instance of the router
   const searchParams = useSearchParams()
 
-  // cái này để check xem người dùng có được chuyển hướng từ trang nào không
+  // check if user is navigated form other page with message in url
   useEffect(() => {
     const message = searchParams.get("message")
     if (message) {
@@ -29,7 +29,7 @@ export default function LoginForm() {
       });
     }
   }, [searchParams])
-  // ✅ Cấu hình React Hook Form với Zod Resolver
+  // ✅ config React Hook Form with Zod Resolver
   const {
     register,
     handleSubmit,
@@ -38,13 +38,13 @@ export default function LoginForm() {
     resolver: zodResolver(LoginValidationSchema),
   });
 
-  // ✅ Xử lý submit form
+  // ✅ handle submit form
   const onSubmit = async (data: LoginType) => {
     setLoading(true);
     setErrorMessage("");
 
     try {
-      // Gửi yêu cầu đăng nhập tới API
+      // send req to server
       const response = await fetch("https://top-gear-be.vercel.app/api/v1/auth/login", {
         method: "POST",
         headers: {
@@ -65,14 +65,26 @@ export default function LoginForm() {
             description: "Chào mừng thượng đế đến với hệ thống Top Gear!",
           });
 
-          // Lưu thông tin đăng nhập (ví dụ: token) vào localStorage
+
+          // save data user (ex: token) in localStorage
           // localStorage.setItem("authToken", result.data.token);
           // khong luu o localStorage vi co the bi xoa
 
           // save sessionToken in cookie
           document.cookie = `accessToken=${result.data.token}; path=/; max-age=36000; secure; samesite=strict`;
 
-          // Chuyển hướng về /
+          // luu ca token o trong next server
+          await fetch('/api/auth/',{
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              accessToken: result.data.token,
+            }),
+          })
+
+          // naviate /
           router.push("/");
         } else {
           throw new Error(result.message || "Đăng nhập thất bại");
@@ -102,34 +114,34 @@ export default function LoginForm() {
 
         {/* Email */}
         <div className="mb-4">
-          <label className="block text-base font-semibold">Email</label>
+          <label className="block text-sm  font-semibold">Email</label>
           <input
             type="email"
             {...register("email")}
-            className="mt-2 p-2 w-full border rounded bg-[#f6f6f9] focus:bg-white focus:border-gray-700 outline-none"
+            className="mt-2 p-2 w-full border rounded bg-white focus:bg-white focus:border-gray-700 outline-none"
           />
           {errors.email && (
-            <p className="text-red-500">{errors.email.message}</p>
+            <p className="text-red-500 text-[13px]">{errors.email.message}</p>
           )}
         </div>
 
         {/* Password */}
         <div className="mb-4">
-          <label className="block text-base font-semibold">Mật khẩu</label>
+          <label className="block text-sm font-semibold">Mật khẩu</label>
           <input
             type="password"
             {...register("password")}
-            className="mt-2 p-2 w-full border rounded bg-[#f6f6f9] focus:bg-white focus:border-gray-700 outline-none"
+            className="mt-2 p-2 w-full border rounded bg-white focus:bg-white focus:border-gray-700 outline-none"
           />
           {errors.password && (
-            <p className="text-red-500">{errors.password.message}</p>
+            <p className="text-red-500 text-[13px]">{errors.password.message}</p>
           )}
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="block mx-auto 2xl:w-[290px] w-full p-2 bg-blue-500 text-white text-sm font-medium rounded"
+          className="block mx-auto 2xl:w-[290px] w-full p-2 bg-blue-500 text-white text-[13px] font-medium rounded"
           disabled={loading}
         >
           {loading ? "Đang xử lý..." : "Đăng nhập"}

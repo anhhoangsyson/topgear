@@ -67,7 +67,7 @@ const addressSchema = z.object({
 
 type AddressFormData = z.infer<typeof addressSchema>;
 
-export default function Step1({ selectedItems, onSubmitStep1 }:
+export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInfo }:
   {
     selectedItems: {
       _id: string;
@@ -77,7 +77,14 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
       quantity: number;
       image: string;
     }[],
-    onSubmitStep1: (data: FormData) => void
+    onSubmitStep1: (data: FormData) => void,
+    initialCustomerInfo?: {
+      name: string;
+      email: string;
+      phone: string;
+      address: string;
+      note: string;
+    };
   }) {
   const [customerInfo, setCustomerInfo] = useState<Omit<IUser, '_id' | 'role' | 'password'>>({} as any);
   const [locations, setLocations] = useState<ILocation[]>([]);
@@ -95,16 +102,16 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: '',
-      phone: '',
-      email: '',
+      fullName: initialCustomerInfo?.name || '',
+      phone: initialCustomerInfo?.phone || '',
+      email: initialCustomerInfo?.email || '',
       shippingAddress: {
-        province: '',
-        district: '',
-        ward: '',
-        street: '',
+        province: initialCustomerInfo?.address.split(', ')[3] || '',
+        district: initialCustomerInfo?.address.split(', ')[2] || '',
+        ward: initialCustomerInfo?.address.split(', ')[1] || '',
+        street: initialCustomerInfo?.address.split(', ')[0] || '',
       },
-      note: '',
+      note: initialCustomerInfo?.note || '',
     },
   });
 
@@ -134,7 +141,7 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
           method: 'GET',
           headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
         }),
-        fetch('https://top-gear-be.vercel.app/api/v1/location', { // Sửa endpoint
+        fetch('https://top-gear-be.vercel.app/api/v1/location', {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
         }),
@@ -156,10 +163,14 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
         setLocations(locationsData.data || []);
         const defaultLocation = locationsData.data.find((loc: ILocation) => loc.isDefault);
         if (defaultLocation) {
+          const provinceName = addressData.province.find(p => p.idProvince === defaultLocation.province)?.name || '';
+          const districtName = addressData.district.find(d => d.idDistrict === defaultLocation.district)?.name || '';
+          const wardName = addressData.commune.find(c => c.idCommune === defaultLocation.ward)?.name || '';
+
           setValue('shippingAddress', {
-            province: defaultLocation.province,
-            district: defaultLocation.district,
-            ward: defaultLocation.ward,
+            province: provinceName,
+            district: districtName,
+            ward: wardName,
             street: defaultLocation.street,
           });
         }
@@ -181,10 +192,14 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
 
   useEffect(() => {
     if (selectedProvince) {
+      console.log('Selected province:', selectedProvince);
+
       const filteredDistricts = addressData.district.filter(
         (dist) => dist.idProvince === selectedProvince
       );
       setDistricts(filteredDistricts);
+      console.log('Filtered districts:', filteredDistricts);
+
       setCommunes([]);
       setAddressValue('district', '');
       setAddressValue('ward', '');
@@ -196,26 +211,48 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
       const filteredCommunes = addressData.commune.filter(
         (comm) => comm.idDistrict === selectedDistrict
       );
+      console.log('Filtered communes:', filteredCommunes);
+
       setCommunes(filteredCommunes);
       setAddressValue('ward', '');
     }
+
   }, [selectedDistrict, addressData.commune, setAddressValue]);
 
   const handleAddNewAddress = async (data: AddressFormData) => {
     const accessToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+
+    const payload = {
+      province: data.province, // idProvince
+      district: data.district, // idDistrict
+      ward: data.ward, // idCommune
+      street: data.street,
+    };
+
     const res = await fetch('https://top-gear-be.vercel.app/api/v1/location', { // Sửa endpoint
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
 
     if (res.ok) {
       const newLocation = await res.json();
       setLocations([...locations, newLocation.data]);
-      setValue('shippingAddress', data); // Truyền dữ liệu vào form chính
+
+      // anh xa id -> name de pass vao formstep2
+      const provinceName = addressData.province.find(p => p.idProvince === data.province)?.name || '';
+      const districtName = addressData.district.find(d => d.idDistrict === data.district)?.name || '';
+      const wardName = addressData.commune.find(c => c.idCommune === data.ward)?.name || '';
+
+      setValue('shippingAddress', {
+        province: provinceName,
+        district: districtName,
+        ward: wardName,
+        street: data.street,
+      }); // Truyền dữ liệu vào form chính
     } else {
       console.error('Lỗi khi lưu địa chỉ:', await res.json());
     }
@@ -224,6 +261,7 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
 
   const onSubmit = (data: FormData) => {
     console.log('Form submitted:', { selectedItems, shippingInfo: data });
+    onSubmitStep1(data)
     // Chuyển sang bước tiếp theo với data.shippingAddress
   };
 
@@ -307,10 +345,15 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
               onChange={(e) => {
                 const selected = locations.find(loc => loc._id === e.target.value);
                 if (selected) {
+
+                  const provinceName = addressData.province.find(p => p.idProvince === selected.province)?.name || '';
+                  const districtName = addressData.district.find(d => d.idDistrict === selected.district)?.name || '';
+                  const wardName = addressData.commune.find(c => c.idCommune === selected.ward)?.name || '';
+
                   setValue('shippingAddress', {
-                    province: selected.province,
-                    district: selected.district,
-                    ward: selected.ward,
+                    province: provinceName,
+                    district: districtName,
+                    ward: wardName,
                     street: selected.street,
                   });
                 }
@@ -318,11 +361,15 @@ export default function Step1({ selectedItems, onSubmitStep1 }:
               className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500'
             >
               <option value=''>Chọn địa chỉ có sẵn</option>
-              {locations.map((loc) => (
-                <option key={loc._id} value={loc._id}>
-                  {`${loc.street}, ${addressData.commune.find(c => c.idCommune === loc.ward)?.name}, ${addressData.district.find(d => d.idDistrict === loc.district)?.name}, ${addressData.province.find(p => p.idProvince === loc.province)?.name}`}
-                </option>
-              ))}
+              {locations.map((loc) => {
+                const provinceName = addressData.province.find(p => p.idProvince === loc.province)?.name || '';
+                const districtName = addressData.district.find(d => d.idDistrict === loc.district)?.name || '';
+                const wardName = addressData.commune.find(c => c.idCommune === loc.ward)?.name || '';
+                return (
+                  <option key={loc._id} value={loc._id}>
+                    {`${loc.street}, ${wardName}, ${districtName}, ${provinceName}`}
+                  </option>)
+              })}
             </select>
             {errors.shippingAddress?.province && <p className='text-red-500 text-xs'>{errors.shippingAddress.province.message}</p>}
             <Button

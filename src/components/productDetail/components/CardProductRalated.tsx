@@ -1,29 +1,42 @@
 import React from "react";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
+import { caculateSalePercent, formatPrice } from '../../../lib/utils';
+import { Button } from "@/components/ui/Button";
 
 interface ProductCardProps {
   product: ProductRelated;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const salePercent = parseFloat(caculateSalePercent(parseInt(product.variantPrice), parseInt(product.variantPriceSale)));
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 max-w-[300px] h-[350px]">
+    <div className="relative bg-white rounded-lg shadow-md p-4 max-w-[300px] h-[350px]">
       <Image
-        src={product?.imageUrl}
-        alt={product?.name}
+        src={product?.image}
+        alt={product?.variantName}
         className="w-full h-48  object-contain rounded-lg mb-4"
         width={300}
         height={300}
       />
+      {salePercent > 0 &&(
+        <p className="absolute top-0 right-0 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
+          -{salePercent}</p>
+      )}
+      
       <h3 className="text-lg font-semibold text-gray-800 truncate">
-        {product?.name}
+        {product?.variantName}
       </h3>
-      <p className="text-gray-600">Giá: {product?.price}</p>
-      <button className="mt-4 bg-[#0E1746] text-white rounded-md px-4 py-2 w-full flex items-center justify-center gap-2">
-        <ShoppingCart size={18} />
+      <div className="flex items-center justify-between mt-2">
+        <p className="text-gray-700 line-through text-[13px] font-semibold"> {formatPrice(product?.variantPrice)}</p>
+        <p className="text-red-600 text-[13px] font-semibold"> {formatPrice(product?.variantPriceSale)}</p>
+      </div>
+      <Button
+        className="w-full mt-4 bg-[#0E1746] text-white hover:bg-white hover:text-[#0E1746] border border-[#0E1746] rounded-md"
+        variant={"default"}>
+        <ShoppingCart size={16} />
         Thêm vào giỏ hàng
-      </button>
+      </Button>
     </div>
   );
 };

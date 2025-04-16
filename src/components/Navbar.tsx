@@ -6,7 +6,7 @@ import banner from '@/../public/banner.png'
 
 export default function Navbar() {
 
-    const topPosition = ["-top-0", "-top-12", "-top-24", "-top-36", "-top-48", "-top-50", "-top-62", "-top-74"]
+    const topPosition = ["-top-0", "-top-12", "-top-24", "-top-36", "-top-48", "-top-60", "-top-62", "-top-74"]
 
     interface Category {
         categoryName: string,
@@ -42,11 +42,11 @@ export default function Navbar() {
                             </Link>
                             {/* dropdown menu */}
                             <div
-                                className={`grid grid-cols-${item.children.length} absolute -top- ${topPosition[index]} left-full w-[800px] rounded bg-white opacity-0 invisible shadow-lg group-hover:opacity-100 group-hover:visible group-hover:shadow-lg group-hover:z-10 transition-all duration-300 ease-in-out`}>
+                                className={`grid grid-cols-5 absolute -top- ${topPosition[index]} left-full min-w-[800px] w-full rounded bg-white opacity-0 invisible shadow-lg group-hover:opacity-100 group-hover:visible group-hover:shadow-lg group-hover:z-10 transition-all duration-300 ease-in-out`}>
                                 {item.children.map((child, index) => (
                                     <div
                                         key={index}
-                                        className='block py-3 px-4 text-[#0e1746] font-semibold text-base '>
+                                        className='block py-3 px-4 text-[#0e1746] font-semibold text-base h-full'>
                                         {child.categoryName}
                                         <div
                                             className='grid grid-cols-1 gap-2 mt-2'>

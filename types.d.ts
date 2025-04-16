@@ -11,10 +11,13 @@ interface Product {
 }
 
 interface ProductRelated {
-  id: number;
-  name: string;
-  price: string;
-  imageUrl: string | StaticImport;
+  _id: number;
+  productId: string;
+  variantId: string;
+  variantName: string;
+  variantPrice: string;
+  variantPriceSale: string;
+  image: string | StaticImport;
 }
 
 type ProductData = {

@@ -181,10 +181,9 @@ export default async function Home() {
               <h4 className="text-center text-xl font-light my-3">
                 Các sản phẩm và Phụ kiện với giá ưu đãi
               </h4>
-
               {/* Products list */}
               <div
-                className="grid xl:grid-cols-5 sm:grid-cols-2 md:grid-cols-4 gap-y-8 my-9"
+                className="grid xl:grid-cols-5 sm:grid-cols-3 md:grid-cols-4 gap-y-8 my-9"
               >
                 {productVariants.data.map((variant: any, index: any) => (
                   <ProductCard key={`product-variant-${index}`} product={variant} />
