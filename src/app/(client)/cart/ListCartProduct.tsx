@@ -25,10 +25,13 @@ const Cart = () => {
 
     const handleBooking = () => {
         const selectedItems = cartItems.filter((item) => item.isSelected);
-        console.log('Selected items:', selectedItems);
 
+        // selectedItems.map((item) => {
+        //     removeFromCart(item._id); // Xóa sản phẩm đã chọn khỏi giỏ hàng
+        // })
 
         const encodedItems = encodeURIComponent(JSON.stringify(selectedItems));
+
         router.push(`/checkout?cartItems=${encodedItems}`);
 
     }
@@ -49,9 +52,9 @@ const Cart = () => {
                         </label>
                     </div>
                     <div className="col-span-1 font-semibold text-base text-center">Đơn giá</div>
-                    <div className="col-span-1 font-semibold text-base text-center">Thành tiền</div>
                     <div className="col-span-1 font-semibold text-base text-center">Số lượng</div>
-                    <div className="col-span-1 font-semibold text-base text-center">delete</div>
+                    <div className="col-span-1 font-semibold text-base text-center">Thành tiền</div>
+                    <div className="col-span-1 font-semibold text-base text-center"></div>
                 </div>
 
                 {/* Danh sách cartItems */}
@@ -127,6 +130,12 @@ const Cart = () => {
                                 .filter((item) => item.isSelected) // Chỉ tính sản phẩm được chọn
                                 .reduce((total: number, item: CartItem) => total + item.variantPrice * item.quantity, 0)
                                 .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                        </p>
+                    </div>
+                    <div className='flex justify-between items-center mt-2'>
+                        <p className='font-medium text-sm'>Giảm giá</p>
+                        <p>
+                            0
                         </p>
                     </div>
                     <div className='flex justify-between items-center mt-2'>

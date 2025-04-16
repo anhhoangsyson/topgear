@@ -76,7 +76,7 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
               <ProductCard key={`product-variant-${index}`} product={variant} />
             ))
           ) : (
-            <p>No products found.</p>
+            <p>Không tìm thấy sản phẩm nào phù hợp với yêu cầu của thượng đế.</p>
           )}
         </div>
       )}
