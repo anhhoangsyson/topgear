@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import useCartStore from '@/store/cartStore'
 import { toast, useToast } from "@/hooks/use-toast";
+import { caculateSalePercent } from "@/lib/utils";
 
 interface ProductCardProps {
   product: {
@@ -31,12 +32,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     });
   }
   const { _id, variantName, variantPrice, variantPriceSale, images } = product;
-  const salePercent = (100 - (variantPriceSale / variantPrice * 100)).toFixed(0) + "%";
+  // const salePercent = (100 - (variantPriceSale / variantPrice * 100)).toFixed(0) + "%";
+  const salePercent=caculateSalePercent(variantPrice, variantPriceSale)
   // Format price with commas
   const formattedPrice = new Intl.NumberFormat("vi-VN").format(variantPriceSale);
 
   return (
-    <figure className="relative w-60 grid grid-cols-1 gap-y-2 shadow-sm pb-8 bg-white rounded">
+    <figure className="relative w-[220px] grid grid-cols-1 gap-y-2 shadow-sm pb-8 bg-white rounded">
       <div className="h-[240px] flex justify-center items-center">
         <Link href={`/products/${_id}`}>
           <div className="w-full h-full flex justify-center items-center">
@@ -59,7 +61,13 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
       {/* Product price */}
       <div className="w-11/12 mx-auto flex gap-x-8 items-center justify-start">
-        <strong className="text-[12px] text-red-600">{formattedPrice} VND</strong>
+        <strong className="text-[12px] text-red-600">{variantPrice.toLocaleString(
+          "vi-VN",
+          {
+            style: "currency",
+            currency: "VND",
+          }
+        )} VND</strong>
         <p className="text-[12px] text-gray-800 line-through">{variantPrice.toLocaleString(
           "vi-VN",
           {

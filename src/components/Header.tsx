@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { CartIcon, SearchIcon, UserIcon } from "./icons";
 import useCartStore from "@/store/cartStore";
+import { useParams, usePathname } from "next/navigation";
 
 export interface menuNavData {
   name: string;
@@ -36,17 +37,38 @@ const menuNavData: menuNavData[] = [
 export default function Header() {
 
   const [cartQuantity, setCartQuantity] = useState(0)
-
+  const [lastScrollTop, setLastScrollTop] = useState(0);
+  const [isHidden, setIsHidden] = useState(false);
   const cartStore = useCartStore((state) => state.cartItems);
-
+  const pathName = usePathname();
+  
   useEffect(() => {
     const totalQuantity = cartStore.reduce((total, item) => {
       return total + item.quantity;
     }, 0);
     setCartQuantity(totalQuantity)
   }, [cartStore])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > lastScrollTop) {
+        // Cuộn xuống: ẩn header
+        setIsHidden(true);
+      } else {
+        // Cuộn lên: hiện header
+        setIsHidden(false);
+      }
+      setLastScrollTop(scrollTop);
+    }
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollTop])
+
   return (
-    <div className="flex align-center bg-[#0E1746] text-white justify-between py-4 px-24 shadow-lg">
+    <div className={`fixed top-0 left-0 w-full flex align-center bg-[#0E1746] text-white justify-between py-4 px-24 shadow-lg transition-transform duration-300 z-50
+    ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
       {/* logo */}
       <div className="flex items-center">
         <Link href={"/"}>
@@ -63,11 +85,11 @@ export default function Header() {
           <ul className="flex ">
             {menuNavData.map((item, index) => (
               <li
-                key={index}
-                className={`px-4 py-2 ${index === 0 ? "text-blue-600 font-bold" : ""
-                  }`}
-              >
-                <Link href={item.url}>{item.name}</Link>
+                key={index}  >
+                <Link
+                  className={`px-4 py-2 text-sm ${pathName == item.url ? "text-blue-600 font-semibold" : ""
+                    }`}
+                  href={item.url}>{item.name}</Link>
               </li>
             ))}
           </ul>
@@ -75,7 +97,7 @@ export default function Header() {
       </div>
       {/* riglt nav */}
       <div className="flex gap-x-1 items-center">
-        <div className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 cursor-pointer">
+        <div className="flex items-center justify-center w-12 h-12 rounded-full hover:opacity-75 cursor-pointer">
           <Link href="/search">
             <SearchIcon />
           </Link>
@@ -98,7 +120,7 @@ export default function Header() {
           href={"/login"}
           className="flex items-center bg-transparent border border-white text-white rounded"
         >
-          <div className="flex items-center gap-2 py-2 px-3 hover:bg-white hover:text-[#0E1746] transition-all duration-300 ease-in-out rounded">
+          <div className="flex items-center gap-2 py-2 px-3 text-sm hover:bg-white hover:text-[#0E1746] transition-all duration-300 ease-in-out rounded">
             <UserIcon />
             Tài Khoản
           </div>

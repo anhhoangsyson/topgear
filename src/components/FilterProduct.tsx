@@ -118,7 +118,10 @@ export default function FilterProduct({ id, onFilter }: FilterProductProps) {
                 <div className="">
                     <div className="flex justify-between items-center">
                         <div>
-                            <Button onClick={applyFilters}>
+                            <Button
+                                size={ "default" }
+                                className="text-[12px]"
+                                onClick={applyFilters}>
                                 Lọc sản phẩm
                             </Button>
                         </div>
@@ -126,7 +129,7 @@ export default function FilterProduct({ id, onFilter }: FilterProductProps) {
                             variant="ghost"
                             size="sm"
                             onClick={clearFilters}
-                            className="text-sm text-gray-500 hover:text-gray-700"
+                            className="text-[13px] text-gray-500 hover:text-gray-700"
                         >
                             Chọn lại
                         </Button>

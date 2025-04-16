@@ -43,8 +43,7 @@ export default function CheckoutPage() {
         shippingAddress: { province: string; district: string; ward: string; street: string };
         note?: string;
     }) => {
-        console.log('cc ');
-        
+
         const formattedAddress = `${data.shippingAddress.street}, ${data.shippingAddress.ward}, ${data.shippingAddress.district}, ${data.shippingAddress.province}`;
         setCustomerInfo({
             name: data.fullName,
@@ -55,12 +54,17 @@ export default function CheckoutPage() {
         });
         currentStep === 1 && setCurrentStep(2); // Chuyển sang bước 2 nếu đang ở bước 1
     };
+    const handleBackToStep1 = () => {
+        setCurrentStep(1); // Quay lại bước 1
+    }
     return (
         <div className='w-[600px] min-h-screen  mx-auto mt-8 '>
             {/* Header     */}
             <div className='grid grid-cols-2 gap-4 mb-6'>
-                <div className={`col-span-1 text-center ${currentStep === 1 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>1. Thông tin</div>
-                <div className={`col-span-1 text-center ${currentStep === 2 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>2. Thanh toán</div>
+                <div
+                    onClick={handleBackToStep1}
+                    className={`col-span-1 text-center hover:cursor-pointer transition-colors duration-200 ${currentStep === 1 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>1. Thông tin</div>
+                <div className={`col-span-1 text-center hover:cursor-pointer transition-colors duration-200 ${currentStep === 2 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>2. Thanh toán</div>
             </div>
 
             {/* form step 1 */}
@@ -68,6 +72,7 @@ export default function CheckoutPage() {
                 <Step1
                     selectedItems={selectedItems}
                     onSubmitStep1={handleStep1Submit}
+                    initialCustomerInfo={customerInfo}
                 // shippingInfo={customerInfo}
                 />
             )}
@@ -77,6 +82,7 @@ export default function CheckoutPage() {
                 <Step2
                     customerInfo={customerInfo}
                     selectedItems={selectedItems}
+                    onBack={handleBackToStep1}
                 />
             )}
         </div>
