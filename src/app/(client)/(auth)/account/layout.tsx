@@ -1,4 +1,6 @@
+'use client'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React from 'react'
 import { CiMap } from 'react-icons/ci'
 import { FaRegUserCircle } from 'react-icons/fa'
@@ -6,6 +8,13 @@ import { IoIosNotificationsOutline } from 'react-icons/io'
 import { MdOutlineLocalShipping } from 'react-icons/md'
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
+    
+    const pathname = usePathname();
+    
+    const isActive = (label: string) => {
+        return pathname === `/account/${label}` || (label === 'info' && pathname === '/account');
+      };
+
     const menuAccount = [
         {
             icon: <FaRegUserCircle className='w-4 h-auto' />,
@@ -28,7 +37,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             label: 'notification'
         }
     ]
-
     return (
         <>
             <div className="flex mx-auto pt-8 pb-10 2xl:w-[1200px]  bg-[#f8f8fc] rounded">
@@ -52,10 +60,12 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                                     key={index}
                                     href={'/account/' + item.label}>
                                     <div
-                                        className='flex mb-3 cursor-pointer'>
+                                        className={`flex cursor-pointer p-2 rounded
+                                        ${isActive(item.label)? ' bg-blue-500 text-white' : 'text-gray-500 hover:bg-gray-200'}
+                                        `}>
                                         <div className='flex items-center gap-x-3' >
                                             {item.icon}
-                                            <p className='font-medium text-sm uppercase'>{item.subTitle}</p>
+                                            <p className='font-medium text-[13px] uppercase'>{item.subTitle}</p>
                                         </div>
                                     </div>
                                 </Link>
@@ -63,9 +73,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                         </div>
                     </div>
                     <div className='col-span-3'>
-                        <div className=''>
                             {children}
-                        </div>
                     </div>
                 </div>
             </div>

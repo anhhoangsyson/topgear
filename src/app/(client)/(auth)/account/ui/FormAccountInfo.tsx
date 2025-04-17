@@ -57,7 +57,6 @@ export default function FormAccountInfo() {
         try {
             console.log('data', data);
 
-
             // toast({
             //     title: "Uh oh! Something went wrong.",
             //     description: "There was a problem with your request.",
@@ -83,42 +82,43 @@ export default function FormAccountInfo() {
 
             {/* Full Name */}
             <div className="mb-4">
-                <label className="block mb-2 text-sm font-semibold">Họ tên</label>
+                <label className="block mb-2 text-[13px] font-semibold">Họ tên</label>
                 <input
                     type="text"
                     {...register("fullname")}
-                    className="w-full p-2 border rounded bg-[#e8f0fe] border-none outline-none"
+                    className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500"
                 />
                 {errors.fullname && <p className="text-red-500">{errors.fullname.message}</p>}
             </div>
 
             {/* Email */}
             <div className="mb-4">
-                <label className="block mb-2 text-sm font-semibold">Email</label>
-                <input type="email" {...register("email")} className="w-full p-2 border rounded bg-[#e8f0fe] border-none outline-none" />
+                <label className="block mb-2 text-[13px] font-semibold">Email</label>
+                <input type="email" {...register("email")} className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500" />
                 {errors.email && <p className="text-red-500">{errors.email.message}</p>}
             </div>
 
             {/* Phone */}
             <div className="mb-4">
-                <label className="block mb-2 text-sm font-semibold">Số điện thoại</label>
-                <input type="text" {...register("phone")} className="w-full p-2 border rounded bg-[#e8f0fe] border-none outline-none" />
+                <label className="block mb-2 text-[13px] font-semibold">Số điện thoại</label>
+                <input type="text" {...register("phone")} className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500"
+                    disabled />
                 {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
             </div>
 
             {/* Birdth */}
             <div className="mb-4">
-                <label className="block mb-2 text-sm font-semibold">Ngày sinh</label>
+                <label className="block mb-2 text-[13px] font-semibold">Ngày sinh</label>
                 <input type="date" {...register("birdth")}
-                    className="w-full p-2 border rounded bg-[#e8f0fe] border-none outline-none"
+                    className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500"
                     disabled />
                 {errors.address && <p className="text-red-500">{errors.address.message}</p>}
             </div>
 
             {/* Sex */}
             <div className="mb-4">
-                <label className="block mb-2 text-sm font-semibold">Giới tính</label>
-                <select {...register("sex")} className="w-full p-2 border rounded bg-[#e8f0fe] border-none outline-none">
+                <label className="block mb-2 text-[13px] font-semibold">Giới tính</label>
+                <select {...register("sex")} className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500">
                     {Object.entries(SEX_LABELS).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
                     ))}

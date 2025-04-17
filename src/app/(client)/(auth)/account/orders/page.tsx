@@ -30,6 +30,6 @@ export default async function MyOrders() {
     console.log(myOrders);
     
     return (
-    <OrdersList orderList={myOrders.data}/>
+    <OrdersList initialOrderList={myOrders.data}/>
     )
 }
