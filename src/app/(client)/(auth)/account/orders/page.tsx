@@ -1,5 +1,6 @@
 import OrdersList from '@/app/(client)/(auth)/account/ui/Order'
 import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
 import React from 'react'
 
 export async function getMyOrders() {
@@ -7,7 +8,10 @@ export async function getMyOrders() {
     const accessToken = cookieStore.get('accessToken')?.value
 
     if (!accessToken) {
-        throw new Error('No access token found')
+        return NextResponse.json(
+            { error: "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại." },
+            { status: 401 }
+        );
     }
 
     const res = await fetch(`https://top-gear-be.vercel.app/api/v1/order/my`, {
@@ -20,16 +24,24 @@ export async function getMyOrders() {
     })
 
     if (!res.ok) {
-        throw new Error('Failed to fetch orders')
+        if (res.status === 401) {
+            return NextResponse.json(
+                { error: "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại." },
+                { status: 401 }
+            );
+        }
+        return NextResponse.json(
+            { error: "Không thể tải danh sách đơn hàng." },
+            { status: res.status }
+        );
     }
     return res.json()
 }
 
 export default async function MyOrders() {
     const myOrders = await getMyOrders()
-    console.log(myOrders);
-    
+
     return (
-    <OrdersList initialOrderList={myOrders.data}/>
+        <OrdersList initialOrderList={myOrders.data} />
     )
 }

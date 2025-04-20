@@ -15,8 +15,9 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === 'production', // Chỉ dùng secure trong production
       path: '/',
       maxAge: 36000, // Hết hạn sau 1 giờ
+      sameSite: 'lax'
     });
-
+    
     return response;
   } catch (error) {
     console.error('Error setting token:', error);

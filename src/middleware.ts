@@ -43,6 +43,7 @@ export const config = {
             '/account',
             '/admin/:path*',
             '/checkout/:path*',
+            '/account/:path*',
         ]
 }
 

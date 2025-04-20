@@ -109,7 +109,7 @@ const Cart = () => {
                         </div>
                     </div>
                 ))}
-            </div>
+            </div>  
             {/* right column */}
             <div className="col-span-3 rounded">
                 <div className='flex justify-between items-center bg-white p-4 rounded border border-gray-300'>

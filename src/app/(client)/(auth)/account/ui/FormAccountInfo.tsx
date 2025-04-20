@@ -7,25 +7,27 @@ import { useForm } from "react-hook-form";
 import { toast, useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/Button";
 import { IUser, UserType, UserValidationSchema } from "@/schemaValidations/user.schema";
+import { formatDate } from "@/lib/utils";
 
-export default function FormAccountInfo() {
+export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [isFormChanged, setIsFormChanged] = useState(false);
 
     // default value
     const defaultValues: UserType = {
-        id: "1",
-        fullname: "John Doe",
-        username: "johndoe",
-        email: "john.doe@example.com",
-        phone: "123456789",
-        address: "123 Main St",
-        sex: SEXENUM.enum.male,
-        avatar: "",
-        birdth: "2025-02-23",
+        id: userInfo.id,
+        fullname: userInfo.fullname,
+        username: userInfo.username,
+        email: userInfo.email,
+        phone: "0"+(userInfo.phone),
+        address: userInfo.address,
+        sex: 'female',
+        avatar: userInfo.avatar ,
+        birdth: userInfo.birdth,
         role: "user",
     };
+
 
     // ✅ Config React Hook Form with Zod Resolver
     const {
@@ -55,6 +57,8 @@ export default function FormAccountInfo() {
         setErrorMessage("");
 
         try {
+            console.log('cc');
+            
             console.log('data', data);
 
             // toast({
@@ -82,43 +86,43 @@ export default function FormAccountInfo() {
 
             {/* Full Name */}
             <div className="mb-4">
-                <label className="block mb-2 text-[13px] font-semibold">Họ tên</label>
+                <label className="block mb-2 text-[14px] font-semibold">Họ tên</label>
                 <input
                     type="text"
                     {...register("fullname")}
-                    className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500"
+                    className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
                 />
                 {errors.fullname && <p className="text-red-500">{errors.fullname.message}</p>}
             </div>
 
             {/* Email */}
             <div className="mb-4">
-                <label className="block mb-2 text-[13px] font-semibold">Email</label>
-                <input type="email" {...register("email")} className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500" />
+                <label className="block mb-2 text-[14px] font-semibold">Email</label>
+                <input type="email" {...register("email")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500" />
                 {errors.email && <p className="text-red-500">{errors.email.message}</p>}
             </div>
 
             {/* Phone */}
             <div className="mb-4">
-                <label className="block mb-2 text-[13px] font-semibold">Số điện thoại</label>
-                <input type="text" {...register("phone")} className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500"
+                <label className="block mb-2 text-[14px] font-semibold">Số điện thoại</label>
+                <input type="text" {...register("phone")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
                     disabled />
                 {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
             </div>
 
             {/* Birdth */}
             <div className="mb-4">
-                <label className="block mb-2 text-[13px] font-semibold">Ngày sinh</label>
+                <label className="block mb-2 text-[14px] font-semibold">Ngày sinh</label>
                 <input type="date" {...register("birdth")}
-                    className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500"
+                    className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
                     disabled />
                 {errors.address && <p className="text-red-500">{errors.address.message}</p>}
             </div>
 
             {/* Sex */}
             <div className="mb-4">
-                <label className="block mb-2 text-[13px] font-semibold">Giới tính</label>
-                <select {...register("sex")} className="w-full p-2 rounded bg-[#F6F6F6]  focus:outline-blue-500">
+                <label className="block mb-2 text-[14px] font-semibold">Giới tính</label>
+                <select {...register("sex")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500">
                     {Object.entries(SEX_LABELS).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
                     ))}
