@@ -71,10 +71,10 @@ export default function LoginForm() {
           // khong luu o localStorage vi co the bi xoa
 
           // save sessionToken in cookie
-          document.cookie = `accessToken=${result.data.token}; path=/; max-age=36000; secure; samesite=strict`;
+          // document.cookie = `accessToken=${result.data.token}; path=/; max-age=36000; secure; samesite=strict`;
 
           // luu ca token o trong next server
-          await fetch('/api/auth/',{
+          const authRes = await fetch('/api/auth/', {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -83,7 +83,9 @@ export default function LoginForm() {
               accessToken: result.data.token,
             }),
           })
-
+          const authData = await authRes.json()
+          console.log('authData', authData);
+          
           // naviate /
           router.push("/");
         } else {
