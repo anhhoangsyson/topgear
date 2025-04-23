@@ -6,7 +6,6 @@ import LeftSideDetailProduct from "./components/LeftSideDetailProduct";
 import { ListRelatedProduct } from "./components/ListRelatedProduct";
 
 const DetailProductPage = ({ data }: { data: ProductVariantDetail }) => {
-  console.log('cc',data._id);
 
   return (
     <Wraper className="mt-8">

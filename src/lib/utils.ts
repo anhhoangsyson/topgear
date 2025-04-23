@@ -47,3 +47,9 @@ export function formatOrderStatus(status: string): string {
       return 'Không xác định'
   }
 }
+
+export function formartLocation(pro: string, dis: string, ward: string, str: string) {
+  const location = `${str}, ${ward}, ${dis}, ${pro}`
+  return location
+
+}

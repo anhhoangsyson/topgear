@@ -130,10 +130,11 @@ const FlashSale: CartFlashSale[] = [
 import FlashSaleProductCard from "@/components/ui/FlashSaleProductCard";
 import ProductCategoryShowcase from "@/components/section/ProductCategoryShowcase";
 import ProductCarousel from "@/components/section/ProductCarousel";
+import Panigation from "@/components/common/Panigation";
 
 // func to fetch data from next server
-async function fetchProductVariants() {
-  const res = await fetch('https://top-gear-be.vercel.app/api/v1/pvariants', {
+async function fetchProductVariants(page = 1, limit = 10) {
+  const res = await fetch(`https://top-gear-be.vercel.app/api/v1/pvariants?page=1&limit=10?page=${page}&limit=${limit}`, {
     cache: 'no-store',
   })
 
@@ -146,11 +147,14 @@ async function fetchProductVariants() {
   return data
 }
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: { page?: string } }) {
+
+  const page = parseInt(searchParams.page as string) || 1
+  const limit = 10
+  const productVariants = await fetchProductVariants(page, limit)
+  const totalPages = Math.ceil(productVariants.total / limit)
 
   // call fetchProductVariants() above
-
-  const productVariants = await fetchProductVariants()
   return (
     <>
       <div className="bg-[#F2F4F7]">
@@ -192,18 +196,7 @@ export default async function Home() {
               </div>
 
               {/* Pagination */}
-              <div className="flex justify-center gap-x-2">
-                {[1, 2].map((page, index) => (
-                  <Link
-                    key={`tv-page-${page}`}
-                    className={`flex justify-center px-4 py-2 flex-wrap gap-x-2 ${index === 0 ? "bg-blue-500" : "bg-gray-300"
-                      } rounded-full`}
-                    href={"/"}
-                  >
-                    {page}
-                  </Link>
-                ))}
-              </div>
+              <Panigation totalPages={totalPages} page={page} />
             </div>
           </div>
 

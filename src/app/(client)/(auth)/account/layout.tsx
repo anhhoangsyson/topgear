@@ -18,22 +18,22 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
     const menuAccount = [
         {
             icon: <FaRegUserCircle className='w-4 h-auto' />,
-            subTitle: 'Thông tin tài khoản',
+            subTitle: 'Thông tin',
             label: 'info'
         },
         {
             icon: <MdOutlineLocalShipping className='w-4 h-auto' />,
-            subTitle: 'Đơn hàng của tôi',
+            subTitle: 'Đơn hàng',
             label: 'orders'
         },
         {
             icon: <CiMap className='w-4 h-auto' />,
-            subTitle: 'Địa chỉ của tôi',
+            subTitle: 'Địa chỉ',
             label: 'address'
         },
         {
             icon: <IoIosNotificationsOutline className='w-4 h-auto' />,
-            subTitle: 'Thông báo của tôi',
+            subTitle: 'Thông báo',
             label: 'notification'
         }
     ]

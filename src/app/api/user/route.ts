@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const API_URL = 'https://top-gear-be.vercel.app/api/v1';
 
-async function callApi(endpoint: string, method: string, accessToken?: string, body?: any) {
+export async function callApi(endpoint: string, method: string, accessToken?: string, body?: any) {
     const headers: HeadersInit = {
         Accept: 'application/json',
     }

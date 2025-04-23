@@ -1,5 +1,8 @@
+import Loading from "@/app/(client)/products/[id]/Loading";
 import DetailProductPage from "@/components/productDetail";
 import { ProductVariantDetail } from "@/types";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 async function fetchProductVariant(id: string) {
   const res = await fetch(
@@ -10,7 +13,7 @@ async function fetchProductVariant(id: string) {
         "Content-Type": "application/json",
       },
       next: {
-        revalidate: 60, // cache lại 60s
+        revalidate: 3600, // cache lại 3600s = 1h
       },
     }
   );
@@ -23,13 +26,62 @@ async function fetchProductVariant(id: string) {
   return productVariant[0];
 }
 
+export async function generateMetadata({
+  params
+}: {
+  params: { id: string }
+}) {
+  try {
+    const productVariant: ProductVariantDetail = await fetchProductVariant(params.id);
+    return {
+      title: `${productVariant.variantName} - Top Gear`,
+      description: productVariant.variantName ||
+        `Khám phá ${productVariant.variantName} tại Top Gear với giá ưu đãi.`,
+      openGraph: {
+        title: `${productVariant.variantName} - Top Gear`,
+        description: productVariant.variantName,
+        url: `https://top-gear.vercel.app/products/${params.id}`,
+        images: [
+          {
+            url: productVariant.images[0].imageUrl,
+            width: 800,
+            height: 600,
+          },
+        ],
+      },
+      robots: 'index, follow',
+      alternates: {
+        canonical: `https://top-gear.vercel.app/products/${params.id}`,
+      },
+
+    }
+
+  } catch (error) {
+    return {
+      title: "Sản phẩm không tồn tại",
+    }
+  }
+}
+
 export default async function DetailProducts({
   params,
 }: {
   params: { id: string };
 }) {
-  const productVariant: ProductVariantDetail = await fetchProductVariant(
-    params.id
-  );
-  return <DetailProductPage data={productVariant} />;
+  try {
+    const productVariant: ProductVariantDetail = await fetchProductVariant(params.id);
+    if (!productVariant) {
+      return notFound();
+    }
+    return (
+      <Suspense fallback={<Loading />}  >
+        <DetailProductPage data={productVariant} />;
+      </Suspense>
+    )
+  } catch (error) {
+    console.log('error', error);
+
+    notFound();
+  }
+
 }

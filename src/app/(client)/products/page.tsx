@@ -1,11 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { notFound } from 'next/navigation';
 
 import img1 from "../../../../public/1607431213-guide-to-finding-out-phone-name.avif";
 import Wraper from "@/components/core/Wraper";
 import { Button } from "@/components/ui/Button";
 import ProductCard from "@/components/home/ProductCard";
+import Panigation from "@/components/common/Panigation";
 
 const categories: any[] = [
   { id: "0", name: "Tất cả" },
@@ -131,8 +133,8 @@ const products: Product[] = [
   },
 ];
 // call api to get prodduct
-async function fetchProductVariants() {
-  const res = await fetch('https://top-gear-be.vercel.app/api/v1/pvariants', {
+async function fetchProductVariants(page = 1, limit = 10) {
+  const res = await fetch(`https://top-gear-be.vercel.app/api/v1/pvariants?page=${page}&limit${limit}`, {
     cache: 'no-store',
   })
 
@@ -146,10 +148,12 @@ async function fetchProductVariants() {
 }
 
 
-export default async function ProductsPage() {
+export default async function ProductsPage({ searchParams }: { searchParams: { page?: string } }) {
 
-  const productVariants = await fetchProductVariants()
-  
+  const page = parseInt(searchParams.page as string) || 1
+  const limit = 10
+  const productVariants = await fetchProductVariants(page, limit)
+  const totalPages = Math.ceil(productVariants.total / limit)
   return (
 
     <>
@@ -215,14 +219,16 @@ export default async function ProductsPage() {
           </div>
         </div>
         {/* products */}
-                     <div
-                     className="grid grid-cols-4 gap-y-4 my-9"
-                     >
-                       {productVariants.data.map((variant: any, index:any) => (
-                         <ProductCard key={`product-variant-${index}`} product={variant} />
-                       ))
-                       }
-                     </div>
+        <div
+          className="grid grid-cols-5 gap-y-4 my-9"
+        >
+          {productVariants.data.map((variant: any, index: any) => (
+            <ProductCard key={`product-variant-${index}`} product={variant} />
+          ))
+          }
+        </div>
+
+       <Panigation totalPages={totalPages} page={page} />
       </div>
     </>
   );
