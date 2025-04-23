@@ -45,7 +45,7 @@ const CardDetailProduct = ({ data }: { data: ProductVariantDetail }) => {
       variantName: data.variantName,
       variantPrice: data.variantPrice,
       variantPriceSale: data.variantPriceSale,
-      variantStock: data.variantStock, 
+      variantStock: data.variantStock,
       quantity: 1,
       image: data.images[0].imageUrl,
     };
@@ -62,13 +62,14 @@ const CardDetailProduct = ({ data }: { data: ProductVariantDetail }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Product Images Section */}
         <div className="space-y-4">
-          <div className="min-h-72 rounded-xl p-8 flex items-center justify-center">
+          <div className="h-72 rounded-xl p-8 flex items-center justify-center cursor-pointer">
             <Image
+              onClick={() => window.open(thumbnail, '_blank')}
               src={thumbnail}
               width={300}
               height={300}
               alt="Mac Mini M4"
-              className="size-full object-cover"
+              className="max-h-full max-w-full object-contain hover:cusor-pointer hover:scale-125 transition-transform duration-300 ease-in-out"
             />
           </div>
           <div className="flex space-x-4">

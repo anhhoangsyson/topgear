@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
     // get sessionToken from cookies to handle authentication
     const accessToken = request.cookies.get('accessToken')?.value || null
-
+    
     if (authPaths.some(path => pathname.startsWith(path) && accessToken)) {
         return NextResponse.redirect(new URL('/account', request.url))
     }
@@ -40,7 +40,6 @@ export const config = {
         [
             '/login',
             '/register',
-            '/account',
             '/admin/:path*',
             '/checkout/:path*',
             '/account/:path*',

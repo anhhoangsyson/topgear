@@ -9,12 +9,9 @@ const Skeleton = () => {
     return (
         <div>
             <div
-                className='flex gap-x-4 items-baseline'>
-                <div className='w-24 h-124 bg-gray-300 animate-pulse'>
-
-                </div>
-                <p className='w-4 h-full bg-gray-300 animate-pulse rounded'>
-                </p>
+                className='flex gap-x-4 items-center animate-pulse justify-between p-4 mb-4 bg-white rounded'>
+                <div className='w-24 h-24 bg-gray-300 animate-pulse'></div>
+                <p className='w-full h-4 bg-gray-300 animate-pulse rounded mt-2'></p>
             </div>
         </div>
     )

@@ -5,7 +5,6 @@ export default function AccountInfo() {
   return (
     <div className='flex gap-x-4'>
       <div className='bg-white rounded w-4/5'>
-        <FormAccountInfo />
       </div>
       <div className='p-4 w-1/5 2xl:min-w-[227px] bg-white rounded'>
         <p className='text-xl font-bold'>Địa chỉ mặc định</p>
