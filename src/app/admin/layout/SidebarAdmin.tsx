@@ -44,21 +44,28 @@ const navItems: NavItem[] = [
   },
 
   {
-    name: "Forms",
+    name: "Danh mục",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    subItems: [
+      { name: "Danh sách danh mục", path: "/admin/categories", pro: false },
+      { name: "Thêm danh mục", path: "/admin/categories/add", pro: false },
+    ],
   },
   {
-    name: "Tables",
+    name: "Sản phẩm",
     icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+    subItems: [
+      { name: "Danh sách sản phẩm", path: "/admin/products", pro: false },
+      { name: "Thêm sản phẩm", path: "/admin/products/add", pro: false },
+      { name: "Quản lý biến thể", path: "/admin/products/add", pro: false },
+    ],
   },
   {
-    name: "Pages",
+    name: "Thuộc tính",
     icon: <PageIcon />,
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "Danh sách thuộc tính", path: "/admin/attributes", pro: false },
+      { name: "Thêm thuộc tính", path: "/admin/attributes/add", pro: false },
     ],
   },
 ];
@@ -108,22 +115,19 @@ const SidebarAdmin: React.FC = () => {
           {nav.subItems ? (
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
-              className={`relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm group  ${
-                openSubmenu?.type === menuType && openSubmenu?.index === index
+              className={`relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm group text-nowrap  ${openSubmenu?.type === menuType && openSubmenu?.index === index
                   ? "bg-blue-50 text-blue-500 dark:bg-blue-500/[0.12] dark:text-blue-400"
                   : "text-gray-700 hover:bg-gray-100 group-hover:text-gray-700 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300"
-              } cursor-pointer ${
-                !isExpanded && !isHovered
+                } cursor-pointer ${!isExpanded && !isHovered
                   ? "lg:justify-center"
                   : "lg:justify-start"
-              }`}
+                }`}
             >
               <span
-                className={` ${
-                  openSubmenu?.type === menuType && openSubmenu?.index === index
+                className={`text-nowrap  ${openSubmenu?.type === menuType && openSubmenu?.index === index
                     ? "text-blue-500 dark:text-blue-400"
                     : "text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300"
-                }`}
+                  }`}
               >
                 {nav.icon}
               </span>
@@ -132,12 +136,11 @@ const SidebarAdmin: React.FC = () => {
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
-                  className={`ml-auto w-5 h-5 transition-transform duration-200  ${
-                    openSubmenu?.type === menuType &&
-                    openSubmenu?.index === index
+                  className={`ml-auto w-5 h-5 transition-transform duration-200  ${openSubmenu?.type === menuType &&
+                      openSubmenu?.index === index
                       ? "rotate-180 text-blue-500"
                       : ""
-                  }`}
+                    }`}
                 />
               )}
             </button>
@@ -145,18 +148,16 @@ const SidebarAdmin: React.FC = () => {
             nav.path && (
               <Link
                 href={nav.path}
-                className={`relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm group ${
-                  isActive(nav.path)
+                className={`relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm group ${isActive(nav.path)
                     ? "bg-blue-50 text-blue-500 dark:bg-blue-500/[0.12] dark:text-blue-400"
                     : "text-gray-700 hover:bg-gray-100 group-hover:text-gray-700 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                }`}
+                  }`}
               >
                 <span
-                  className={`${
-                    isActive(nav.path)
+                  className={`${isActive(nav.path)
                       ? "text-blue-500 dark:text-blue-400"
                       : "text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300"
-                  }`}
+                    }`}
                 >
                   {nav.icon}
                 </span>
@@ -188,32 +189,29 @@ const SidebarAdmin: React.FC = () => {
                   <li key={subItem.name}>
                     <Link
                       href={subItem.path}
-                      className={`relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-theme-sm font-medium ${
-                        isActive(subItem.path)
+                      className={`relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-theme-sm font-medium ${isActive(subItem.path)
                           ? "bg-blue-50 text-blue-500 dark:bg-blue-500/[0.12] dark:text-blue-400"
                           : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
-                      }`}
+                        }`}
                     >
                       {subItem.name}
                       <span className="flex items-center gap-1 ml-auto">
                         {subItem.new && (
                           <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
+                            className={`ml-auto ${isActive(subItem.path)
                                 ? "bg-blue-100 dark:bg-blue-500/20"
                                 : "bg-blue-50 group-hover:bg-blue-100 dark:bg-blue-500/15 dark:group-hover:bg-blue-500/20"
-                            } block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase text-blue-500 dark:text-blue-400 `}
+                              } block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase text-blue-500 dark:text-blue-400 `}
                           >
                             new
                           </span>
                         )}
                         {subItem.pro && (
                           <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
+                            className={`ml-auto ${isActive(subItem.path)
                                 ? "bg-blue-100 dark:bg-blue-500/20"
                                 : "bg-blue-50 group-hover:bg-blue-100 dark:bg-blue-500/15 dark:group-hover:bg-blue-500/20"
-                            } block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase text-blue-500 dark:text-blue-400 `}
+                              } block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase text-blue-500 dark:text-blue-400 `}
                           >
                             pro
                           </span>
@@ -297,10 +295,9 @@ const SidebarAdmin: React.FC = () => {
   return (
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
-        ${
-          isExpanded || isMobileOpen
-            ? "w-[290px]"
-            : isHovered
+        ${isExpanded || isMobileOpen
+          ? "w-[290px]"
+          : isHovered
             ? "w-[290px]"
             : "w-[90px]"
         }
@@ -310,9 +307,8 @@ const SidebarAdmin: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex  ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-        }`}
+        className={`py-8 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+          }`}
       >
         <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
@@ -347,11 +343,10 @@ const SidebarAdmin: React.FC = () => {
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"
-                }`}
+                  }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Menu"
@@ -364,11 +359,10 @@ const SidebarAdmin: React.FC = () => {
 
             <div className="">
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"
-                }`}
+                  }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Others"

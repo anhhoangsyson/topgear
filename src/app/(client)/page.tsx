@@ -149,7 +149,7 @@ async function fetchProductVariants(page = 1, limit = 10) {
 
 export default async function Home({ searchParams }: { searchParams: { page?: string } }) {
 
-  const page = parseInt(searchParams.page as string) || 1
+  const page =  parseInt( await searchParams.page as string) || 1
   const limit = 10
   const productVariants = await fetchProductVariants(page, limit)
   const totalPages = Math.ceil(productVariants.total / limit)

@@ -6,13 +6,14 @@ const protectedPaths = ['/account', '/checkout']
 const adminPaths = '/admin'
 
 // This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     // get path from request
     const { pathname } = request.nextUrl
 
     // get sessionToken from cookies to handle authentication
     const accessToken = request.cookies.get('accessToken')?.value || null
-    
+
+
     if (authPaths.some(path => pathname.startsWith(path) && accessToken)) {
         return NextResponse.redirect(new URL('/account', request.url))
     }
@@ -24,6 +25,34 @@ export function middleware(request: NextRequest) {
             return NextResponse.redirect(redirectUrl)
         }
         return NextResponse.redirect(new URL('/login', request.url))
+    }
+
+    // check if user is admin
+    if (pathname.startsWith('/admin') && accessToken) {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`,{
+                method: 'GET',
+                headers:{
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                }
+            })
+
+            if (!res.ok){
+                console.log('error',res.json());
+                return NextResponse.redirect(new URL('/login', request.url))
+            }
+            const user = await res.json()
+            
+            if(user.data.role !== 'admin'){
+                return NextResponse.redirect(new URL('/', request.url))
+            }
+
+        } catch (error) {
+            console.error('Error parsing access token:', error)
+            return NextResponse.redirect(new URL('/login', request.url))
+            
+        }
     }
 
     if (pathname.startsWith(adminPaths) && !accessToken) {

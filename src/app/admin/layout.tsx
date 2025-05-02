@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Header */}
           <AdminHeader />
           {/* Page Content */}
-          <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">{children}</div>
+          <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 bg-white">{children}</div>
         </div>
       </div>
     </ThemeProvider>
