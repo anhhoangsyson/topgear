@@ -135,7 +135,14 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
 
   useEffect(() => {
     const getCustomerInfo = async () => {
-      const accessToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+      const res = await fetch(`/api/user/get-access-token`,{method: 'GET'});
+      const { accessToken } = await res.json();
+      if (!accessToken) {
+        console.error('Không tìm thấy access token');
+        return;
+      }
+      console.log('Access token:', accessToken);
+      
       const [userRes, locationsRes] = await Promise.all([
         fetch('https://top-gear-be.vercel.app/api/v1/auth/me', {
           method: 'GET',

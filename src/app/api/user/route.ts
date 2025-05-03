@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const API_URL = 'https://top-gear-be.vercel.app/api/v1';

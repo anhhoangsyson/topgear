@@ -49,9 +49,14 @@ export default function AttributeForm({
     },
   })
 
+  console.log('attributes',attributes);
+  console.log('variants',variants);
+  
   useEffect(() => {
     // Tự động chọn biến thể đầu tiên nếu có
     if (variants.length > 0 && !selectedVariant) {
+      console.log('variants',variants);
+      
       setSelectedVariant(variants[0]._id || "")
     }
   }, [variants, selectedVariant])
@@ -70,6 +75,8 @@ export default function AttributeForm({
         const result = await getAttributesByCategory(categoryId)
 
         if (result.success && result.data) {
+          console.log('result.data',result.data);
+          
           setAttributeList(result.data)
         } else {
           console.error("Lỗi khi lấy thuộc tính:", result.error)
@@ -105,7 +112,7 @@ export default function AttributeForm({
       </div>
     )
   }
-
+  
   return (
     <div className="space-y-6">
       <Tabs value={selectedVariant} onValueChange={setSelectedVariant} className="w-full">

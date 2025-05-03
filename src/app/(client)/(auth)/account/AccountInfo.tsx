@@ -1,4 +1,3 @@
-import FormAccountInfo from '@/app/(client)/(auth)/account/ui/FormAccountInfo'
 import React from 'react'
 
 export default function AccountInfo() {

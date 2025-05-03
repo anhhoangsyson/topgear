@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     // Connect to MongoDB
     const { db } = await connectToDatabase()

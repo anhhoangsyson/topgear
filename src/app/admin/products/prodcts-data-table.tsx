@@ -36,13 +36,11 @@ import Link from "next/link";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchBy: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  searchBy
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -72,11 +70,18 @@ export function DataTable<TData, TValue>({
     <div className="w-full">
       <div className="flex items-center py-4 gap-x-4">
 
+        <Button variant="link" size="sm">
+          <Link
+            href={'/admin/products/add'}>
+            Thêm sản phẩm
+          </Link>
+        </Button>
+
         <Input
-          placeholder={`Tìm kiếm theo ${searchBy}...`}
-          value={(table.getColumn(searchBy)?.getFilterValue() as string) ?? ""}
+          placeholder="Tìm kiếm theo tên sản phẩm..."
+          value={(table.getColumn("attributeName")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn(searchBy)?.setFilterValue(event.target.value)
+            table.getColumn("attributeName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
