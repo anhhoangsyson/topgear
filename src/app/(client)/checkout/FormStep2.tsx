@@ -5,9 +5,9 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import useCartStore from "@/store/cartStore";
-import { Toast } from "@radix-ui/react-toast";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 
 type PaymentMethod = 'cash' | 'zalopay';
 
@@ -32,9 +32,18 @@ interface Step2Props {
   onBack: () => void; // Callback function to go back to Step 1
 }
 
+const getAccessToken = async () => {
+  const res = await fetch('api/user/get-access-token', { method: 'GET' })
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch access token')
+  }
+
+  return await res.json()
+}
 export default function Step2({ customerInfo, selectedItems, onBack }: Step2Props) {
   const router = useRouter()
- 
+
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>(''); // Lưu phương thức thanh toán
   const [voucherCode, setVoucherCode] = useState<string | null>(null); // Lưu mã giảm giá
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false); // Điều khiển modal
@@ -42,6 +51,7 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
   const totalPrice = selectedItems.reduce((acc, item) => acc + (item.variantPriceSale * item.quantity), 0);
   const totalPriceFormatted = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
   const totalQuantity = selectedItems.reduce((acc, item) => acc + item.quantity, 0);
+  const [isLoading, setIsLoading] = useState(false)
 
   const handlePayment = async () => {
     if (!paymentMethod) {
@@ -75,7 +85,8 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
     };
 
     try {
-      const accessToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+      const { accessToken } = await getAccessToken()
+      setIsLoading(true)
       const response = await fetch('https://top-gear-be.vercel.app/api/v1/order', {
         method: 'POST',
         headers: {
@@ -103,7 +114,7 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
             variant: 'default',
           })
           router.push(`/checkout/success/${orderId}`)
-          
+
         }
       }
       else {
@@ -118,6 +129,9 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
     } catch (error) {
       console.error('Error submitting order:', error);
     }
+    finally{
+      setIsLoading(false)
+    }
   };
 
   const handleSelectPaymentMethod = (method: PaymentMethod) => {
@@ -126,6 +140,13 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
   };
 
   return (
+    <div className="relative h-screen">
+    {/* Hiển thị lớp overlay khi isLoading = true */}
+    {isLoading && (
+      <div className="fixed w-screen h-screen inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-60">
+        <LoaderCircle className="animate-spin text-blue-500 w-12 h-12" />
+      </div>
+    )}
     <div className='h-screen'>
       {/* Giá */}
       <div className='w-full p-4 bg-white rounded'>
@@ -273,6 +294,7 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
           Thanh toán
         </Button>
       </div>
+    </div>
     </div>
   );
 }

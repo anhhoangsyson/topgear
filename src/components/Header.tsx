@@ -70,7 +70,7 @@ export default function Header() {
     <div className={`fixed top-0 left-0 w-full flex align-center bg-[#0E1746] text-white justify-between py-4 px-24 shadow-lg transition-transform duration-300 z-50
     ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
       {/* logo */}
-      <div className="flex items-center">
+      <div className="flex items-centrater">
         <Link href={"/"}>
           <Image
             src="/logo.png"

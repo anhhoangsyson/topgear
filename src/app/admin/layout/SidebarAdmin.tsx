@@ -16,7 +16,6 @@ import {
   TableIcon,
   UserCircleIcon,
 } from "@/app/admin/icons/index";
-// import SidebarWidget from "./SidebarWidget";
 import { useSidebar } from "@/context/admin/SidebarContext";
 
 type NavItem = {
@@ -115,7 +114,7 @@ const SidebarAdmin: React.FC = () => {
           {nav.subItems ? (
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
-              className={`relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm group text-nowrap  ${openSubmenu?.type === menuType && openSubmenu?.index === index
+              className={`relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm group text-nowrap transition delay-150 duration-300 ease-in-out ${openSubmenu?.type === menuType && openSubmenu?.index === index
                   ? "bg-blue-50 text-blue-500 dark:bg-blue-500/[0.12] dark:text-blue-400"
                   : "text-gray-700 hover:bg-gray-100 group-hover:text-gray-700 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300"
                 } cursor-pointer ${!isExpanded && !isHovered
@@ -307,7 +306,7 @@ const SidebarAdmin: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+        className={`py-4 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
           }`}
       >
         <Link href="/">
@@ -315,22 +314,22 @@ const SidebarAdmin: React.FC = () => {
             <>
               <Image
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/Logo.png"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={80}
+                height={80}
               />
               <Image
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="/Logo.png"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={80}
+                height={80}
               />
             </>
           ) : (
             <Image
-              src="/images/logo/logo-icon.svg"
+              src="/Logo.png"
               alt="Logo"
               width={32}
               height={32}

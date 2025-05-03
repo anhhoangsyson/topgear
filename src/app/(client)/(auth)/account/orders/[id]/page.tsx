@@ -9,8 +9,6 @@ import ListOrderDetails from '@/app/(client)/(auth)/account/orders/[id]/ListOrde
 
 import { formatDate, formatOrderStatus, formatPrice } from '../../../../../../lib/utils';
 
-export const dynamic = 'force-dynamic'
-// dynmic to fix error 
 
 export async function getMyOrder(id: string) {
 
@@ -42,7 +40,7 @@ export async function getMyOrder(id: string) {
 }
 
 export default async function page({ params }: { params: { id: string }; }) {
-    const id = params.id;
+    const id =  params.id;
     const myOrder = await getMyOrder(id)
     if (!myOrder.data){
         return (

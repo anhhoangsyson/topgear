@@ -1,7 +1,5 @@
 import { columns, AttributeRes } from "@/app/admin/attributes/columns";
 import { DataTable } from "@/app/admin/attributes/data-table";
-import WrapModal from "@/components/common/WrapModal";
-import { Button } from "@/components/ui/Button";
 import React from "react";
 
 type Category = {
@@ -15,8 +13,6 @@ async function fetchAttributes(): Promise<AttributeRes[]> {
     headers: {
       "Content-Type": "application/json",
     },
-    cache: "force-cache",
-    next: { revalidate: 3600 },
   });
 
   if (!res.ok) {
@@ -24,7 +20,6 @@ async function fetchAttributes(): Promise<AttributeRes[]> {
   }
 
   const { data } = await res.json();
-
 
   const categoryRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/categories/parent`, {
     method: "GET",
@@ -66,7 +61,11 @@ export default async function AttributesPage() {
     return (
       <div className="container mx-auto py-10">
 
-        <DataTable columns={columns} data={data} />
+        <DataTable
+          columns={columns}
+          data={data}
+          searchBy={"attributeName"} // Set default searchBy to attributeName if data is not empty
+        />
 
       </div>
     );

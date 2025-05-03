@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { connectToDatabase } from "@/lib/mongodb"
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     // Connect to MongoDB
     const { db } = await connectToDatabase()

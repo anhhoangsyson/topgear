@@ -46,10 +46,12 @@ export async function getCategories(): Promise<ApiResponse<any[]>> {
 }
 
 // API để lấy danh sách thuộc tính theo danh mục
-export async function getAttributesByCategory(categoryId: string): Promise<ApiResponse<any[]>> {
+export async function getAttributesByCategory(productId: string): Promise<ApiResponse<any[]>> {
   try {
-    // const response = await fetch(`${API_BASE_URL}/attributes?categoryId=${categoryId}`)
-    const response = await fetch(`${API_BASE_URL}/attribute`)
+    const productRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/products/${productId}`)
+    const productData = await productRes.json()
+    const categoryId = productData?.data?.categoriesId
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/attribute/getByCategoryId/${categoryId}`)
 
     return handleResponse(response)
   } catch (error) {

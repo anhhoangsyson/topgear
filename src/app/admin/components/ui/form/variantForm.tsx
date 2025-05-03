@@ -59,7 +59,7 @@ export default function VariantForm({
 
   const getFilterCategoriesList = async () => {
     // Call API to get product vua moi tao o step 1
-    const res = await fetch(`http://localhost:3000/api/v1/products/${productId}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/products/${productId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export default function VariantForm({
     // lay ra cateogriesId cua product vua moi tao o step 1
     const categoryId = data.data.categoriesId
     // goi api lay danh sach cateogires chld cua cateogriesId
-    const resFilterData = await fetch(`http://localhost:3000/api/v1/categories/parent/${categoryId}`, {
+    const resFilterData = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/categories/parent/${categoryId}`, {
       method: "GET"
     })
     const dataFilter = await resFilterData.json()
