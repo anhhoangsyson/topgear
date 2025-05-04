@@ -4,16 +4,29 @@ import FilterProduct from '@/components/FilterProduct';
 import ProductCard from '@/components/home/ProductCard';
 import React, { useEffect, useState } from 'react';
 
+interface IProductVariantDetailRes {
+  _id: string;
+  variantName: string,
+  variantStock: number,
+  variantPrice: number,
+  variantPriceSale: number,
+  images: [
+    {
+      imageUrl: string;
+    }
+  ]
+};
+
+
 export default function ProductByCategoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
 
-  const [productsData, setProductsData] = useState<any[]>([]);
-  const [filterData, setFilterData] = useState<any>([]);
+  const [productsData, setProductsData] = useState<IProductVariantDetailRes[]>([]);
+  // const [filterData, setFilterData] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   // Fetch initial data khi id thay đổi
   useEffect(() => {
-    console.log(id);
     if (!id) return;
 
     const fetchData = async () => {
@@ -27,11 +40,13 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
         setProductsData(products.data);
 
         // Lấy dữ liệu filter
-        const filtersResponse = await fetch(
-          `https://top-gear-be.vercel.app/api/v1/categories/categoriesByChildId/${id}`
-        );
-        const filters = await filtersResponse.json();
-        setFilterData(filters.data);
+        // const filtersResponse = await fetch(
+        // `https://top-gear-be.vercel.app/api/v1/categories/categoriesByChildId/${id}`
+        // );
+        // const filters = await filtersResponse.json();
+        // console.log(filters.data);
+
+        // setFilterData(filters.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -40,10 +55,10 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
     };
 
     fetchData();
-  }, [id]);
+  }, []);
 
   // Hàm xử lý filter và cập nhật lại sản phẩm
-  const handleFilter = async (filter: any) => {
+  const handleFilter = async (filter: Record<string, boolean>) => {
     setLoading(true);
     try {
       const filterKeys = Object.keys(filter);
@@ -72,7 +87,7 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
       ) : (
         <div className="grid grid-cols-4 gap-x-3 gap-y-8 my-9">
           {productsData && productsData.length > 0 ? (
-            productsData.map((variant, index) => (
+            productsData.map((variant: IProductVariantDetailRes, index) => (
               <ProductCard key={`product-variant-${index}`} product={variant} />
             ))
           ) : (

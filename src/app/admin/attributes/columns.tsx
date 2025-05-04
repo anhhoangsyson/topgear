@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import WrapModal from "@/components/common/WrapModal";
 import UpdateAttributeForm from "@/app/admin/attributes/UpdateAttributeForm";
-import { toast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
+import { log } from "node:console";
 
 export type AttributeRes = {
   _id: string;
@@ -70,6 +70,7 @@ export const columns: ColumnDef<AttributeRes>[] = [
 
       const handleEditClick = () => {
         setSelectedAttribute(attribute);
+        log("selectedAttribute", attribute);
         setIsModalOpen(true);
       }
       return (

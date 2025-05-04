@@ -1,7 +1,8 @@
+import { customerInfoRes } from '@/types'
 import React from 'react'
 import { CiLocationOn, CiPhone, CiStickyNote, CiUser } from 'react-icons/ci'
 
-export default function CustomerInfoOrder({ customerInfo, note }: { customerInfo: any, note: string }) {
+export default function CustomerInfoOrder({ customerInfo, note }: { customerInfo: customerInfoRes, note: string }) {
   
   return (
     <div className='mb-4 p-4 bg-white rounded'>

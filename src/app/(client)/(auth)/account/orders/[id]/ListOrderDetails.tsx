@@ -1,6 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/Button';
 import { formatPrice } from '@/lib/utils';
+import { IProductVariantRes, OrderDetail } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -17,9 +18,9 @@ const Skeleton = () => {
     )
 }
 
-export default function ListOrderDetails({ orderDetails }: { orderDetails: [any] }) {
-
-    const [productVariants, setProductVariants] = useState<any[]>([]);
+export default function ListOrderDetails({ orderDetails }: { orderDetails: [OrderDetail] }) {
+    
+    const [productVariants, setProductVariants] = useState<IProductVariantRes[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -52,7 +53,8 @@ export default function ListOrderDetails({ orderDetails }: { orderDetails: [any]
                 console.log('results[0]', typeof results[0], results[0]);
 
                 const validVariants = results.filter((variant) => variant !== null);
-
+                console.log('validVariants', validVariants);
+                
                 setProductVariants(validVariants);
             } catch (err) {
                 setError(err instanceof Error ? err.message : String(err));
@@ -72,7 +74,7 @@ export default function ListOrderDetails({ orderDetails }: { orderDetails: [any]
 
     return (
         <div>
-            {orderDetails.map((item: any, index: number) => (
+            {orderDetails.map((item: OrderDetail, index: number) => (
                 <div
                     key={index}
                     className='flex items-center justify-between p-4 mb-4 gap-x-4 bg-white rounded'>
