@@ -152,3 +152,31 @@ export interface ProductVariantDetail {
   _id: string
   // productId: string
 }
+
+export interface LocationRes {
+  _id: string;
+  province: string;
+  district: string;
+  ward: string;
+  street: string;
+  isDefault: boolean;
+}
+
+export interface customerInfoRes {
+  fullname: string;
+  phone: string;
+  address: string;
+}
+
+export interface OrderDetail{
+  _id: string;
+  productVariantId: string;
+  quantity: number;
+  price: number;
+  subTotal: number;
+}
+
+export interface IProductVariantRes extends IProductVariant {
+  images: IProductImage[];
+  variantName: string
+}

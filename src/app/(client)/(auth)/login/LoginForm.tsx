@@ -96,11 +96,11 @@ export default function LoginForm() {
         console.error("Phản hồi không phải JSON:", textResponse);
         throw new Error("Server trả về định dạng không mong đợi");
       }
-    } catch (error: any) {
-      setErrorMessage(error.message);
+    } catch (error) {
+      setErrorMessage(error as string);
       toast({
         title: "Lỗi",
-        description: error.message || "Đăng nhập thất bại",
+        description: error as string || "Đăng nhập thất bại",
         variant: "destructive",
       });
     } finally {

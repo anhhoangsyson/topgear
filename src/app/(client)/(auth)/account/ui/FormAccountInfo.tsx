@@ -1,13 +1,11 @@
 "use client";
-import { SEXENUM, SEX_LABELS } from "@/schemaValidations/auth.schema";
+import {  SEX_LABELS } from "@/schemaValidations/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { toast, useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/Button";
 import { IUser, UserType, UserValidationSchema } from "@/schemaValidations/user.schema";
-import { formatDate } from "@/lib/utils";
 
 export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
     const [loading, setLoading] = useState(false);
@@ -37,7 +35,7 @@ export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
         watch,
     } = useForm<UserType>({
         resolver: zodResolver(UserValidationSchema),
-        defaultValues,
+        // defaultValues,
     });
 
     // Follow change of value filed in form
@@ -68,8 +66,8 @@ export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
             // console.log('toast', toast);
 
 
-        } catch (error: any) {
-            setErrorMessage(error.message);
+        } catch (error) {
+            setErrorMessage(error as string);
         } finally {
             setLoading(false);
         }

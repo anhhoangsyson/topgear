@@ -1,11 +1,25 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { formatPrice, formatDate, formatOrderStatus } from '../../../../../lib/utils';
 import { Button } from '@/components/ui/Button';
 
-export default function OrdersList({ initialOrderList }: { initialOrderList: any[] }) {
+interface InititalOrderList {
+  _id: string
+  orderDetails: {
+    productId: string
+    productName: string
+    productVariantId: string
+    productVariantName: string
+    quantity: number
+  }[]
+  totalAmount: number
+  orderStatus: string
+  createAt: string
+}
 
-  const [orderList, setOrderList] = useState<any[]>(initialOrderList)
+export default function OrdersList({ initialOrderList }: { initialOrderList: InititalOrderList[] }) {
+
+  const [orderList, setOrderList] = useState<InititalOrderList[]>(initialOrderList)
   const [filterStatus, setFilterStatus] = useState('Tất cả')
 
   const filterOrder = (status: string) => {

@@ -272,13 +272,13 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
     // Chuyển sang bước tiếp theo với data.shippingAddress
   };
 
-  const handleFormSubmit = (data: FormData) => {
-    onSubmit(data); // Gọi prop onSubmit thay vì console.log
-  };
+  // const handleFormSubmit = (data: FormData) => {
+  //   onSubmit(data); // Gọi prop onSubmit thay vì console.log
+  // };
 
-  const onError = (errors: any) => {
-    console.log('Form validation errors:', errors); // Debug lỗi validation
-  };
+  // const onError = (errors ) => {
+  //   console.log('Form validation errors:', errors); // Debug lỗi validation
+  // };
 
   const skeletonCustomerInfo = (
     <div className='w-full p-4 bg-white rounded'>
@@ -323,7 +323,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
       {/* Form thông tin giao hàng */}
       <h3 className='my-2 mt-8 uppercase'>Thông tin giao hàng</h3>
       {loading ? skeletonCustomerInfo : (
-        <form onSubmit={handleSubmit(onSubmit, onError)} className='w-full p-4 bg-white rounded'>
+        <form onSubmit={handleSubmit(onSubmit)} className='w-full p-4 bg-white rounded'>
           <div className='flex items-center justify-between gap-x-4 mb-4'>
             <p className='text-gray-700 text-sm font-thin'>{customerInfo.fullname}</p>
             <p className='text-gray-400 text-xs font-thin'>{(customerInfo.phone)}</p>
@@ -498,7 +498,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
         </div>
         <Button
 
-          onClick={handleSubmit(onSubmitStep1, onError)} // Thêm onError để debug
+          onClick={handleSubmit(onSubmitStep1)} // Thêm onError để debug
           variant={'destructive'}
           className='w-full mt-4 bg-red-500'
         >

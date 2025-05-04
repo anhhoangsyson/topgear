@@ -2,9 +2,10 @@
 import React from 'react'
 import { Button } from '@/components/ui/Button'
 import { formartLocation } from '@/lib/utils';
+import { LocationRes } from '@/types';
 
 
-export default function ListAddressCard({ locationsData }: { locationsData: any[] }) {
+export default function ListAddressCard({ locationsData }: { locationsData: LocationRes[] }) {
 
 
 
