@@ -3,7 +3,8 @@ import { useState } from 'react';
 
 export default function WrapModal({ children, isOpenModal, onClose }: { children: React.ReactNode, isOpenModal?: boolean, onClose?: () => void }) {
   const [isOpen, setIsOpen] = useState(isOpenModal);
-
+  console.log(isOpenModal, 'isOpenModal');
+  
   useEffect(() => {
     setIsOpen(isOpenModal);
   }, [isOpenModal]);

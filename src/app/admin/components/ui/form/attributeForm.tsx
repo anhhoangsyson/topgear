@@ -38,7 +38,7 @@ export default function AttributeForm({
 }: AttributeFormProps): JSX.Element {
   const [selectedVariant, setSelectedVariant] = useState<string>("")
   const [attributeList, setAttributeList] = useState<IAttribute[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const form = useForm<ProductAttributeFormValues>({
     resolver: zodResolver(productAttributeSchema),
@@ -63,18 +63,25 @@ export default function AttributeForm({
 
   useEffect(() => {
     const fetchAttributes = async () => {
-      if (!selectedVariant) return
+      if (!selectedVariant) {
+        console.log('selectedVariant',selectedVariant);
+        return}
 
       const selectedVariantData = variants.find((v) => v._id === selectedVariant)
-      if (!selectedVariantData) return
-
+      if (!selectedVariantData) {
+        console.log('selectedVariantData',selectedVariantData);
+        return
+      }
+      console.log('se;ectredvariant',selectedVariant);
+      
       try {
         setIsLoading(true)
         // Lấy danh mục từ sản phẩm của biến thể
         const categoryId = selectedVariantData.productId // Giả sử productId là categoryId
         const result = await getAttributesByCategory(categoryId)
-
-        if (result.success && result.data) {
+        console.log('result',result);
+        
+        if (result.success && result.data) {  
           console.log('result.data',result.data);
           
           setAttributeList(result.data)
@@ -117,8 +124,8 @@ export default function AttributeForm({
     <div className="space-y-6">
       <Tabs value={selectedVariant} onValueChange={setSelectedVariant} className="w-full">
         <TabsList className="w-full justify-start overflow-auto">
-          {variants.map((variant) => (
-            <TabsTrigger key={variant._id} value={variant._id || ""} className="flex-shrink-0">
+          {variants.map((variant,index) => (
+            <TabsTrigger key={index} value={variant._id || ""} className="flex-shrink-0">
               {variant.variantName}
             </TabsTrigger>
           ))}

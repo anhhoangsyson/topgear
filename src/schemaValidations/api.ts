@@ -120,7 +120,7 @@ import type {
   }
   
   // API để tải lên hình ảnh
-  export async function uploadImage(file: File): Promise<ApiResponse<{ imageUrl: string }>> {
+  export async function uploadImage(variantId: string, file: File): Promise<ApiResponse<{ imageUrl: string }>> {
     try {
       const formData = new FormData()
       formData.append("image", file)

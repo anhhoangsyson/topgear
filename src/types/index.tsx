@@ -50,7 +50,7 @@ export interface IProductVariant {
   variantName: string
   variantPrice: number
   variantPriceSale: number
-  filterCategorires: string[]
+  filterCategories: string[]
   variantStock: number
   status?: StatusProductVariant
   createdAt?: Date

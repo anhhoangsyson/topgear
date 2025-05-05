@@ -3,39 +3,34 @@ import { Button } from '@/components/ui/Button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
+import { CategoriesRes } from '@/types/Res/Product'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React, { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import React, { useState } from 'react'
+import { Form, FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const formSchema = z.object({
-    attributeName: z.string().min(1, { message: "Tên thuộc tính không được để trống" }),
+    categoryName: z.string().min(1, { message: "Tên danh mục không được để trống" }),
+
 })
 
-type UpdateAttributeFormProps = {
-    attribute: AttributeRes | null,
+type UpdateCategoryForm = {
+    category: CategoriesRes | null,
     onClose: () => void
 }
-export default function UpdateAttributeForm({ attribute, onClose }: UpdateAttributeFormProps) {
+export default function UpdateCategoryForm({ category, onClose }: UpdateCategoryForm) {
     const [loading, setLoading] = useState(false)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            attributeName: attribute?.attributeName || "",
+            categoryName: category?.categoryName
         }
     })
-
-
-    useEffect(() => {
-        form.reset({
-            attributeName: attribute?.attributeName || "",
-        });
-    }, [attribute, form]);
 
     async function obnSubmit(values: z.infer<typeof formSchema>) {
         setLoading(true)
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/attribute/${attribute?._id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/categories/${category?._id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -43,14 +38,14 @@ export default function UpdateAttributeForm({ attribute, onClose }: UpdateAttrib
                 body: JSON.stringify(values)
             })
             if (!res.ok) {
-                throw new Error("Lỗi cập nhật thuộc tính")
+                throw new Error("Lỗi cập nhật danh mục")
             }
 
             const data = await res.json()
 
             toast({
-                title: "Cập nhật thuộc tính thành công",
-                description: "Đã cập nhật thuộc tính thành công",
+                title: "Cập nhật danh mục thành công",
+                description: "Đã cập nhật danh mục thành công",
                 variant: "default",
                 duration: 2000,
             })
@@ -59,8 +54,8 @@ export default function UpdateAttributeForm({ attribute, onClose }: UpdateAttrib
         } catch (error) {
             console.log("error", error);
             toast({
-                title: "Cập nhật thuộc tính thất bại",
-                description: "Có lỗi xảy ra trong quá trình cập nhật thuộc tính",
+                title: "Cập nhật danh mục thất bại",
+                description: "Có lỗi xảy ra trong quá trình cập nhật danh mục",
                 variant: "destructive",
                 duration: 2000,
             })
@@ -78,13 +73,13 @@ export default function UpdateAttributeForm({ attribute, onClose }: UpdateAttrib
             >
                 <FormField
                     control={form.control}
-                    name="attributeName"
+                    name="categoryName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Tên thuộc tính</FormLabel>
+                            <FormLabel>Tên danh mục</FormLabel>
                             <FormControl>
                                 <Input
-                                    placeholder="Tên thuộc tính" {...field} />
+                                    placeholder="Tên danh mục" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
