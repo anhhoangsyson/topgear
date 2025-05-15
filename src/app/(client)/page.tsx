@@ -127,9 +127,6 @@ const FlashSale: CartFlashSale[] = [
     sale: "4.000.000 VNĐ",
   },
 ];
-import FlashSaleProductCard from "@/components/ui/FlashSaleProductCard";
-import ProductCategoryShowcase from "@/components/section/ProductCategoryShowcase";
-import ProductCarousel from "@/components/section/ProductCarousel";
 import Panigation from "@/components/common/Panigation";
 
 // func to fetch data from next server
@@ -162,25 +159,25 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
         <Navbar />
         {/* Banner */}
 
-        <div className="w-full my-4 bg-white rounded-lg grid lg:grid-cols-7 gap-4 p-4 md:grid-cols-4 sm:grid-cols-2">
+        {/* <div className="w-full my-4 bg-white rounded-lg grid lg:grid-cols-7 gap-4 p-4 md:grid-cols-4 sm:grid-cols-2">
           {items.map((item, index) => (
             <ItemCard key={index} {...item} />
           ))}
-        </div>
+        </div> */}
 
         {/* product categories show case */}
 
         <div className="mx-auto">
-          <FlashSaleSection
+          {/* <FlashSaleSection
             bannerFlashSale1={bannerFlashSale1}
             data={FlashSale}
-          />
+          /> */}
 
           {/* TV and accessories */}
-          <div className="grid grid-col-4 gap-y-8 py-32">
+          <div className="grid grid-col-4 gap-y-8 py-28">
             <div>
               <h2 className="text-center text-5xl font-bold text-blue-600">
-                Sản phẩm cua Top Gear
+                Sản phẩm của Top Gear
               </h2>
               <h4 className="text-center text-xl font-light my-3">
                 Các sản phẩm và Phụ kiện với giá ưu đãi

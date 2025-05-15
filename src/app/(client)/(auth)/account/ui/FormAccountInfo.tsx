@@ -1,28 +1,31 @@
 "use client";
-import {  SEX_LABELS } from "@/schemaValidations/auth.schema";
+import { SEX_LABELS } from "@/schemaValidations/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/Button";
 import { IUser, UserType, UserValidationSchema } from "@/schemaValidations/user.schema";
+import { formatDate } from "@/lib/utils";
 
 export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [isFormChanged, setIsFormChanged] = useState(false);
 
+    console.log('user info passed', userInfo);
+
     // default value
     const defaultValues: UserType = {
-        id: userInfo.id,
+        _id: userInfo?._id,
         fullname: userInfo.fullname,
         username: userInfo.username,
         email: userInfo.email,
-        phone: "0"+(userInfo.phone),
+        phone: "0" + (userInfo.phone) as string,
         address: userInfo.address,
-        sex: 'female',
-        avatar: userInfo.avatar ,
-        birdth: userInfo.birdth,
+        sex: (userInfo.sex as "male" | "female" | "other") || "male",
+        avatar: userInfo.avatar,
+        birdth: formatDate(userInfo.birdth!),
         role: "user",
     };
 
@@ -56,7 +59,7 @@ export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
 
         try {
             console.log('cc');
-            
+
             console.log('data', data);
 
             // toast({
@@ -86,6 +89,7 @@ export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
             <div className="mb-4">
                 <label className="block mb-2 text-[14px] font-semibold">Họ tên</label>
                 <input
+                    defaultValue={defaultValues.fullname}
                     type="text"
                     {...register("fullname")}
                     className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
@@ -96,14 +100,16 @@ export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
             {/* Email */}
             <div className="mb-4">
                 <label className="block mb-2 text-[14px] font-semibold">Email</label>
-                <input type="email" {...register("email")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500" />
+                <input 
+                defaultValue={defaultValues.email}
+                 type="email" {...register("email")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500" />
                 {errors.email && <p className="text-red-500">{errors.email.message}</p>}
             </div>
 
             {/* Phone */}
             <div className="mb-4">
                 <label className="block mb-2 text-[14px] font-semibold">Số điện thoại</label>
-                <input type="text" {...register("phone")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
+                <input defaultValue={defaultValues.phone} type="text" {...register("phone")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
                     disabled />
                 {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
             </div>
@@ -111,7 +117,9 @@ export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
             {/* Birdth */}
             <div className="mb-4">
                 <label className="block mb-2 text-[14px] font-semibold">Ngày sinh</label>
-                <input type="date" {...register("birdth")}
+                <input
+                    defaultValue={defaultValues.birdth}
+                    type="string" {...register("birdth")}
                     className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
                     disabled />
                 {errors.address && <p className="text-red-500">{errors.address.message}</p>}

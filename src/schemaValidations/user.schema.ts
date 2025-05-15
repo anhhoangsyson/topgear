@@ -4,7 +4,7 @@ import { ROLEENUM, SEXENUM } from "@/schemaValidations/auth.schema";
 import exp from 'constants';
 
 export const UserValidationSchema = z.object({
-    id: z.string(),
+    _id: z.string(),
     fullname: z.string().min(9, { message: 'Họ tên phải lớn hơn 9 ký tự' }),
     username: z.string().min(6, { message: 'Tên đăng nhập phải lớn hơn 6 ký tự' }),
     email: z.string().email({ message: 'Email không hợp lệ' }),
@@ -18,7 +18,7 @@ export const UserValidationSchema = z.object({
 
 
 export interface IUser {
-    id: string;
+    _id: string;
     role: typeof ROLEENUM[keyof typeof ROLEENUM];
     fullname: string;
     username: string;
