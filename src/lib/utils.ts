@@ -71,8 +71,8 @@ export function formartLocation(
   const location = `${str}, ${ward}, ${dis}, ${pro}`;
   return location;
 }
-
 export function formatLaptopName(name: string, specifications: any) {
   const { processor, ram, storage, graphicsCard } = specifications
   return `${name} ( ${processor} / ${ram} / ${storage} / ${graphicsCard})`
 }
+

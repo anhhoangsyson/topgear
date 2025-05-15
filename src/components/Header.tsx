@@ -88,6 +88,7 @@ export default function Header() {
   //   fetchProducts();
   // }, []);
 
+
   // Filter products
   // Filter products
   useEffect(() => {
@@ -105,6 +106,7 @@ export default function Header() {
   return (
     <div
       className={`fixed top-0 left-0 w-full h-20 flex align-center bg-[#0E1746] text-white justify-between py-4 px-24 shadow-lg transition-transform duration-300 z-50
+
     ${isHidden ? "-translate-y-full" : "translate-y-0"}`}
     >
       {/* Logo & Nav */}
@@ -125,6 +127,7 @@ export default function Header() {
                 <Link
                   className={`px-4 py-2 text-sm ${pathName == item.url ? "text-blue-600 font-semibold" : ""
                     }`}
+
                   href={item.url}
                 >
                   {item.name}
@@ -196,6 +199,7 @@ export default function Header() {
            <LoginButton/>
           )
         }
+
       </div>
     </div>
   );
