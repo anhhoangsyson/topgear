@@ -18,3 +18,22 @@ export type ProductsVariantsRes = {
   variantName: string;
   createdAt: string;
 }
+
+export type CategoriesRes = {
+  _id: string;
+  categoryName: string;
+  parentCategoryId: string | null;
+  isFilter: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+}
+
+export type CategoriesTreeRes = {
+  _id: string;
+  categoryName: string;
+  parentCategoryId: string | null
+  isFilter: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+  children?: CategoriesTreeRes[];
+}

@@ -52,6 +52,16 @@ export function formatOrderStatus(status: string): string {
   }
 }
 
+export function formatPaymentMethod(method: string): string {
+  switch (method) {
+    case "cash":
+      return "COD";
+    case "zalopay":
+      return "ZaloPay";
+    default:
+      return "Không xác định";
+  }
+}
 export function formartLocation(
   pro: string,
   dis: string,
@@ -61,3 +71,8 @@ export function formartLocation(
   const location = `${str}, ${ward}, ${dis}, ${pro}`;
   return location;
 }
+export function formatLaptopName(name: string, specifications: any) {
+  const { processor, ram, storage, graphicsCard } = specifications
+  return `${name} ( ${processor} / ${ram} / ${storage} / ${graphicsCard})`
+}
+

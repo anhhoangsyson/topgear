@@ -2,6 +2,10 @@
 import React, { useState } from 'react'
 import { formatPrice, formatDate, formatOrderStatus } from '../../../../../lib/utils';
 import { Button } from '@/components/ui/Button';
+import { string } from 'zod';
+import { fetchAccessToken } from '@/app/(client)/(auth)/account/address/ListAddressCard';
+import { toast } from '@/hooks/use-toast';
+import { LoaderCircle } from 'lucide-react';
 
 interface InititalOrderList {
   _id: string
@@ -21,10 +25,10 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
 
   const [orderList, setOrderList] = useState<InititalOrderList[]>(initialOrderList)
   const [filterStatus, setFilterStatus] = useState('Tất cả')
+  const [isLoading, setIsLoading] = useState(false)
 
   const filterOrder = (status: string) => {
     setFilterStatus(status)
-    console.log(status);
 
     if (status === 'Tất cả') {
       setOrderList(initialOrderList)
@@ -38,8 +42,57 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
   }
   const orderStatus = ['Tất cả', 'Chưa thanh toán', 'Đã thanh toán', 'Đang chờ xử lý', 'Đã hoàn thành', 'Đã hủy']
 
+  const handleCancelingOrder = async (orderId: string) => {
+    setIsLoading(true)
+    try {
+      const acessToken = await fetchAccessToken()
+
+      if (!acessToken) {
+        toast({
+          title: 'Lỗi',
+          description: 'Không thể lấy access token',
+          variant: 'destructive'
+        })
+        return
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/order/canceling-order/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${acessToken}`,
+          'Content-Type': 'application/json',
+        }
+      })
+      if (!res.ok) {
+        toast({
+          title: 'Yêu cầucầu hủy đơn hàng thất bại',
+          description: 'Vui lòng thử lại sau',
+          variant: 'destructive'
+        })
+        return
+      }
+      toast({
+        title: 'Yêu cầu hủy đơn đơn hàng thành công',
+        description: 'Vui lòng chờ xác nhận từ điện thoại',
+        variant: 'default',
+        duration: 1000,
+      })
+        window.location.reload()
+    } catch (error) {
+      console.log(error);
+    }
+    finally {
+      setIsLoading(false)
+    }
+
+  }
   return (
     <div className='flex gap-x-4'>
+
+      {isLoading && (
+        <div
+        className='fixed inset-0 top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-75 z-[999] flex items-center justify-center'><LoaderCircle className='animate-spin'/> </div>
+      )}
       {/* order list */}
       <div className='p-4 bg-white rounded w-11/12'>
         <p className='text-xl font-bold mb-4'>Đơn hàng của bạn</p>
@@ -54,6 +107,7 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
                 <th className="text-[12px] py-3 px-4 border-b">Sản phẩm</th>
                 <th className="text-[12px] py-3 px-4 border-b">Tổng tiền (đ)</th>
                 <th className="text-[12px] py-3 px-4 border-b">Trạng thái</th>
+                <th className="text-[12px] py-3 px-4 border-b">Hủy đơn hàng</th>
               </tr>
             </thead>
             <tbody>
@@ -68,6 +122,17 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
                   <td className="text-[12px] py-3 px-4 border-b">{order.orderDetails.length} sản phẩm</td>
                   <td className="text-[12px] py-3 px-4 border-b">{formatPrice(order.totalAmount)}</td>
                   <td className="text-[12px] py-3 px-4 border-b text-red-500">{formatOrderStatus(order.orderStatus)}</td>
+                  <td>
+                    <Button
+                      disabled={order.orderStatus == 'completed'}
+                      variant={'outline'}
+                      size={'sm'}
+                      className='text-xs bg-white text-red-500 hover:bg-red-500 hover:text-white'
+                      onClick={() => handleCancelingOrder(order._id)}
+                    >
+                      Hủy đơn hàng
+                    </Button>
+                  </td>
                 </tr>
               ))}
 

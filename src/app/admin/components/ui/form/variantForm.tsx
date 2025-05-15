@@ -51,9 +51,9 @@ export default function VariantForm({
   })
 
   const handleSubmit = async (data: ProductVariantFormValues): Promise<void> => {
+    console.log("data", data);
     await onSubmit(data)
     form.reset()
-
     setIsAdding(false)
   }
 
@@ -66,7 +66,9 @@ export default function VariantForm({
       },
     })
     const data = await res.json()
-    // console.log('data',data);
+    console.log('productIdpassed', productId);
+    
+    console.log('data',data);
     // lay ra cateogriesId cua product vua moi tao o step 1
     const categoryId = data.data.categoriesId
     // goi api lay danh sach cateogires chld cua cateogriesId
@@ -96,7 +98,7 @@ export default function VariantForm({
 
   return (
     <div className="space-y-6">
-      {variants.length > 0 && (
+      {/* {variants.length > 1 && (
         <div className="space-y-4">
           <h3 className="text-lg font-medium">Biến thể đã thêm</h3>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -127,13 +129,12 @@ export default function VariantForm({
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
       {isAdding ? (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 border rounded-lg p-4">
             <h3 className="text-lg font-medium">Thêm biến thể mới</h3>
-
             <FormField
               control={form.control}
               name="variantName"

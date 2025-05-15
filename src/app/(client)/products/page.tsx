@@ -171,9 +171,9 @@ export default async function ProductsPage({ searchParams }: { searchParams: { p
           Đa dạng các loại sản phẩm laptop, đồ điện tử đang giảm giá sốc
         </p>
         <div className="text-center">
-          <Button className="mt-5" variant="default" size="lg">
+          {/* <Button className="mt-5" variant="default" size="lg">
             Mua hàng tại đây
-          </Button>
+          </Button> */}
         </div>
       </div>
       {/* section prorducts */}
@@ -181,7 +181,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: { p
         {/* filter bar */}
         <div className="flex justify-between items-center">
           {/* left filter */}
-          <div className="flex justify-center gap-x-4">
+          {/* <div className="flex justify-center gap-x-4">
             {categories.map((category) => (
               <Button
                 className="block bg-white text-black font-normal  hover:bg-blue-500 hover:text-white"
@@ -192,9 +192,9 @@ export default async function ProductsPage({ searchParams }: { searchParams: { p
                 {category.name}
               </Button>
             ))}
-          </div>
+          </div> */}
           {/* right filter */}
-          <div>
+          {/* <div>
             <div className="flex items-center gap-x-2">
               <svg
                 width="16"
@@ -216,7 +216,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: { p
                 <option value="4">Z - A</option>
               </select>
             </div>
-          </div>
+          </div> */}
         </div>
         {/* products */}
         <div

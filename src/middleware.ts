@@ -1,5 +1,5 @@
-// import { NextResponse } from 'next/server'
-// import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 // const authPaths = ['/login', '/register', '/forgot-password']
 // const protectedPaths = ['/account', '/checkout']
@@ -43,7 +43,7 @@
 //                 return NextResponse.redirect(new URL('/login', request.url))
 //             }
 //             const user = await res.json()
-            
+
 //             if(user.data.role !== 'admin'){
 //                 return NextResponse.redirect(new URL('/', request.url))
 //             }
@@ -51,7 +51,7 @@
 //         } catch (error) {
 //             console.error('Error parsing access token:', error)
 //             return NextResponse.redirect(new URL('/login', request.url))
-            
+
 //         }
 //     }
 
@@ -75,14 +75,20 @@
 //         ]
 // }
 
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
- 
-export function middleware(request: NextRequest) {
-  return NextResponse.next()
-}
- 
-export const config = {
-  matcher: '/about/:path*',
-}
 
+// This function can be marked `async` if using `await` inside
+export function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname
+
+  // Chỉ cho phép auth pages hoạt động độc lập
+  if (path.startsWith('/admin/(auth)')) {
+    // Chặn nesting bằng cách xử lý headers
+    const response = NextResponse.next()
+    response.headers.set('x-middleware-skip', '1')
+    return response
+  }  }
+   
+  // See "Matching Paths" below to learn more
+  export const config = {
+    matcher: '/about/:path*',
+  }

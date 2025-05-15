@@ -116,6 +116,11 @@
   background-color: #344054;
 }
 
-body {
-  background-color: #f3f5fc;
+html,body {
+  overflow-y: scroll;
 }
+
+/* body {
+  background-color: #f3f5fc;
+} */
+
