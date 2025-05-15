@@ -50,6 +50,7 @@ export async function getAttributesByCategory(productId: string): Promise<ApiRes
   try {
     const productRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/products/${productId}`)
     const productData = await productRes.json()
+    console.log("productData", productData)
     const categoryId = productData?.data?.categoriesId
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/attribute/getByCategoryId/${categoryId}`)
 

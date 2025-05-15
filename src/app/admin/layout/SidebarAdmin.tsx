@@ -15,6 +15,7 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  BoxIconLine
 } from "@/app/admin/icons/index";
 import { useSidebar } from "@/context/admin/SidebarContext";
 
@@ -32,6 +33,38 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
+    name: "Danh mục",
+    icon: <ListIcon />,
+    subItems: [
+      { name: "Danh sách danh mục", path: "/admin/category", pro: false },
+      { name: "Thêm danh mục", path: "/admin/category/add", pro: false },
+    ],
+  },
+  {
+    name: "Laptop",
+    icon: <TableIcon />,
+    subItems: [
+      { name: "Danh sách laptop", path: "/admin/laptop", pro: false },
+      { name: "Thêm laptop", path: "/admin/laptop/add", pro: false },
+
+    ],
+  },
+  {
+    name: "Thương hiệu",
+    icon: <PageIcon />,
+    subItems: [
+      { name: "Danh sách thương hiệu", path: "/admin/brand", pro: false },
+      { name: "Thêm thương hiệu", path: "/admin/brand/add", pro: false },
+    ],
+  },
+  {
+    name: "Đơn hàng",
+    icon: <BoxIconLine />,
+    subItems: [
+      { name: "Danh sách đơn hàng", path: "/admin/orders", pro: false },
+    ],
+  },
+  {
     icon: <CalenderIcon />,
     name: "Calendar",
     path: "/calendar",
@@ -41,34 +74,6 @@ const navItems: NavItem[] = [
     name: "User Profile",
     path: "/profile",
   },
-
-  {
-    name: "Danh mục",
-    icon: <ListIcon />,
-    subItems: [
-      { name: "Danh sách danh mục", path: "/admin/categories", pro: false },
-      { name: "Thêm danh mục", path: "/admin/categories/add", pro: false },
-    ],
-  },
-  {
-    name: "Sản phẩm",
-    icon: <TableIcon />,
-    subItems: [
-      { name: "Danh sách sản phẩm", path: "/admin/products", pro: false },
-      { name: "Danh sách biến thể", path: "/admin/productVariants", pro: false },
-      { name: "Thêm sản phẩm", path: "/admin/products/add", pro: false },
-      { name: "Thêm biến thể", path: "/admin/productVariants/add", pro: false },
-
-    ],
-  },
-  {
-    name: "Thuộc tính",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Danh sách thuộc tính", path: "/admin/attributes", pro: false },
-      { name: "Thêm thuộc tính", path: "/admin/attributes/add", pro: false },
-    ],
-  },
 ];
 
 const othersItems: NavItem[] = [
@@ -76,28 +81,28 @@ const othersItems: NavItem[] = [
     icon: <PieChartIcon />,
     name: "Charts",
     subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
+      { name: "Line Chart", path: "/admin-chart", pro: false },
+      { name: "Bar Chart", path: "/admin-chart", pro: false },
     ],
   },
   {
     icon: <BoxCubeIcon />,
-    name: "UI Elements",
+    name: "Laptop Group",
     subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
+      { name: "Danh sách nhóm", path: "/admin/laptop-group", pro: false },
+      { name: "Thêm nhóm mới", path: "/admin/laptop-group/add", pro: false },
+      { name: "Badge", path: "/admin", pro: false },
+      { name: "Buttons", path: "/admin", pro: false },
+      { name: "Images", path: "/admin", pro: false },
+      { name: "Videos", path: "/admin", pro: false },
     ],
   },
   {
     icon: <PlugInIcon />,
     name: "Authentication",
     subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
+      { name: "Sign In", path: "/admin", pro: false },
+      { name: "Sign Up", path: "/admin", pro: false },
     ],
   },
 ];

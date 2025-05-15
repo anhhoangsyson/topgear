@@ -15,15 +15,15 @@ export default function Navbar() {
     }
 
     const [categoriesMenu, setCategoriesMenu] = useState<Category[]>([])
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await fetch('https://top-gear-be.vercel.app/api/v1/categories/tree')
-            const categories = await data.json()
-            setCategoriesMenu(categories.data)
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const data = await fetch('https://top-gear-be.vercel.app/api/v1/categories/tree')
+    //         const categories = await data.json()
+    //         setCategoriesMenu(categories.data)
 
-        }
-        fetchData()
-    }, [])
+    //     }
+    //     fetchData()
+    // }, [])
 
     return (
         <div className='flex my-4 gap-x-4'>

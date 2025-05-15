@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { IUser } from '../../../schemaValidations/user.schema';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useSession } from 'next-auth/react';
 
 // Định nghĩa các interface
 interface IProvince {
@@ -71,9 +72,9 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
   {
     selectedItems: {
       _id: string;
-      variantName: string;
-      variantPrice: number;
-      variantPriceSale: number;
+      name: string;
+      price: number;
+      discountPrice: number;
       quantity: number;
       image: string;
     }[],
@@ -86,6 +87,8 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
       note: string;
     };
   }) {
+  const session = useSession()
+
   const [customerInfo, setCustomerInfo] = useState<Omit<IUser, '_id' | 'role' | 'password'>>({} as any);
   const [locations, setLocations] = useState<ILocation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -97,7 +100,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
 
   const [showAddAddressModal, setShowAddAddressModal] = useState<boolean>(false);
 
-  const totalPrice = selectedItems.reduce((acc, item) => acc + (item.variantPriceSale * item.quantity), 0);
+  const totalPrice = selectedItems.reduce((acc, item) => acc + (item.discountPrice * item.quantity), 0);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -135,20 +138,19 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
 
   useEffect(() => {
     const getCustomerInfo = async () => {
-      const res = await fetch(`/api/user/get-access-token`,{method: 'GET'});
+      const res = await fetch(`/api/user/get-access-token`, { method: 'GET' });
       const { accessToken } = await res.json();
       if (!accessToken) {
         console.error('Không tìm thấy access token');
         return;
       }
-      console.log('Access token:', accessToken);
-      
+
       const [userRes, locationsRes] = await Promise.all([
-        fetch('https://top-gear-be.vercel.app/api/v1/auth/me', {
+        fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/auth/me`, {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
         }),
-        fetch('https://top-gear-be.vercel.app/api/v1/location', {
+        fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/location`, {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
         }),
@@ -227,8 +229,8 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
   }, [selectedDistrict, addressData.commune, setAddressValue]);
 
   const handleAddNewAddress = async (data: AddressFormData) => {
-    const accessToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
-
+    const accessToken = session?.data?.accessToken;
+    
     const payload = {
       province: data.province, // idProvince
       district: data.district, // idDistrict
@@ -236,7 +238,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
       street: data.street,
     };
 
-    const res = await fetch('https://top-gear-be.vercel.app/api/v1/location', { // Sửa endpoint
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/location`, { // Sửa endpoint
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -297,16 +299,16 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
       {selectedItems.map((item) => (
         <div key={item._id} className='grid grid-cols-5 p-4 rounded bg-white pb-4'>
           <div className='col-span-1 object-cover'>
-            <Image className='rounded' alt={item.variantName} height={100} width={100} src={item.image} />
+            <Image className='rounded' alt={item.name} height={100} width={100} src={item.image} />
           </div>
           <div className='col-span-3'>
-            <p className='p-2 text-gray-700 text-sm text-wrap'>{item.variantName}</p>
+            <p className='p-2 text-gray-700 text-sm text-wrap'>{item.name}</p>
             <div className='flex px-2'>
               <p className='text-[15px] font-thin text-red-500'>
-                {item.variantPriceSale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                {item.variantPriceSale !== item.variantPrice && (
+                {item.discountPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                {item.discountPrice !== item.price && (
                   <span className='text-gray-400 line-through ml-2'>
-                    {item.variantPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                    {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                   </span>
                 )}
               </p>

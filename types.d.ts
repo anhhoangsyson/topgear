@@ -29,7 +29,7 @@ type ProductData = {
 };
 
 interface Category {
-  id: number;
+  _id: number;
   label: string;
   link: string;
 }
