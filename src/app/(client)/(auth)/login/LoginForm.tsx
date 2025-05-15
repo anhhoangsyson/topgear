@@ -10,7 +10,8 @@ import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-
+import { signIn } from "next-auth/react";
+import AuthButtons from "@/components/auth/AuthButton";
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -45,59 +46,77 @@ export default function LoginForm() {
 
     try {
       // send req to server
-      const response = await fetch(
-        "https://top-gear-be.vercel.app/api/v1/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-          }),
-        }
-      );
+      // const response = await fetch(
+      //   "https://top-gear-be.vercel.app/api/v1/auth/login",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       email: data.email,
+      //       password: data.password,
+      //     }),
+      //   }
+      // );
 
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        const result = await response.json();
-        if (response.ok) {
-          toast({
-            title: "Đăng nhập thành công",
-            description: "Chào mừng thượng đế đến với hệ thống Top Gear!",
-          });
+      const res = await signIn("credentials", { ...data });
 
-          // save data user (ex: token) in localStorage
-          // localStorage.setItem("authToken", result.data.token);
-          // khong luu o localStorage vi co the bi xoa
+      if (res?.ok) {
+        console.log("res", res);
+        
+        toast({
+          title: "Đăng nhập thành công",
+          description: "Chào mừng thượng đế đến với hệ thống Top Gear!",
+        });
 
-          // save sessionToken in cookie
-          // document.cookie = `accessToken=${result.data.token}; path=/; max-age=36000; secure; samesite=strict`;
+        // await fetch(`${process.env.NEXTAUTH_UR}/api/auth`, {
+        //   method: "POST",
+        //   body: JSON.stringify({ accessToken: data.accessToken }),
+        // })
 
-          // luu ca token o trong next server
-          const authRes = await fetch("/api/auth/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              accessToken: result.data.token,
-            }),
-          });
-          const authData = await authRes.json();
-          console.log("authData", authData);
-
-          // naviate /
-          router.push("/");
-        } else {
-          throw new Error(result.message || "Đăng nhập thất bại");
-        }
-      } else {
-        const textResponse = await response.text();
-        console.error("Phản hồi không phải JSON:", textResponse);
-        throw new Error("Server trả về định dạng không mong đợi");
+        // router.push("/account");
       }
+      // const contentType = response.headers.get("content-type");
+
+      // if (contentType && contentType.includes("application/json")) {
+      //   const result = await response.json();
+      //   if (response.ok) {
+      //     toast({
+      //       title: "Đăng nhập thành công",
+      //       description: "Chào mừng thượng đế đến với hệ thống Top Gear!",
+      //     });
+
+      //     // save data user (ex: token) in localStorage
+      //     // localStorage.setItem("authToken", result.data.token);
+      //     // khong luu o localStorage vi co the bi xoa
+
+      //     // save sessionToken in cookie
+      //     // document.cookie = `accessToken=${result.data.token}; path=/; max-age=36000; secure; samesite=strict`;
+
+      //     // luu ca token o trong next server
+      //     const authRes = await fetch("/api/auth/", {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({
+      //         accessToken: result.data.token,
+      //       }),
+      //     });
+      //     const authData = await authRes.json();
+      //     console.log("authData", authData);
+
+      //     // naviate /
+      //     router.push("/");
+      //   } else {
+      //     throw new Error(result.message || "Đăng nhập thất bại");
+      //   }
+      // } else {
+      //   const textResponse = await response.text();
+      //   console.error("Phản hồi không phải JSON:", textResponse);
+      //   throw new Error("Server trả về định dạng không mong đợi");
+      // }
     } catch (error) {
       const errMessage = error instanceof Error ? error.message : String(error);
       setErrorMessage(errMessage);
@@ -111,6 +130,10 @@ export default function LoginForm() {
     }
   };
 
+
+  const handleFacebookLogin = async () => {
+    signIn("facebook", { callbackUrl: `/account` })
+  }
   return (
     <div className="my-20 2xl:w-1/3 max-w-xl mx-auto rounded shadow-sm bg-white">
       <form onSubmit={handleSubmit(onSubmit)} className="p-4">
@@ -161,10 +184,11 @@ export default function LoginForm() {
 
       <div className="p-4 pb-16 mx-auto">
         <div className="flex flex-col gap-y-4 2xl:w-[290px] mx-auto">
-          <Button variant="default" className="w-full bg-[#1877F2] text-white">
+          <Button
+            onClick={handleFacebookLogin}
+            variant="default" className="w-full bg-[#1877F2] text-white">
             Login with Facebook
           </Button>
-
           <Button variant="destructive" className="w-full text-white">
             Login with Google
           </Button>
@@ -177,6 +201,9 @@ export default function LoginForm() {
               Register
             </Button>
           </Link>
+        </div>
+        <div>
+          <AuthButtons />
         </div>
       </div>
     </div>

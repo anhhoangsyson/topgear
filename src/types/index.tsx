@@ -1,5 +1,11 @@
 import { z } from "zod"
 
+export interface CustomDocument {
+  _id: string
+  createdAt: Date
+  updatedAt: Date
+}
+
 // Enum cho trạng thái
 export enum StatusProductVariant {
   ACTIVE = "active",
@@ -7,13 +13,17 @@ export enum StatusProductVariant {
 }
 
 // Interface cho Category
-export interface ICategory {
-  _id?: string
-  categoryName: string
-  parentCategoryId?: string
-  children?: ICategory[],
-  isFilter: boolean,
-  isDeleted?: boolean
+export interface ICategory extends Document {
+  _id: string;
+  name: string;
+  description?: string;
+  slug: string;
+  parentId?: string | null;
+  image?: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Interface cho CategoryAttribute
@@ -168,7 +178,7 @@ export interface customerInfoRes {
   address: string;
 }
 
-export interface OrderDetail{
+export interface OrderDetail {
   _id: string;
   productVariantId: string;
   quantity: number;
@@ -179,4 +189,108 @@ export interface OrderDetail{
 export interface IProductVariantRes extends IProductVariant {
   images: IProductImage[];
   variantName: string
+}
+
+export interface IBrand extends CustomDocument {
+  name: string;
+  logo: string;
+  description: string;
+  country: string;
+  website: string;
+  isActive: boolean;
+}
+
+export interface ISpecifications {
+  processor: string; // cpu
+  processorGen?: string; // thế hệ 12th gen
+  processorSpeed?: number; // tốc độ cpu, đơn vị GHz
+  ram: number; // dung lượng ram, đơn vị GB
+  ramType?: string; // loại ram, DDR4, DDR5
+  storage: number;  // dung lượng ổ cứng, đơn vị GB
+  storageType?: string; // loại ổ cứng, SSD, HDD
+  graphicsCard?: string; // card đồ họa, ví dụ: NVIDIA GeForce RTX 3060
+  graphicsMemory?: number; // dung lượng card đồ họa, đơn vị GB
+  displaySize: number; // kích thước màn hình đơn vị inch
+  displayResolution?: string; // độ phân giải 1920x1280
+  displayType?: string; // loại màn hình, IPS, TN, OLED
+  refreshRate?: number; // tần số quét, đơn vị Hz
+  touchscreen?: boolean; // cảm ứng hay không
+  battery?: string; // dung lượng pin, ví dụ: 50Wh
+  batteryLife?: number; // thời gian sử dụng pin, đơn vị giờ
+  operatingSystem?: string; // hệ điều hành, ví dụ: Windows 11, macOS
+  ports?: string[]; // các cổng kết nối, ví dụ: USB-C, HDMI, Thunderbolt
+  webcam?: string; // độ phân giải webcam, ví dụ: 720p, 1080p
+  keyboard?: string; // loại bàn phím, ví dụ: bàn phím cơ, bàn phím chiclet
+  speakers?: string; // loại loa, ví dụ: loa stereo, loa Dolby Atmos
+  connectivity?: string; // kết nối không dây, ví dụ: Wi-Fi 6, Bluetooth 5.0
+}
+
+export interface IImage {
+  imageUrl: string;
+  altText?: string;
+  isPrimary?: boolean;
+  sortOrder?: number;
+}
+
+export interface IRatings {
+  average: number;
+  count: number;
+}
+
+export interface ISeoMetadata {
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
+}
+
+
+export interface ICreateLaptop {
+  modelName: string;
+  name: string;
+  brandId: {
+    _id: string;
+    name: string;
+    logo?: string;
+  };
+  categoryId: {
+    _id: string;
+    name: string;
+    slug?: string;
+  };
+  description?: string;
+  price: number;
+  discountPrice?: number; // giá giảm < giá gốc
+  stock: number; // số lượng hàng trong kho
+  warranty?: number; // bao hành tính bằng tháng
+  releaseYear?: number; // năm phát hành
+  status: 'new' | 'refurbished' | 'used'; // tình trạng máy, mới, đã qua sử dụng, tân trang
+  weight?: number; // trọng lượng máy tính xách tay
+  dimensions?: string; // kích thước máy tính xách tay
+  specifications: ISpecifications; // thông số kỹ thuật máy tính xách tay
+  images: IImage[];
+  ratings: IRatings; // đánh giá trung bình và số lượng đánh giá
+  isActive: boolean;
+  isPromoted: boolean; // có được quảng cáo hay không
+  tags?: string[]; // từ khóa tìm kiếm
+  seoMetadata?: ISeoMetadata; // metadata cho SEO
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type LaptopResponse<T extends ICreateLaptop> = T & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type ILaptop = LaptopResponse<ICreateLaptop>
+
+export interface ILaptopGroup {
+  _id: string;
+  name: string;
+  images: IImage[];
+  createdAt: Date;
+  isActive: boolean;
+  sortOrder: number;
+  isPromoted?: boolean;
 }

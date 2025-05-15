@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import img1 from "/public/1607431213-guide-to-finding-out-phone-name.avif";
 import img2 from "/public/5 reasons you should buy a mid range phone over an expensive one.webp";
 import img3 from "/public/34b5bf180145769.6505ae7623131.webp";
@@ -7,15 +6,13 @@ import img4 from "/public/9481555.png";
 import img5 from "/public/chuyenphatnhanh.jpg";
 import bookingOnl from "/public/bookingonline.png";
 import cardGift from "/public/cardgift.png";
-import bannerFlashSale1 from "/public/bannerfFashSale1.png";
-import gamepad from "/public/gamepad.png";
-import keyboard from "/public/keyboard.png";
-import FlashSaleSection from "@/components/home/FlashSaleSection";
 import ServiceCard from "@/components/home/ServiceCard";
 import BenefitCard from "@/components/home/BenefitCard";
 import ProductCard from "@/components/home/ProductCard";
-import { ItemCard } from "@/components/home/ItemCard";
-import Navbar from "@/components/Navbar";
+import BrandSection from "@/components/section/BrandSection/BrandSection";
+import CategorySection from "@/components/section/CategorySection/CategorySection";
+import LaptopGroupSection from "@/components/section/LaptopGroupSection/LaptopGroupSection";
+import SessionSyncer from "@/components/auth/SessionSyncer";
 
 
 
@@ -80,93 +77,69 @@ const contactInfo = [
 ];
 
 
-const items: Item[] = [
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: true },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: true },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: true },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: false },
-  { name: "Bàn phím", img: keyboard, hot: false },
-];
-
-const FlashSale: CartFlashSale[] = [
-  {
-    id: 1,
-    image: gamepad,
-    name: "Máy chơi Game cầm tay",
-    price: "4.290.000 VNĐ",
-    sale: "4.000.000 VNĐ",
-  },
-  {
-    id: 1,
-    image: gamepad,
-    name: "Máy chơi Game cầm tay",
-    price: "4.290.000 VNĐ",
-    sale: "4.000.000 VNĐ",
-  },
-  {
-    id: 1,
-    image: gamepad,
-    name: "Máy chơi Game cầm tay",
-    price: "4.290.000 VNĐ",
-    sale: "4.000.000 VNĐ",
-  },
-  {
-    id: 1,
-    image: gamepad,
-    name: "Máy chơi Game cầm tay",
-    price: "4.290.000 VNĐ",
-    sale: "4.000.000 VNĐ",
-  },
-];
-import Panigation from "@/components/common/Panigation";
-
-// func to fetch data from next server
-async function fetchProductVariants(page = 1, limit = 10) {
-  const res = await fetch(`https://top-gear-be.vercel.app/api/v1/pvariants?page=1&limit=10?page=${page}&limit=${limit}`, {
-    cache: 'no-store',
+async function fetchBrands() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/brand/active`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
   })
 
-  if (!res.ok) {
-    console.log("Error fetching data:", res.statusText);
-
-    throw new Error("Failed to fetch data")
-  }
-  const data = await res.json()
-  return data
+  const data = await res.json();
+  return data.data
 }
 
-export default async function Home({ searchParams }: { searchParams: { page?: string } }) {
+async function fetchCategories() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/category`, {
+    method: "GET",
+  })
+  const data = await res.json();
+  return data.data
+}
 
-  const page =  parseInt( await searchParams.page as string) || 1
-  const limit = 10
-  const productVariants = await fetchProductVariants(page, limit)
-  const totalPages = Math.ceil(productVariants.total / limit)
+async function fetchLaptopGroups() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop-group`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
 
+  const data = await res.json();
+  return data.data
+}
+
+
+
+export default async function Home() {
+
+  // const { data: session } = useSession()
+  // console.log("session:", session);
+
+  const brands = await fetchBrands();
+  const categories = await fetchCategories();
+  const laptopGroups = await fetchLaptopGroups();
   // call fetchProductVariants() above
   return (
     <>
+    <SessionSyncer/>
       <div className="bg-[#F2F4F7]">
         {/* Menu bar */}
-        <Navbar />
+        {/* <Navbar /> */}
         {/* Banner */}
+        {/* Category Filter Bar */}
+        <CategorySection
+          brands={brands}
+          categories={categories}
+        />
 
-        {/* <div className="w-full my-4 bg-white rounded-lg grid lg:grid-cols-7 gap-4 p-4 md:grid-cols-4 sm:grid-cols-2">
-          {items.map((item, index) => (
-            <ItemCard key={index} {...item} />
-          ))}
-        </div> */}
+        {/* Brand Section */}
+        <BrandSection brands={brands} />
 
-        {/* product categories show case */}
-
+        {/* Laptop Group section */}
+        <LaptopGroupSection
+          laptopGroups={laptopGroups}
+        />
         <div className="mx-auto">
           {/* <FlashSaleSection
             bannerFlashSale1={bannerFlashSale1}
@@ -174,7 +147,7 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
           /> */}
 
           {/* TV and accessories */}
-          <div className="grid grid-col-4 gap-y-8 py-28">
+          {/* <div className="grid grid-col-4 gap-y-8 py-28">
             <div>
               <h2 className="text-center text-5xl font-bold text-blue-600">
                 Sản phẩm của Top Gear
@@ -183,7 +156,7 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
                 Các sản phẩm và Phụ kiện với giá ưu đãi
               </h4>
               {/* Products list */}
-              <div
+          {/* <div
                 className="grid xl:grid-cols-5 sm:grid-cols-3 md:grid-cols-4 gap-y-8 my-9"
               >
                 {productVariants.data.map((variant: any, index: any) => (
@@ -193,9 +166,9 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
               </div>
 
               {/* Pagination */}
-              <Panigation totalPages={totalPages} page={page} />
-            </div>
-          </div>
+          {/* <Panigation totalPages={totalPages} page={page} /> */}
+          {/* </div> */}
+          {/* </div> */}
 
           <div className="grid grid-cols-2 my-8">
             <div className="flex flex-col justify-center">

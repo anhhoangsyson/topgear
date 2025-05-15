@@ -5,6 +5,9 @@ import React, { useEffect, useState } from "react";
 import { CartIcon, SearchIcon, UserIcon } from "./icons";
 import useCartStore from "@/store/cartStore";
 import { usePathname } from "next/navigation";
+import {  useSession } from "next-auth/react";
+import AccountDropdown from "@/components/account/AccountDropdown";
+import LoginButton from "@/components/account/LoginButton";
 
 export interface Product {
   name: string;
@@ -49,6 +52,10 @@ export default function Header() {
   const cartStore = useCartStore((state) => state.cartItems);
   const pathName = usePathname();
 
+  const { data: session, status } = useSession()
+  const user = session?.user;
+
+
   // Get cart quantity
   useEffect(() => {
     const totalQuantity = cartStore.reduce((total, item) => {
@@ -70,16 +77,16 @@ export default function Header() {
   }, [lastScrollTop]);
 
   // Fetch all products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const res = await fetch(
-        "https://top-gear-be.vercel.app/api/v1/pvariants"
-      );
-      const data = await res.json();
-      setProducts(data.data); // Giả định `data.data` là mảng sản phẩm
-    };
-    fetchProducts();
-  }, []);
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     const res = await fetch(
+  //       "https://top-gear-be.vercel.app/api/v1/pvariants"
+  //     );
+  //     const data = await res.json();
+  //     setProducts(data.data); // Giả định `data.data` là mảng sản phẩm
+  //   };
+  //   fetchProducts();
+  // }, []);
 
   // Filter products
   // Filter products
@@ -95,11 +102,9 @@ export default function Header() {
     }
   }, [searchQuery, products]);
 
-  console.log(filtered);
-
   return (
     <div
-      className={`fixed top-0 left-0 w-full flex align-center bg-[#0E1746] text-white justify-between py-4 px-24 shadow-lg transition-transform duration-300 z-50
+      className={`fixed top-0 left-0 w-full h-20 flex align-center bg-[#0E1746] text-white justify-between py-4 px-24 shadow-lg transition-transform duration-300 z-50
     ${isHidden ? "-translate-y-full" : "translate-y-0"}`}
     >
       {/* Logo & Nav */}
@@ -108,8 +113,8 @@ export default function Header() {
           <Image
             src="/logo.png"
             alt="logo"
-            width={100}
-            height={100}
+            width={40}
+            height={40}
             className="cursor-pointer"
           />
         </Link>
@@ -118,9 +123,8 @@ export default function Header() {
             {menuNavData.map((item, index) => (
               <li key={index}>
                 <Link
-                  className={`px-4 py-2 text-sm ${
-                    pathName == item.url ? "text-blue-600 font-semibold" : ""
-                  }`}
+                  className={`px-4 py-2 text-sm ${pathName == item.url ? "text-blue-600 font-semibold" : ""
+                    }`}
                   href={item.url}
                 >
                   {item.name}
@@ -178,15 +182,20 @@ export default function Header() {
         </div>
 
         {/* User Icon */}
-        <Link
-          href={"/login"}
-          className="flex items-center border border-white rounded"
-        >
-          <div className="flex items-center gap-2 py-2 px-3 text-sm hover:bg-white hover:text-[#0E1746] transition-all duration-300 rounded">
-            <UserIcon />
-            Tài Khoản
-          </div>
-        </Link>
+        {status === "authenticated"
+          ? (
+            <AccountDropdown
+              user={{
+                name: user?.name ?? "",
+                email: user?.email ?? "",
+                image: user?.image ?? ""
+              }}
+            />
+          )
+          : (
+           <LoginButton/>
+          )
+        }
       </div>
     </div>
   );

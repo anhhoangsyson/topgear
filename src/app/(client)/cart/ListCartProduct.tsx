@@ -68,21 +68,21 @@ const Cart = () => {
                                     onChange={() => toggleSelectItem(item._id)}
                                 />
                                 <div className="flex items-center justify-center w-20 h-20 rounded border border-gray-300">
-                                    <Image alt={item.variantName} width={40} height={40} src={item.image} />
+                                    <Image alt={item.image} width={40} height={40} src={item.image} />
                                 </div>
-                                <p className="">{item.variantName}</p>
+                                <p className="">{item.name}</p>
                             </div>
                         </div>
                         <div className="col-span-1 flex flex-col justify-center items-center text-base text-center">
                             <p className="font-semibold text-base text-gray-700 text-nowrap">
-                                {item.variantPriceSale.toLocaleString('vi-VN', {
+                                {item.discountPrice!.toLocaleString('vi-VN', {
                                     style: 'currency',
                                     currency: 'VND',
                                 })}
                             </p>
-                            {item.variantPriceSale !== item.variantPrice && (
+                            {item.discountPrice !== item.price && (
                                 <p className="text-gray-500 line-through">
-                                    {item.variantPrice.toLocaleString('vi-VN', {
+                                    {item.price.toLocaleString('vi-VN', {
                                         style: 'currency',
                                         currency: 'VND',
                                     })}
@@ -93,7 +93,7 @@ const Cart = () => {
                             <p className="text-center text-nowrap">{item.quantity}</p>
                         </div>
                         <div className="col-span-1 flex items-center text-base text-center text-red-500 font-semibold">
-                            {(item.variantPrice * item.quantity).toLocaleString('vi-VN', {
+                            {(item.discountPrice * item.quantity).toLocaleString('vi-VN', {
                                 style: 'currency',
                                 currency: 'VND',
                             })}
@@ -128,7 +128,7 @@ const Cart = () => {
                         <p>
                             {cartItems
                                 .filter((item) => item.isSelected) // Chỉ tính sản phẩm được chọn
-                                .reduce((total: number, item: CartItem) => total + item.variantPrice * item.quantity, 0)
+                                .reduce((total: number, item: CartItem) => total + item.discountPrice * item.quantity, 0)
                                 .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                         </p>
                     </div>
@@ -143,7 +143,7 @@ const Cart = () => {
                         <p>
                             {cartItems
                                 .filter((item) => item.isSelected) // Chỉ tính sản phẩm được chọn
-                                .reduce((total: number, item: CartItem) => total + item.variantPrice * item.quantity, 0)
+                                .reduce((total: number, item: CartItem) => total + item.discountPrice * item.quantity, 0)
                                 .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                         </p>
                     </div>
