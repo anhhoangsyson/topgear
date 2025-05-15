@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     const response = NextResponse.json({ success: true });
     response.cookies.set('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Chỉ dùng secure trong production
+      // secure: process.env.NODE_ENV === 'production', // Chỉ dùng secure trong production
       path: '/',
       maxAge: 36000, // Hết hạn sau 1 giờ
       sameSite: 'lax'
