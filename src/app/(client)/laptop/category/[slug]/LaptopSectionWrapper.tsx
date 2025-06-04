@@ -1,0 +1,34 @@
+'use client'
+import LaptopSection from '@/components/section/LaptopSection/LaptopSection'
+import { ILaptop } from '@/types'
+import { useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
+
+export default function LaptopSectionWrapper({ slug }: { slug: string }) {
+    const [laptops, setLaptops] = useState<ILaptop[]>([]);
+
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('category', slug);
+        const fetchLaptops = async () => {
+            const query = params.toString();
+            console.log('Fetching laptops with query:', query);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop/filter?${query}`, {
+                method: 'GET',
+            })
+            const data = await res.json();
+            setLaptops(data.data || []);
+        }
+
+        fetchLaptops();
+    }, [slug, searchParams])
+    return (
+        <div>
+            <LaptopSection
+                laptops={laptops}
+            />
+        </div>
+    )
+}

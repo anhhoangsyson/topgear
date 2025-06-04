@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import React from 'react'
 
 async function getListAddress(accessToken: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/location`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_NEXT_SERVER}/api/user/location`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -30,9 +30,9 @@ export default async function UserAdrressesPage() {
             {/* Title */}
             <p className='font-bold text-xl'>Địa chỉ</p>
             {/* add new address */}
-            <div className='flex justify-center items-center mt-4 w-full h-[68px] bg-white text-sm font-light border-dashed border-gray-400 border-2 rounded cursor-pointer'>
+            {/* <div className='flex justify-center items-center mt-4 w-full h-[68px] bg-white text-sm font-light border-dashed border-gray-400 border-2 rounded cursor-pointer'>
                 Thêm địa chỉ mới
-            </div>
+            </div> */}
             {/* address */}
             <ListAddressCard
              locationsData={locationsData?.data} />

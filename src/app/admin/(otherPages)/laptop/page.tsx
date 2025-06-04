@@ -5,22 +5,24 @@ import { useRouter } from "next/navigation";
 import { Plus } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/Button";
-import { ICategory, ILaptop } from "@/types";
+import { ILaptop } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { Loader } from "@/components/Loader";
-import { useCategoryStore } from "@/store/categoryStore";
 import { DataTable } from "@/components/common/data-table";
 import { LaptopColumns } from "@/app/admin/(otherPages)/laptop/laptop-columns";
+import LaptopDetailModal from "@/app/admin/(otherPages)/laptop/LaptopDetailModal";
 
-export default function CategoriesPage() {
+export default function LaptopsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [laptops, setLaptops] = useState<ILaptop[]>([]);
+  const [showModalLaptopDetail, setShowModalLaptopDetail] = useState(false);
+  const [selectedLaptop, setSelectedLaptop] = useState<ILaptop | null>(null);
 
   useEffect(() => {
     const fetchLaptops = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_hoAPI_URL}/laptop`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop`, {
           method: "GET",
         })
 
@@ -30,12 +32,13 @@ export default function CategoriesPage() {
         const data = await res.json();
         setLaptops(data.data)
         console.log(data.data);
-        
+
       } catch (error) {
+        console.log('🚀 ~ file: page.tsx:22 ~ fetchLaptops ~ error:', error);
         toast({
           variant: "destructive",
           title: "Có lỗi xảy ra",
-          description: "Không thể tải danh sách danh mục. Vui lòng thử lại sau.",
+          description: "Không thể tải danh laptop. Vui lòng thử lại sau.",
         });
 
       }
@@ -43,11 +46,14 @@ export default function CategoriesPage() {
     fetchLaptops();
   }, []);
 
+  const handleShowLaptopDetail = (laptop: ILaptop) => {
+    setSelectedLaptop(laptop);
+    setShowModalLaptopDetail(true);
+  }
   return (
 
     <div className="flex-col">
-      <h1 className="text-2xl font-bold mb-4">Danh mục</h1>
-      <div></div>
+      <h1 className="text-2xl font-bold mb-4">Laptop</h1>
       {isLoading
         ? (
           <div className="flex h-screen items-center justify-center">
@@ -58,17 +64,24 @@ export default function CategoriesPage() {
           <div className="flex-1 space-y-4 p-8 pt-6">
             <div className="flex items-center justify-between">
 
-              <Button onClick={() => router.push("/admin/category/add")}>
+              <Button onClick={() => router.push("/admin/laptop/add")}>
                 <Plus className="mr-2 h-4 w-4" />
                 Thêm mới
               </Button>
             </div>
             <Separator />
             <DataTable
-              columns={LaptopColumns}
+              columns={LaptopColumns(handleShowLaptopDetail)}
               data={laptops}
               searchBy="name"
             />
+            {/* modal laptopdetail */}
+            <LaptopDetailModal
+              open={showModalLaptopDetail}
+              onClose={() => setShowModalLaptopDetail(false)}
+              laptop={selectedLaptop}
+            />
+            
           </div>
         )}
 

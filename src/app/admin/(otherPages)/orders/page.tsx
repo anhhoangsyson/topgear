@@ -1,50 +1,53 @@
-import { DataTable } from '@/app/admin/attributes/data-table';
-import { orderColumns, OrderRes } from '@/app/admin/orders/order-columns';
-import React from 'react'
+'use client'
+import { orderColumns } from '@/app/admin/(otherPages)/orders/order-columns';
+import OrderPreviewModal from '@/app/admin/(otherPages)/orders/OrderPreviewModal';
+import { DataTable } from '@/components/common/data-table';
+import { IOrderWithDetails } from '@/types';
+import React, { useEffect, useState } from 'react'
 
-async function fetchOrder(): Promise<OrderRes[]> {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_PROD}/order/all`, {
+
+
+export default function OrdersPage() {
+
+  useEffect(() => {
+    const fetOrders = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/order/all`, {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
-    });
+      });
 
-    if (!res.ok) {
+      if (!res.ok) {
         throw new Error("Failed to fetch attributes");
+      }
+      const data = await res.json();
+      setOrders(data.data);
     }
+    fetOrders()
+  }, []);
 
-    const data = await res.json();
-      console.log("data", data);
-      
+  const [selectedOrder, setSelectedOrder] = useState<IOrderWithDetails | null>(null);
+  const [showModalPreview, setShowModalPreview] = useState(false);
+  const [orders, setOrders] = useState<IOrderWithDetails[]>([]);
 
-    return data.data
-
-
-
-}
-
-export default async function AttributesPage() {
-  try {
-    const data = await fetchOrder();
-
-    return (
-      <div className="container mx-auto py-10">
-
-        <DataTable
-          columns={orderColumns}
-          data={data}
-          searchBy={"_id"} // Set default searchBy to attributeName if data is not empty
-        />
-
-      </div>
-    );
-  } catch (error) {
-    console.error("Error fetching attributes:", error);
-    return (
-      <div className="container mx-auto py-10">
-        <p className="text-red-500">Không thể tải dữ liệu thuộc tính. Vui lòng thử lại sau.</p>
-      </div>
-    );
+  const handleShowOrderPreview = (order: any) => {
+    setSelectedOrder(order);
+    setShowModalPreview(true);
   }
+
+  return (
+    <div className="container mx-auto py-10">
+      <DataTable
+        columns={orderColumns(handleShowOrderPreview)}
+        data={orders}
+        searchBy={"_id"} // Set default searchBy to attributeName if data is not empty
+      />
+      <OrderPreviewModal
+        order={selectedOrder || null}
+        open={showModalPreview}
+        onClose={() => { setShowModalPreview(false); setSelectedOrder(null) }}
+      />
+    </div>
+  );
 }

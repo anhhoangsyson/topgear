@@ -17,38 +17,40 @@ import { Badge } from "@/components/ui/badge";
 import { X, Upload, Plus } from 'lucide-react';
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { IImage } from "@/types";
 
 interface ImagesAndSeoFormProps {
   suggestedMetadata: any;
+  oldImages?: IImage[]
+  isEditMode?: boolean;
 }
 
-export default function ImagesAndSeoForm({ suggestedMetadata }: ImagesAndSeoFormProps) {
-  console.log('suggestedMetadata', suggestedMetadata);
-  
+export default function ImagesAndSeoForm({ suggestedMetadata, oldImages, isEditMode }: ImagesAndSeoFormProps) {
+
   const { control, setValue, watch } = useFormContext();
   const [newTag, setNewTag] = useState("");
   const [newKeyword, setNewKeyword] = useState("");
-  
+
   const images = watch("images") || [];
   const altTexts = watch("altTexts") || [];
   const tags = watch("tags") || [];
   const keywords = watch("seoMetadata.keywords") || [];
 
-useEffect(() => {
-  if (suggestedMetadata) {
-    setValue("seoMetadata.metaTitle", suggestedMetadata.seoMetadata.metaTitle || "");
-    setValue("seoMetadata.metaDescription", suggestedMetadata.seoMetadata.metaDescription || "");
-    setValue("seoMetadata.keywords", suggestedMetadata.seoMetadata.keywords || []);
-    setValue("tags", suggestedMetadata.tags || []);
-  }
-}, [suggestedMetadata, setValue]);
+  useEffect(() => {
+    if (suggestedMetadata) {
+      setValue("seoMetadata.metaTitle", suggestedMetadata.seoMetadata.metaTitle || "");
+      setValue("seoMetadata.metaDescription", suggestedMetadata.seoMetadata.metaDescription || "");
+      setValue("seoMetadata.keywords", suggestedMetadata.seoMetadata.keywords || []);
+      setValue("tags", suggestedMetadata.tags || []);
+    }
+  }, [suggestedMetadata, setValue]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       const newImages = [...images, ...Array.from(files)];
       setValue("images", newImages);
-      
+
       // Initialize altTexts for new images
       const newAltTexts = [...altTexts];
       for (let i = altTexts.length; i < newImages.length; i++) {
@@ -62,7 +64,7 @@ useEffect(() => {
     const newImages = [...images];
     newImages.splice(index, 1);
     setValue("images", newImages);
-    
+
     const newAltTexts = [...altTexts];
     newAltTexts.splice(index, 1);
     setValue("altTexts", newAltTexts);
@@ -94,13 +96,33 @@ useEffect(() => {
 
   const removeKeyword = (keyword: string) => {
     setValue(
-      "seoMetadata.keywords", 
+      "seoMetadata.keywords",
       keywords.filter((k: string) => k !== keyword)
     );
   };
 
   return (
     <div className="space-y-6">
+      {/* old imgs */}
+      {oldImages && oldImages.length > 0 && (
+        <div>
+          <div className="font-semibold mb-2">Ảnh hiện tại:</div>
+          <div className="flex gap-2 flex-wrap">
+            {oldImages.map((img, idx) => (
+              <div key={idx} className="relative">
+                <Image
+                  src={img.imageUrl}
+                  alt={img.altText || "Ảnh laptop"}
+                  width={80}
+                  height={80}
+                  className="rounded border object-cover"
+                />
+                {/* Nếu muốn cho phép xóa ảnh cũ, thêm nút xóa ở đây */}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <div>
         <h3 className="text-lg font-medium mb-4">Hình ảnh sản phẩm</h3>
         <FormField
@@ -212,9 +234,9 @@ useEffect(() => {
             <p className="text-sm text-muted-foreground mb-1">Tags được gợi ý:</p>
             <div className="flex flex-wrap gap-2">
               {suggestedMetadata.tags.map((tag: string, index: number) => (
-                <Badge 
-                  key={index} 
-                  variant="outline" 
+                <Badge
+                  key={index}
+                  variant="outline"
                   className="cursor-pointer hover:bg-secondary"
                   onClick={() => {
                     if (!tags.includes(tag)) {
@@ -305,9 +327,9 @@ useEffect(() => {
                 <p className="text-sm text-muted-foreground mb-1">Keywords được gợi ý:</p>
                 <div className="flex flex-wrap gap-2">
                   {suggestedMetadata.seoMetadata.keywords.map((keyword: string, index: number) => (
-                    <Badge 
-                      key={index} 
-                      variant="outline" 
+                    <Badge
+                      key={index}
+                      variant="outline"
                       className="cursor-pointer hover:bg-secondary"
                       onClick={() => {
                         if (!keywords.includes(keyword)) {

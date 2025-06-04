@@ -8,7 +8,7 @@ export default function BrandCard({ brand }: { brand: IBrand }) {
 
     return (
         <Link
-            href={`/brand/${brand._id}`}
+            href={`/laptop/brand/${brand.slug}`}
             key={brand._id}
             className="flex flex-col items-center hover:scale-105 transition-transform duration-300 ease-in-out hover:cursor-pointer">
             <Image

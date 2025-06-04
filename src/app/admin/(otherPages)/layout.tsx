@@ -1,5 +1,4 @@
 'use client'
-
 import AdminHeader from '@/app/admin/layout/HeaderAdmin'
 import SidebarAdmin from '@/app/admin/layout/SidebarAdmin'
 import { useSidebar } from '@/context/admin/SidebarContext'

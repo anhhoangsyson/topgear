@@ -1,7 +1,5 @@
 import type { NextConfig } from "next";
 
-const withSvgr = require('@svgr/webpack');
-
 const nextConfig: NextConfig = {
   /* config options here */
   images: {

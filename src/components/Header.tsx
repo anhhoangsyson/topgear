@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { CartIcon, SearchIcon, UserIcon } from "./icons";
 import useCartStore from "@/store/cartStore";
 import { usePathname } from "next/navigation";
-import {  useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import AccountDropdown from "@/components/account/AccountDropdown";
 import LoginButton from "@/components/account/LoginButton";
 
@@ -30,7 +30,7 @@ const menuNavData: menuNavData[] = [
   },
   {
     name: "Tất cả sản phẩm",
-    url: "/products",
+    url: "/laptop/",
   },
   {
     name: "Blogs",
@@ -196,7 +196,7 @@ export default function Header() {
             />
           )
           : (
-           <LoginButton/>
+            <LoginButton />
           )
         }
 

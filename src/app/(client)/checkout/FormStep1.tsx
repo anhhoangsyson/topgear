@@ -9,6 +9,8 @@ import { IUser } from '../../../schemaValidations/user.schema';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useSession } from 'next-auth/react';
+import { use } from 'react';
+import useCartStore from '@/store/cartStore';
 
 // Định nghĩa các interface
 interface IProvince {
@@ -101,7 +103,18 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
   const [showAddAddressModal, setShowAddAddressModal] = useState<boolean>(false);
 
   const totalPrice = selectedItems.reduce((acc, item) => acc + (item.discountPrice * item.quantity), 0);
-
+  let discount = 0;
+  const selectedVoucher = useCartStore((state) => state.selectedVoucher);
+  if (selectedVoucher) {
+    if (selectedVoucher.pricePercent > 0) {
+      discount = Math.floor((totalPrice * selectedVoucher.pricePercent) / 100);
+    } else if (selectedVoucher.priceOrigin > 0) {
+      discount = Math.min(selectedVoucher.priceOrigin, totalPrice);
+    }
+  }
+  const finalTotal = totalPrice - discount;
+  const discountFormatted = discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+  const finalTotalFormatted = finalTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -230,7 +243,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
 
   const handleAddNewAddress = async (data: AddressFormData) => {
     const accessToken = session?.data?.accessToken;
-    
+
     const payload = {
       province: data.province, // idProvince
       district: data.district, // idDistrict
@@ -495,7 +508,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
         <div className='flex items-center justify-between mt-2'>
           <p className='text-sm font-semibold text-gray-900'>Tổng tiền tạm tính:</p>
           <p className='text-sm font-semibold text-red-500'>
-            {totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+            {finalTotalFormatted}
           </p>
         </div>
         <Button

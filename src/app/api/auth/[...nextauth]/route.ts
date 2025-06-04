@@ -2,7 +2,6 @@ import NextAuth from "next-auth/next"
 import FacebookProvider from "next-auth/providers/facebook"
 import type { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import Email from "next-auth/providers/email"
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -33,9 +32,14 @@ export const authOptions: NextAuthOptions = {
             password: credentials?.password,
           }),
         });
-        const user = await res.json();
-        if (res.ok && user) {
-          return user; // Đăng nhập thành công
+        const data = await res.json();
+        console.log('Login response:', data);
+        
+        if (res.ok && data) {
+          return {
+            ...data.data,
+            BEAccessToken: data.token, // Lưu access token từ backend
+          }; // Đăng nhập thành công
         }
         return null; // Đăng nhập thất bại
       }
@@ -67,7 +71,10 @@ export const authOptions: NextAuthOptions = {
           if (response.ok) {
             const data = await response.json()
             // console.log('token from be', data.accessToken);
+
             user.BEAccessToken = data.accessToken
+            user.profileCompleted = data.user.profileCompleted;
+            user.role = data.user.role;
             // console.log('token luu trong user',user.BEAccessToken);
 
             // Lưu thông tin token hoặc dữ liệu người dùng từ backend nếu cần
@@ -85,10 +92,12 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, account, user }) {
       // Nếu đang đăng nhập, thêm thông tin access token vào token
-      if (user?.BEAccessToken) {
-        token.accessToken = user.BEAccessToken
-        // console.log('token from jwt', token.accessToken);
+      if (user) {
+        token.accessToken = user.BEAccessToken;
+        token.role = user?.role;
+        token.profileCompleted = user.profileCompleted;
 
+        // console.log('token from jwt', token.accessToken);
       }
       else if (account?.access_token) {
         token.accessToken = account.access_token
@@ -98,11 +107,13 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      // console.log('sesstion callback:', session, token);
 
       // Thêm thông tin từ token vào session
       session.accessToken = token.accessToken as string
       session.provider = token.provider as string
+      session.user.profileCompleted = token.profileCompleted;
+      session.user.role = token.role as string
+
       return session
     },
   },
@@ -112,7 +123,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // Thời gian sống của session (30 ngày)
+    maxAge: 30 * 24 * 60, // Thời gian sống của session (30 ngày)
   },
   // debug: process.env.NODE_ENV === "development", // Bật chế độ debug trong môi trường phát triển
 }

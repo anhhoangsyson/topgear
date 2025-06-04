@@ -18,57 +18,14 @@ const Skeleton = () => {
     )
 }
 
-export default function ListOrderDetails({ orderDetails }: { orderDetails: [OrderDetail] }) {
-    
-    const [productVariants, setProductVariants] = useState<IProductVariantRes[]>([]);
+export default function ListOrderDetails({ orderDetails }: { orderDetails: OrderDetail[] }) {
+    console.log('ordedetail passsed', orderDetails);
+
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchProductVariants = async () => {
-            try {
-                setLoading(true);
-                // Gọi fetch cho từng item._id bằng Promise.all
-                const fetchPromises = orderDetails.map((item) =>
-                    fetch(`https://top-gear-be.vercel.app/api/v1/pvariants/${item.productVariantId}`, {
-                        method: 'GET',
-                    }).then((res) => {
-                        if (!res.ok) {
-                            console.error(`Failed to fetch variant ${item.productVariantId}`);
-                        }
-                        return res.json();
-                    })
-                        .then((data) => {
-                            // Kiểm tra nếu data là mảng và có ít nhất một phần tử
-                            if (Array.isArray(data) && data.length > 0) {
-                                return { productVariantId: item.productVariantId, ...data[0] }; // Lấy object đầu tiên
-                            }
-                            console.warn(`No valid data for variant ${item.productVariantId}`);
-                            return null;
-                        })
-                );
 
-                const results = await Promise.all(fetchPromises);
-                console.log('results', typeof results, results);
-                console.log('results[0]', typeof results[0], results[0]);
-
-                const validVariants = results.filter((variant) => variant !== null);
-                console.log('validVariants', validVariants);
-                
-                setProductVariants(validVariants);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : String(err));
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (orderDetails.length > 0) {
-            fetchProductVariants();
-        }
-    }, [orderDetails]); // Dependency: chạy lại khi orderDetails thay đổi
-
-    if (loading) return <div><Skeleton /></div>;
+    // if (loading) return <div><Skeleton /></div>;
     if (error) return <div>Error: {error}</div>;
 
 
@@ -78,19 +35,19 @@ export default function ListOrderDetails({ orderDetails }: { orderDetails: [Orde
                 <div
                     key={index}
                     className='flex items-center justify-between p-4 mb-4 gap-x-4 bg-white rounded'>
-                    {productVariants.length > 0 ? (
+                    {item.images.length > 0 ? (
                         <div
                             className='flex gap-x-4 items-center justify-between'>
                             <Image
-                                src={productVariants[index]?.images[0]?.imageUrl || '/cardgift.png'}
+                                src={item.images[0].imageUrl || '/cardgift.png'}
                                 alt="order"
                                 width={100}
                                 height={100}
                                 className='w-auto h-24 rounded-md object-cover'
                             />
                             <Link
-                                href={productVariants[index]?._id ? `/products/${productVariants[index]?._id}` : '#'}>
-                                <p className='text-blue-500 cursor-pointer text-sm '>{productVariants[index]?.variantName}</p>
+                                href={item.images[0]?._id ? `/laptop/${item.slug}` : '#'}>
+                                <p className='text-blue-500 cursor-pointer text-sm '>{item.name}</p>
                             </Link>
                         </div>
                     ) : (<Skeleton />)}
@@ -104,7 +61,7 @@ export default function ListOrderDetails({ orderDetails }: { orderDetails: [Orde
                     <div className='flex flex-col gap-y-8'>
                         <p><span>{formatPrice(item.subTotal)}</span></p>
                         <Button
-                            onClick={() => { location.href = `/products/${item.productVariantId}`; }}
+                            onClick={() => { location.href = `/products/${item._id}`; }}
                             className='bg-blue-500 text-white'
                             variant={'outline'}
                             size={'sm'}>

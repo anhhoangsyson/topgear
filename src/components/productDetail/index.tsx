@@ -1,25 +1,29 @@
-import { ProductVariantDetail } from "@/types";
+import { ILaptop } from "@/types";
 import Wraper from "../core/Wraper";
 import BreadCrumb from "./components/BreadCrumb";
-import CardDetailProduct from "./components/CardDetailProduct";
-import LeftSideDetailProduct from "./components/LeftSideDetailProduct";
-import { ListRelatedProduct } from "./components/ListRelatedProduct";
+import CardDetailLaptop from "@/components/productDetail/components/CardDetailProduct";
+import LeftSideDetailLaptop from "@/components/productDetail/components/LeftSideDetailProduct";
+import { ListRelatedLaptop } from "@/components/productDetail/components/ListRelatedLaptop";
 
-const DetailProductPage = ({ data }: { data: ProductVariantDetail }) => {
+const DetailLaptopPage = ({ data }: { data: ILaptop }) => {
 
   return (
     <Wraper className="mt-8">
       <BreadCrumb />
       {/* detail product */}
       <div className="mt-7 flex flex-col md:justify-between items-start gap-5 md:flex-row">
-        <CardDetailProduct data={data}/>
-        <LeftSideDetailProduct data={data.variantAttributes as [] } />
+        <CardDetailLaptop data={data} />
+        <LeftSideDetailLaptop data={data.specifications} />
       </div>
 
       {/* related products */}
-      <ListRelatedProduct id={data._id} />
+      <ListRelatedLaptop
+        excludeId={data._id}
+        brandId={data.brandId._id}
+        categoryId={data.categoryId._id}
+      />
     </Wraper>
   );
 };
 
-export default DetailProductPage;
+export default DetailLaptopPage

@@ -1,3 +1,4 @@
+'use client'
 import { UserIcon } from '@/app/admin/icons'
 import Link from 'next/link'
 import React from 'react'

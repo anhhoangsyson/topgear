@@ -180,15 +180,18 @@ export interface customerInfoRes {
 
 export interface OrderDetail {
   _id: string;
-  productVariantId: string;
-  quantity: number;
+  quantity: string;
   price: number;
   subTotal: number;
-}
-
-export interface IProductVariantRes extends IProductVariant {
-  images: IProductImage[];
-  variantName: string
+  name: string;
+  slug: string;
+  images: {
+    _id: string;
+    imageUrl: string;
+    altText?: string;
+    isPrimary?: boolean;
+    sortOrder?: number;
+  }[];
 }
 
 export interface IBrand extends CustomDocument {
@@ -197,6 +200,7 @@ export interface IBrand extends CustomDocument {
   description: string;
   country: string;
   website: string;
+  slug: string;
   isActive: boolean;
 }
 
@@ -281,16 +285,68 @@ export type LaptopResponse<T extends ICreateLaptop> = T & {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
+  slug: string;
 }
 
 export type ILaptop = LaptopResponse<ICreateLaptop>
 
-export interface ILaptopGroup {
+export interface ILaptopGroup extends CustomDocument {
   _id: string;
   name: string;
-  images: IImage[];
+  laptops: ILaptop[];
+  slug: string;
+  description?: string;
+  backgroundImage?: string;
   createdAt: Date;
   isActive: boolean;
   sortOrder: number;
   isPromoted?: boolean;
+}
+
+export interface IVoucher {
+  _id?: string;
+  code?: string;
+  type: 'code' | 'auto';
+  expiredDate: Date;
+  pricePercent: number;
+  priceOrigin: number;
+  status: 'active' | 'inactive';
+}
+
+export interface IBlog extends CustomDocument {
+  title: string;
+  content: string;
+  userId: {
+    // _id: string;
+    fullname: string;
+  }
+  tags: string[];
+  thumbnail: string;
+  slug: string;
+}
+
+export interface IOrderWithDetails {
+  _id: string;
+  voucherId?: string | null;
+  customerId: string;
+  totalAmount: number;
+  orderStatus: string;
+  address: string;
+  discountAmount: number;
+  paymentMethod: string;
+  paymentTransactionId: string | null;
+  paymentUrl: string | null;
+  orderDetails: {
+    _id: string; 
+    laptopId: string;
+    quantity: number;
+    price: number;
+    subTotal: number;
+    images:IImage[];
+  }[];
+  user:{
+    fullname: string;
+    phone: string;
+    email: string;
+  }
 }

@@ -6,10 +6,9 @@ import { getServerSession } from 'next-auth';
 
 async function getUserInfo() {
 
-    const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   const accessToken = session?.accessToken;
-  console.log('accessToken', accessToken);
-  
+
   const userRes = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/auth/me`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`
@@ -19,7 +18,7 @@ async function getUserInfo() {
     // credentials: 'same-origin',
   });
 
- 
+
   if (!userRes.ok) {
     console.error(`Error fetching user info: ${userRes.status} ${userRes.statusText}`);
     return null;
@@ -49,7 +48,7 @@ export default async function UserInfoPage() {
   const userData = await getUserInfo();
   return (
     <div className='flex gap-x-4'>
-      <div className='bg-white rounded w-4/6'>
+      <div className='rounded w-4/6'>
         <FormAccountInfo userInfo={userData?.userData.data} />
       </div>
       {/* <AddressInfo defaultAddress={userData?.defaultAddress.data} /> */}

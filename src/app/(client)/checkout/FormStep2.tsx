@@ -1,7 +1,7 @@
 'use client';
 import { RiCashLine } from "react-icons/ri";
 import { SiZalo } from "react-icons/si";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
@@ -9,6 +9,8 @@ import useCartStore, { CartItem } from "@/store/cartStore";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
+import VoucherModal from "@/components/Voucher/VoucherModal";
+import { useSession } from "next-auth/react";
 
 type PaymentMethod = 'cash' | 'zalopay';
 
@@ -28,74 +30,49 @@ interface Step2Props {
 export default function Step2({ customerInfo, selectedItems, onBack }: Step2Props) {
 
   const router = useRouter()
-
-  // fake voucher
-  const vouchers = [
-    {
-      _id: "1",
-      code: "TOPGEAR100K",
-      type: "manual", // Nhập mã
-      discountType: "amount",
-      discountValue: 100000, // Giảm 100k
-      minOrderValue: 1000000, // Đơn từ 1 triệu
-      maxDiscount: null,
-      expiredDate: "2025-12-31T23:59:59.000Z",
-      usageLimit: 100,
-      usedCount: 10,
-      status: "active",
-    },
-    {
-      _id: "2",
-      code: "TOPGEAR10P",
-      type: "manual", // Nhập mã
-      discountType: "percent",
-      discountValue: 10, // Giảm 10%
-      minOrderValue: 2000000, // Đơn từ 2 triệu
-      maxDiscount: 300000, // Tối đa giảm 300k
-      expiredDate: "2025-12-31T23:59:59.000Z",
-      usageLimit: 50,
-      usedCount: 5,
-      status: "active",
-    },
-    {
-      _id: "3",
-      code: null,
-      type: "auto", // Tự động áp dụng
-      discountType: "amount",
-      discountValue: 300000, // Giảm 300k
-      minOrderValue: 6000000, // Đơn từ 6 triệu
-      maxDiscount: null,
-      expiredDate: "2025-12-31T23:59:59.000Z",
-      usageLimit: 0, // Không giới hạn
-      usedCount: 0,
-      status: "active",
-    },
-    {
-      _id: "4",
-      code: null,
-      type: "auto", // Tự động áp dụng
-      discountType: "percent",
-      discountValue: 5, // Giảm 5%
-      minOrderValue: 5000000, // Đơn từ 5 triệu
-      maxDiscount: 200000, // Tối đa giảm 200k
-      expiredDate: "2025-12-31T23:59:59.000Z",
-      usageLimit: 0,
-      usedCount: 0,
-      status: "active",
-    },
-  ];
+  const { data: session } = useSession();
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/voucher/customer/available`, {
+        method: 'GET',
+      });
+      const data = await res.json();
+      setVouchers(data.data);
+    }
+    fetchVouchers()
+  }, [])
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>(''); // Lưu phương thức thanh toán
-  const [voucherCode, setVoucherCode] = useState<string | null>(null); // Lưu mã giảm giá
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false); // Điều khiển modal
-  const [showVoucherModal, setShowVoucherModal] = useState<boolean>(false); // Điều khiển modal mã giảm giá
   const [isLoading, setIsLoading] = useState<boolean>(false); // Điều khiển loading
+
+  const [showVoucherModal, setShowVoucherModal] = useState(false);
+  const [vouchers, setVouchers] = React.useState([]);// list voucher lấy từ be
+
+  const setVoucher = useCartStore((state) => state.setVoucher);
+  const selectedVoucher = useCartStore((state) => state.selectedVoucher);
+
+  // console.log(selectedVoucher);
 
   const totalPrice = selectedItems.reduce((acc, item) => acc + (item.discountPrice * item.quantity), 0);
   const totalPriceFormatted = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
   const totalQuantity = selectedItems.reduce((acc, item) => acc + item.quantity, 0);
 
+
+  let discount = 0;
+  if (selectedVoucher) {
+    if (selectedVoucher.pricePercent > 0) {
+      discount = Math.floor((totalPrice * selectedVoucher.pricePercent) / 100);
+    } else if (selectedVoucher.priceOrigin > 0) {
+      discount = Math.min(selectedVoucher.priceOrigin, totalPrice);
+    }
+  }
+  const finalTotal = totalPrice - discount;
+  const discountFormatted = discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+  const finalTotalFormatted = finalTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+
   const handlePayment = async () => {
+    setIsLoading(true);
     if (!paymentMethod) {
       toast({
         title: 'Chưa chọn phương thức thanh toán',
@@ -105,30 +82,47 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
       })
       return;
     }
+
     if (selectedItems.length === 0) {
       alert('Giỏ hàng trống!');
       return;
     }
 
+    // const orderData = {
+    //   address: customerInfo.address,
+    //   paymentMethod: paymentMethod as PaymentMethod,
+    //   voucherCode: voucherCode || null,
+    //   cartItem: selectedItems.map(item => ({
+    //     _id: item._id,
+    //     variantName: item.name,
+    //     variantPrice: item.price,
+    //     variantPriceSale: item.discountPrice,
+    //     quantity: item.quantity,
+    //     image: item.image,
+    //   })),
+    //   note: customerInfo.note || '',
+    // };
 
     const orderData = {
       address: customerInfo.address,
       paymentMethod: paymentMethod as PaymentMethod,
-      voucherCode: voucherCode || null,
-      cartItem: selectedItems.map(item => ({
+      voucherCode: selectedVoucher?.code || null,
+      voucherId: selectedVoucher?._id,// Lấy từ zustand, luôn đúng với voucher đang áp dụng
+      cartItem: selectedItems.map((item) => ({
         _id: item._id,
-        variantName: item.name,
-        variantPrice: item.price,
-        variantPriceSale: item.discountPrice,
+        name: item.name,
+        price: item.price,
+        discountPrice: item.discountPrice,
         quantity: item.quantity,
         image: item.image,
       })),
       note: customerInfo.note || '',
     };
 
+
     try {
-      const accessToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
-      const response = await fetch('https://top-gear-be.vercel.app/api/v1/order', {
+      const accessToken = session?.accessToken || ''; // Lấy accessToken từ session
+      const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/order`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -147,6 +141,7 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
           const paymentUrl = result.data.payment.paymentUrl;
           window.location.href = paymentUrl;
         } else {
+
           const orderId = result?.data?.data?._id;
           toast({
             title: 'Đặt hàng thành công',
@@ -155,7 +150,6 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
             variant: 'default',
           })
           router.push(`/checkout/success/${orderId}`)
-
         }
       }
       else {
@@ -202,13 +196,13 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
           </div>
           <div className='flex items-center justify-between mb-4'>
             <p className='text-sm font-thin text-gray-600'>Giảm giá</p>
-            <p className='text-gray-900 text-sm font-thin'>0</p>
+            <p className='text-gray-900 text-sm font-thin'>{discountFormatted}</p>
           </div>
           <div className='flex items-center justify-between border-t border-gray-300 my-2 pt-8'>
             <p className='text-sm font-thin text-gray-600'>
               <strong className='font-semibold text-black'>Tổng tiền </strong>(Đã gồm VAT)
             </p>
-            <p className='text-black text-sm font-thin'>{totalPriceFormatted}</p>
+            <p className='text-black text-sm font-thin'>{finalTotalFormatted}</p>
           </div>
         </div>
 
@@ -268,23 +262,16 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
         </Dialog>
 
         {/* Mã giảm giá */}
-        <h3 className='my-2 mt-8 uppercase'>Mã giảm giá</h3>
-        <Button
-          onClick={() => { setShowVoucherModal(true) }}
-          variant='outline'
-        >
-          Chọn hoặc nhập khuyến mãi
-        </Button>
-        <div className='w-full p-4 bg-white rounded'>
-          <input
-            type='text'
-            disabled={true}
-            value={voucherCode || ''}
-            onChange={(e) => setVoucherCode(e.target.value)}
-            placeholder='Nhập mã giảm giá (nếu có)'
-            className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500'
-          />
+        <div className="w-full p-4 bg-white rounded">
+          <h3 className='my-2 mt-8 uppercase'>Mã giảm giá</h3>
+          <Button
+            onClick={() => { setShowVoucherModal(true) }}
+            variant='outline'
+          >
+            Chọn hoặc nhập khuyến mãi
+          </Button>
         </div>
+
 
         {/* Thông tin nhận hàng */}
         <h3 className='my-2 mt-8 uppercase'>Thông tin nhận hàng</h3>
@@ -310,107 +297,43 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
             <p className='text-gray-900 text-sm font-thin'>{customerInfo.note || 'Không có'}</p>
           </div>
 
-          {/* Danh sách sản phẩm */}
-          {/* {selectedItems.map((item) => (
-          <div key={item._id} className='grid grid-cols-5 p-4 rounded bg-gray-100 mb-2'>
-            <div className='col-span-1 object-cover'>
-              <img className='rounded' alt={item.variantName} height={100} width={100} src={item.image} />
-            </div>
-            <div className='col-span-3'>
-              <p className='p-2 text-gray-700 text-sm text-wrap'>{item.variantName}</p>
-              <p className='text-[15px] font-thin text-red-500'>
-                {item.variantPriceSale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-              </p>
-            </div>
-            <div className='col-span-1 flex items-center justify-center'>
-              <p className='text-sm font-thin'>Số lượng: {item.quantity}</p>
-            </div>
-          </div>
-        ))} */}
         </div>
 
         {/* Tổng tiền và nút thanh toán */}
         <div className='mx-auto p-3 fixed bottom-0 rounded-tl rounded-tr h-28 w-[600px] bg-white shadow-lg'>
           <div className='flex items-center justify-between mt-2'>
             <p className='text-sm font-semibold text-gray-900'>Tổng tiền:</p>
-            <p className='text-sm font-semibold text-red-500'>{totalPriceFormatted}</p>
+            <p className='text-sm font-semibold text-red-500'>{finalTotalFormatted}</p>
           </div>
           <Button
             onClick={handlePayment}
             variant={'destructive'}
             className='w-full mt-4 bg-red-500'
           >
-            Thanh toán
+            Đặt hàng
           </Button>
         </div>
 
         {/* dialog chon voucher */}
-        <Dialog open={showVoucherModal} onOpenChange={setShowVoucherModal}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Chọn hoặc nhập mã voucher</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              {/* Danh sách voucher mẫu */}
-              {vouchers.map((voucher) => (
-                <Button
-                  key={voucher._id}
-                  variant={voucherCode === voucher.code ? "default" : "outline"}
-                  className="w-full flex justify-between"
-                  onClick={() => {
-                    setVoucherCode(voucher.code);
-                    setShowVoucherModal(false);
-                  }}
-                >
-                  <span>
-                    {voucher.code
-                      ? `${voucher.code} - ${voucher.discountType === "amount"
-                        ? `Giảm ${voucher.discountValue.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}`
-                        : `Giảm ${voucher.discountValue}%`
-                      }`
-                      : voucher.discountType === "amount"
-                        ? `Tự động: Giảm ${voucher.discountValue.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}`
-                        : `Tự động: Giảm ${voucher.discountValue}%`
-                    }
-                  </span>
-                  <span>
-                    {voucher.minOrderValue > 0 && (
-                      <span className="text-xs text-gray-500 ml-2">
-                        Đơn từ {voucher.minOrderValue.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
-                      </span>
-                    )}
-                  </span>
-                </Button>
-              ))}
-
-              {/* Nhập mã voucher thủ công */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={voucherCode || ""}
-                  onChange={e => setVoucherCode(e.target.value)}
-                  placeholder="Nhập mã voucher"
-                  className="flex-1 border rounded px-2 py-1 text-sm"
-                />
-                <Button
-                  type="button"
-                  onClick={() => setShowVoucherModal(false)}
-                  variant="default"
-                >
-                  Áp dụng
-                </Button>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                onClick={() => setShowVoucherModal(false)}
-                variant="outline"
-              >
-                Hủy
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <VoucherModal
+          open={showVoucherModal}
+          onOpenChange={setShowVoucherModal}
+          vouchers={vouchers} // truyền list voucher lấy từ BE
+          selectedVoucher={selectedVoucher}
+          voucherCode={selectedVoucher?.code || ""}
+          onSelectVoucher={(voucher) => setVoucher(voucher)}
+          onInputVoucher={(code) =>
+            setVoucher({
+              code,
+              type: 'code',
+              expiredDate: new Date(),
+              pricePercent: 0,
+              priceOrigin: 0,
+              status: 'active'
+            })} // hoặc logic phù hợp
+          onClear={() => setVoucher(null)}
+          onConfirm={() => setShowVoucherModal(false)}
+        />
       </div>
     </div>
   );

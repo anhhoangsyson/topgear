@@ -1,5 +1,4 @@
-import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import  { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
     interface Profile extends DefaultProfile {
@@ -13,6 +12,8 @@ declare module "next-auth" {
             name?: string | null;
             email?: string | null;
             image?: string | null;
+            profileCompleted?: boolean;
+            role: string;
         } & DefaultSession["user"];
         provider?: string;
     }
@@ -21,6 +22,8 @@ declare module "next-auth" {
         id: string;
         BEAccessToken?: string;
         provider?: string;
+        profileCompleted?: boolean;
+        role?: string;
     }
 }
 
@@ -29,5 +32,7 @@ declare module "next-auth/jwt" {
         accessToken?: string;
         id?: string;
         provider?: string;
+        profileCompleted?: boolean;
+        role?: string;
     }
 }

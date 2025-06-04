@@ -3,18 +3,22 @@ import { ThemeToggleButton } from "@/app/admin/components/common/ThemeToggleButt
 import NotificationDropdown from "@/app/admin/components/header/NotificationDropdown";
 import UserDropdown from "@/app/admin/components/header/UserDropDown";
 import { useSidebar } from "@/context/admin/SidebarContext";
+import { defaultAvatar } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { io, Socket } from "socket.io-client";
 
 const AdminHeader: React.FC = () => {
+
+
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const [isHidden, setIsHidden] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
-
 
   const handleToggle = () => {
     if (window.innerWidth >= 991) {
@@ -110,14 +114,16 @@ const AdminHeader: React.FC = () => {
               width={154}
               height={32}
               className="dark:hidden"
-              src="./images/logo/logo.svg"
+              src={defaultAvatar}
+              // src="./images/logo/logo.svg"
               alt="Logo"
             />
             <Image
               width={154}
               height={32}
               className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
+              src={defaultAvatar}
+              // src="./images/logo/logo-dark.svg"
               alt="Logo"
             />
           </Link>
@@ -186,7 +192,7 @@ const AdminHeader: React.FC = () => {
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
 
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}

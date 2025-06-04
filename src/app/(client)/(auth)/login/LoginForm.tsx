@@ -64,7 +64,7 @@ export default function LoginForm() {
 
       if (res?.ok) {
         console.log("res", res);
-        
+
         toast({
           title: "Đăng nhập thành công",
           description: "Chào mừng thượng đế đến với hệ thống Top Gear!",
@@ -76,7 +76,7 @@ export default function LoginForm() {
         // })
 
         // router.push("/account");
-     
+
       }
       // const contentType = response.headers.get("content-type");
 
@@ -135,6 +135,7 @@ export default function LoginForm() {
   const handleFacebookLogin = async () => {
     signIn("facebook", { callbackUrl: `/account` })
   }
+
   return (
     <div className="my-20 2xl:w-1/3 max-w-xl mx-auto rounded shadow-sm bg-white">
       <form onSubmit={handleSubmit(onSubmit)} className="p-4">
@@ -185,16 +186,10 @@ export default function LoginForm() {
 
       <div className="p-4 pb-16 mx-auto">
         <div className="flex flex-col gap-y-4 2xl:w-[290px] mx-auto">
-          <Button
-            onClick={handleFacebookLogin}
-            variant="default" className="w-full bg-[#1877F2] text-white">
-            Login with Facebook
-          </Button>
-          <Button variant="destructive" className="w-full text-white">
-            Login with Google
-          </Button>
-
-          <Link href="/register">
+          <AuthButtons />
+          <Link
+            className="w-full"
+            href="/register">
             <Button
               variant="default"
               className="w-full bg-[#1877F2] text-white"
@@ -204,7 +199,6 @@ export default function LoginForm() {
           </Link>
         </div>
         <div>
-          <AuthButtons />
         </div>
       </div>
     </div>

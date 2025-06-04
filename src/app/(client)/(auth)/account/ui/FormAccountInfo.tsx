@@ -1,147 +1,178 @@
 "use client";
-import { SEX_LABELS } from "@/schemaValidations/auth.schema";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-
 import { Button } from "@/components/ui/Button";
-import { IUser, UserType, UserValidationSchema } from "@/schemaValidations/user.schema";
-import { formatDate } from "@/lib/utils";
+import * as z from "zod";
+import { useSession } from "next-auth/react";
 
-export default function FormAccountInfo({ userInfo }: { userInfo: IUser }) {
+// Schema FE khớp BE (dựa trên users.dto.ts)
+const UserInfoSchema = z.object({
+    fullname: z.string().min(2, "Họ tên tối thiểu 2 ký tự"),
+    email: z.string().email("Email không hợp lệ"),
+    usersname: z.string().min(2, "Tên đăng nhập tối thiểu 2 ký tự"),
+    phone: z.string().optional(),
+    address: z.string().optional(),
+    sex: z.enum(["male", "female", "other"]),
+    avatar: z.string().optional(),
+});
+
+type UserInfoForm = z.infer<typeof UserInfoSchema>;
+
+const SEX_LABELS = {
+    male: "Nam",
+    female: "Nữ",
+    other: "Khác",
+};
+
+export default function FormAccountInfo({ userInfo }: { userInfo: any }) {
+    // const { data: session, update } = useSession();
+    const {data: session} = useSession();
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [isFormChanged, setIsFormChanged] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
 
-    console.log('user info passed', userInfo);
-
-    // default value
-    const defaultValues: UserType = {
-        _id: userInfo?._id,
-        fullname: userInfo.fullname,
-        username: userInfo.username,
-        email: userInfo.email,
-        phone: "0" + (userInfo.phone) as string,
-        address: userInfo.address,
-        sex: (userInfo.sex as "male" | "female" | "other") || "male",
-        avatar: userInfo.avatar,
-        birdth: formatDate(userInfo.birdth!),
-        role: "user",
+    // Chuẩn hóa dữ liệu đầu vào cho form
+    const defaultValues: UserInfoForm = {
+        fullname: userInfo?.fullname || "",
+        email: userInfo?.email || "",
+        usersname: userInfo?.usersname || "",
+        phone: userInfo?.phone ? String(userInfo.phone) : "",
+        address: userInfo?.address || "",
+        sex: (userInfo?.sex as "male" | "female" | "other") || "male",
+        avatar: userInfo?.avatar || "",
     };
 
-
-    // ✅ Config React Hook Form with Zod Resolver
     const {
         register,
         handleSubmit,
-        formState: { errors },
-        watch,
-    } = useForm<UserType>({
-        resolver: zodResolver(UserValidationSchema),
-        // defaultValues,
+        formState: { errors, isDirty },
+        reset,
+    } = useForm<UserInfoForm>({
+        resolver: zodResolver(UserInfoSchema),
+        defaultValues,
     });
 
-    // Follow change of value filed in form
-    const watchedValues = watch();
-
     useEffect(() => {
-        const isChanged = Object.keys(watchedValues).some(
-            key => watchedValues[key as keyof IUser] !== defaultValues[key as keyof IUser]
-        )
-        setIsFormChanged(isChanged);
-    }, [watchedValues])
+        reset(defaultValues);
+    }, [userInfo]);
 
-    // ✅ Handle submit form
-    const onSubmit = async (data: UserType) => {
+    const onSubmit = async (data: UserInfoForm) => {
         setLoading(true);
-
-        setErrorMessage("");
-
+        setSuccessMsg("");
+        setErrorMsg("");
         try {
-            console.log('cc');
-
-            console.log('data', data);
-
-            // toast({
-            //     title: "Uh oh! Something went wrong.",
-            //     description: "There was a problem with your request.",
-            // })
-            // console.log('toast', toast);
-
-
-        } catch (error) {
-            setErrorMessage(error as string);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/users/profile`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session?.accessToken || ""}`,
+                },
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || "Cập nhật thất bại");
+            }
+            setSuccessMsg("Cập nhật thành công!");
+            // await update();
+            reset(data);
+        } catch (err: any) {
+            setErrorMsg(err.message || "Có lỗi xảy ra");
         } finally {
             setLoading(false);
         }
-
     };
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full mx-auto p-4 rounded bg-white"
+            className="w-full max-w-lg mx-auto p-6 rounded-lg bg-white shadow"
         >
             <h2 className="text-xl font-bold mb-4">Thông tin tài khoản</h2>
-            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            {successMsg && <div className="mb-2 text-green-600">{successMsg}</div>}
+            {errorMsg && <div className="mb-2 text-red-500">{errorMsg}</div>}
 
-            {/* Full Name */}
+            {/* Họ tên */}
             <div className="mb-4">
-                <label className="block mb-2 text-[14px] font-semibold">Họ tên</label>
+                <label className="block mb-1 font-semibold">Họ tên</label>
                 <input
-                    defaultValue={defaultValues.fullname}
-                    type="text"
                     {...register("fullname")}
-                    className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
+                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
                 />
-                {errors.fullname && <p className="text-red-500">{errors.fullname.message}</p>}
+                {errors.fullname && <p className="text-red-500 text-sm">{errors.fullname.message}</p>}
             </div>
 
-            {/* Email */}
+            {/* Email (readonly) */}
             <div className="mb-4">
-                <label className="block mb-2 text-[14px] font-semibold">Email</label>
-                <input 
-                defaultValue={defaultValues.email}
-                 type="email" {...register("email")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500" />
-                {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+                <label className="block mb-1 font-semibold">Email</label>
+                <input
+                    {...register("email")}
+                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
+                    disabled
+                />
+            </div>
+
+            {/* Username */}
+            <div className="mb-4">
+                <label className="block mb-1 font-semibold">Tên đăng nhập</label>
+                <input
+                    {...register("usersname")}
+                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
+                />
+                {errors.usersname && <p className="text-red-500 text-sm">{errors.usersname.message}</p>}
             </div>
 
             {/* Phone */}
             <div className="mb-4">
-                <label className="block mb-2 text-[14px] font-semibold">Số điện thoại</label>
-                <input defaultValue={defaultValues.phone} type="text" {...register("phone")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
-                    disabled />
-                {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
+                <label className="block mb-1 font-semibold">Số điện thoại</label>
+                <input
+                    {...register("phone")}
+                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
+                />
+                {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
             </div>
 
-            {/* Birdth */}
+            {/* Address */}
             <div className="mb-4">
-                <label className="block mb-2 text-[14px] font-semibold">Ngày sinh</label>
+                <label className="block mb-1 font-semibold">Địa chỉ</label>
                 <input
-                    defaultValue={defaultValues.birdth}
-                    type="string" {...register("birdth")}
-                    className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500"
-                    disabled />
-                {errors.address && <p className="text-red-500">{errors.address.message}</p>}
+                    {...register("address")}
+                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
+                />
+                {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
             </div>
 
             {/* Sex */}
             <div className="mb-4">
-                <label className="block mb-2 text-[14px] font-semibold">Giới tính</label>
-                <select {...register("sex")} className="w-full p-2 rounded bg-[#F6F6F6] text-[14px] focus:outline-blue-500">
+                <label className="block mb-1 font-semibold">Giới tính</label>
+                <select
+                    {...register("sex")}
+                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
+                >
                     {Object.entries(SEX_LABELS).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
                     ))}
                 </select>
+                {errors.sex && <p className="text-red-500 text-sm">{errors.sex.message}</p>}
             </div>
-            {/* Submit Button */}
+
+            {/* Avatar (ẩn hoặc cho phép upload nếu muốn) */}
+            {/* <div className="mb-4">
+        <label className="block mb-1 font-semibold">Avatar</label>
+        <input
+          {...register("avatar")}
+          className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
+        />
+      </div> */}
+
             <Button
                 type="submit"
-                className={`w-24 text-white ${isFormChanged ? 'bg-blue-500 cursor-pointer hover:bg-blue-500' : 'bg-[#d2d2d2]'}`}
-                disabled={loading || !isFormChanged}>
-                {loading ? "Đang xử lý..." : "Cập nhật"}
+                className={`w-32 text-white ${isDirty ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-300"}`}
+                disabled={loading || !isDirty}
+            >
+                {loading ? "Đang lưu..." : "Cập nhật"}
             </Button>
-        </form >
+        </form>
     );
 }
-

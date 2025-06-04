@@ -1,13 +1,15 @@
 import React from 'react'
-import FormAccountInfo from '../ui/FormAccountInfo';
 import { cookies } from 'next/headers';
+import FormAccountInfo from '@/app/(client)/(auth)/account/ui/FormAccountInfo';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
 
 async function getUserInfo() {
 
-  const cookieStore = await cookies()
-  const accessToken = cookieStore.get('accessToken')?.value
+  const session = await getServerSession(authOptions);
+  const accessToken = session?.accessToken;
 
-  const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+  const userRes = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/auth/me`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`
     },
@@ -16,18 +18,6 @@ async function getUserInfo() {
     // credentials: 'same-origin',
   });
 
-  // const defaulrAddressRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/default-address`, {
-  //   method: 'GET',
-  //   headers: {
-  //     'Authorization': `Bearer ${accessToken}`
-  //   },
-  //   cache: 'no-store',
-  // })
-
-  // if (!defaulrAddressRes.ok) {
-  //   console.error(`Error fetching default address: ${defaulrAddressRes.status} ${defaulrAddressRes.statusText}`);
-  //   return null;
-  // }
 
   if (!userRes.ok) {
     console.error(`Error fetching user info: ${userRes.status} ${userRes.statusText}`);
@@ -58,7 +48,7 @@ export default async function UserInfoPage() {
   const userData = await getUserInfo();
   return (
     <div className='flex gap-x-4'>
-      <div className='bg-white rounded w-4/6'>
+      <div className='rounded w-4/6'>
         <FormAccountInfo userInfo={userData?.userData.data} />
       </div>
       {/* <AddressInfo defaultAddress={userData?.defaultAddress.data} /> */}

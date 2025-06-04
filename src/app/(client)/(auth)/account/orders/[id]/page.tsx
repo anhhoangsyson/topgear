@@ -15,7 +15,7 @@ export async function getMyOrder(id: string) {
     const cookieStore = await cookies()
     const accessToken = cookieStore.get('accessToken')?.value
 
-    const res = await fetch(`https://top-gear-be.vercel.app/api/v1/order/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/order/${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -39,8 +39,8 @@ export async function getMyOrder(id: string) {
     return res.json()
 }
 
-export default async function page({ params }: { params: { id: string }; }) {
-    const id = params.id;
+export default async function page({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params
     const myOrder = await getMyOrder(id)
     if (!myOrder.data) {
         return (

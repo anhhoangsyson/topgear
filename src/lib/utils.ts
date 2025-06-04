@@ -47,6 +47,8 @@ export function formatOrderStatus(status: string): string {
       return "Đã hoàn thành";
     case "cancelled":
       return "Đã hủy";
+    case "payment_cancelling":
+      return "Đang chờ hủy";
     default:
       return "Không xác định";
   }
@@ -76,3 +78,4 @@ export function formatLaptopName(name: string, specifications: any) {
   return `${name} ( ${processor} / ${ram} / ${storage} / ${graphicsCard})`
 }
 
+export const defaultAvatar= 'https://res.cloudinary.com/drsm6hdbe/image/upload/v1748352718/cxazajxw119cyay0ghhs.jpg'

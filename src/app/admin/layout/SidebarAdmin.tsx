@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    subItems: [{ name: "Ecommerce", path: "/admin/dashboard/ecommerce", pro: false }],
   },
   {
     name: "Danh mục",
@@ -64,45 +64,45 @@ const navItems: NavItem[] = [
       { name: "Danh sách đơn hàng", path: "/admin/orders", pro: false },
     ],
   },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/calendar",
+  // },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "User Profile",
+  //   path: "/profile",
+  // },
 ];
 
 const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/admin-chart", pro: false },
-      { name: "Bar Chart", path: "/admin-chart", pro: false },
-    ],
-  },
+  // {
+  //   icon: <PieChartIcon />,
+  //   name: "Charts",
+  //   subItems: [
+  //     { name: "Line Chart", path: "/admin-chart", pro: false },
+  //     { name: "Bar Chart", path: "/admin-chart", pro: false },
+  //   ],
+  // },
   {
     icon: <BoxCubeIcon />,
     name: "Laptop Group",
     subItems: [
       { name: "Danh sách nhóm", path: "/admin/laptop-group", pro: false },
       { name: "Thêm nhóm mới", path: "/admin/laptop-group/add", pro: false },
-      { name: "Badge", path: "/admin", pro: false },
-      { name: "Buttons", path: "/admin", pro: false },
-      { name: "Images", path: "/admin", pro: false },
-      { name: "Videos", path: "/admin", pro: false },
+      // { name: "Badge", path: "/admin", pro: false },
+      // { name: "Buttons", path: "/admin", pro: false },
+      // { name: "Images", path: "/admin", pro: false },
+      // { name: "Videos", path: "/admin", pro: false },
     ],
   },
   {
-    icon: <PlugInIcon />,
-    name: "Authentication",
+    icon: <ListIcon />,
+    name: "Blog",
     subItems: [
-      { name: "Sign In", path: "/admin", pro: false },
-      { name: "Sign Up", path: "/admin", pro: false },
+      { name: "Danh sách blog", path: "/admin/blog", pro: false },
+      { name: "Tạo blog mới", path: "/admin/blog/add", pro: false },
     ],
   },
 ];

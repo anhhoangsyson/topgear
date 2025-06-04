@@ -8,11 +8,11 @@ import bookingOnl from "/public/bookingonline.png";
 import cardGift from "/public/cardgift.png";
 import ServiceCard from "@/components/home/ServiceCard";
 import BenefitCard from "@/components/home/BenefitCard";
-import ProductCard from "@/components/home/ProductCard";
 import BrandSection from "@/components/section/BrandSection/BrandSection";
 import CategorySection from "@/components/section/CategorySection/CategorySection";
 import LaptopGroupSection from "@/components/section/LaptopGroupSection/LaptopGroupSection";
 import SessionSyncer from "@/components/auth/SessionSyncer";
+import LaptopPromodSection from "@/components/section/LaptopPromodSection/LaptopPromodSection";
 
 
 
@@ -110,26 +110,31 @@ async function fetchLaptopGroups() {
 }
 
 
+async function fetctLaptopPromods() {
+  // thay endpoint cua laptop promod vao day
+  const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  const data = await res.json();
+  return data.data
+}
 
 export default async function Home() {
-
-  // const { data: session } = useSession()
-  // console.log("session:", session);
 
   const brands = await fetchBrands();
   const categories = await fetchCategories();
   const laptopGroups = await fetchLaptopGroups();
+  const laptopPromods = await fetctLaptopPromods();
   // call fetchProductVariants() above
   return (
     <>
-    <SessionSyncer/>
-      <div className="bg-[#F2F4F7]">
-        {/* Menu bar */}
-        {/* <Navbar /> */}
-        {/* Banner */}
+      <SessionSyncer />
+      <div className="bg-white">
         {/* Category Filter Bar */}
         <CategorySection
-          brands={brands}
           categories={categories}
         />
 
@@ -140,6 +145,10 @@ export default async function Home() {
         <LaptopGroupSection
           laptopGroups={laptopGroups}
         />
+        <LaptopPromodSection
+          laptopPromods={laptopPromods}
+        />
+
         <div className="mx-auto">
           {/* <FlashSaleSection
             bannerFlashSale1={bannerFlashSale1}
@@ -201,21 +210,6 @@ export default async function Home() {
 
 
 
-          <div>
-            <h2 className="text-center text-5xl font-bold text-blue-600">
-              Sản phẩm bán chạy
-            </h2>
-            {/* <div className="grid grid-cols-4 gap-y-8 my-9">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div> */}
-          </div>
-
-          {/* Electronics and laptops */}
-
-
-          {/* Banner 2 */}
           <div className="grid grid-cols-2 my-32 gap-x-8">
             {/* Left banner */}
             <div>

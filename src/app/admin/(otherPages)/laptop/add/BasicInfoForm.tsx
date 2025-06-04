@@ -22,9 +22,14 @@ import {
 interface BasicInfoFormProps {
   brands: any[];
   categories: any[];
+  data?:{
+    name: string,
+    modelName: string,
+  }  
 }
 
-export default function BasicInfoForm({ brands, categories }: BasicInfoFormProps) {
+
+export default function BasicInfoForm({ brands, categories, data }: BasicInfoFormProps) {
   const { control } = useFormContext();
 
   return (
@@ -37,7 +42,8 @@ export default function BasicInfoForm({ brands, categories }: BasicInfoFormProps
             <FormItem>
               <FormLabel>Tên sản phẩm</FormLabel>
               <FormControl>
-                <Input placeholder="Nhập tên sản phẩm" {...field} />
+                <Input
+                placeholder="Nhập tên sản phẩm" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -51,7 +57,8 @@ export default function BasicInfoForm({ brands, categories }: BasicInfoFormProps
             <FormItem>
               <FormLabel>Model</FormLabel>
               <FormControl>
-                <Input placeholder="Nhập model" {...field} />
+                <Input
+                placeholder="Nhập model" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

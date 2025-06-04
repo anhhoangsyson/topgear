@@ -13,7 +13,7 @@ export default function Navigation() {
                     </Button>
 
                     <Button
-                        onClick={() => window.location.href = "/account/?component=Orders"}
+                        onClick={() => window.location.href = "/account/orders"}
                         className='px-24'
                         variant={"outline"}
                     >Đơn hàng của tôi

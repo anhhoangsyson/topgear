@@ -1,17 +1,25 @@
 'use client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { defaultAvatar } from '@/lib/utils'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
 
 export default function AccountDropdown({ user }: { user: { name: string, image: string, email: string } }) {
+
+    const handleLogout = async () => {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL_NEXT_SERVER}/api/auth/logout`, {
+            method: "POST"
+        })
+        signOut({ callbackUrl: "/" });
+    }
     return (
         <div>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Avatar>
-                        <AvatarImage src={user?.image || ""} alt={user?.name || ""} />
+                        <AvatarImage src={user?.image || ""} alt={user?.name || defaultAvatar} />
                         <AvatarFallback>
                             {user?.name?.[0] || user?.email?.[0] || "U"}
                         </AvatarFallback>
@@ -24,7 +32,7 @@ export default function AccountDropdown({ user }: { user: { name: string, image:
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                        <Link href="/account/order">
+                        <Link href="/account/orders">
                             Đơn hàng
                         </Link>
                     </DropdownMenuItem>
@@ -38,7 +46,7 @@ export default function AccountDropdown({ user }: { user: { name: string, image:
                             Thông báo
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+                    <DropdownMenuItem onClick={handleLogout}>
                         Đăng xuất
                     </DropdownMenuItem>
                 </DropdownMenuContent>

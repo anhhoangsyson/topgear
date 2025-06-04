@@ -5,18 +5,25 @@ import { useRouter } from "next/navigation";
 import { Plus } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/Button";
-import { ICategory, ILaptop, ILaptopGroup } from "@/types";
+import { ILaptopGroup } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { Loader } from "@/components/Loader";
-import { useCategoryStore } from "@/store/categoryStore";
 import { DataTable } from "@/components/common/data-table";
-import { LaptopColumns } from "@/app/admin/(otherPages)/laptop/laptop-columns";
 import { LaptopGroupColumns } from "@/app/admin/(otherPages)/laptop-group/laptop-group-columns";
+import LaptopGroupDetail from "@/app/admin/(otherPages)/laptop-group/LaptopGroupDetail";
 
 export default function LaptopGroupPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [laptops, setLaptops] = useState<ILaptopGroup[]>([]);
+  const [laptopGroups, setLaptopGroups] = useState<ILaptopGroup[]>([]);
+
+  const [showLaptopGroupDetail, setShowLaptopGroupDetail] = useState(false);
+  const [selectedLaptopGroup, setSelectedLaptopGroup] = useState<ILaptopGroup | null>(null);
+
+  const handleShowLaptopGroupDetail = (laptopGroup: ILaptopGroup) => {
+    setSelectedLaptopGroup(laptopGroup);
+    setShowLaptopGroupDetail(true);
+  }
 
   useEffect(() => {
     const fetchLaptopGroups = async () => {
@@ -29,9 +36,8 @@ export default function LaptopGroupPage() {
           throw new Error("Failed to fetch data");
         }
         const data = await res.json();
-        setLaptops(data.data)
-        console.log(data.data);
-        
+        setLaptopGroups(data.data)
+
       } catch (error) {
         toast({
           variant: "destructive",
@@ -48,7 +54,6 @@ export default function LaptopGroupPage() {
 
     <div className="flex-col">
       <h1 className="text-2xl font-bold mb-4">Danh mục</h1>
-      <div></div>
       {isLoading
         ? (
           <div className="flex h-screen items-center justify-center">
@@ -66,11 +71,18 @@ export default function LaptopGroupPage() {
             </div>
             <Separator />
             <DataTable
-              columns={LaptopGroupColumns}
-              data={laptops}
+              columns={LaptopGroupColumns(handleShowLaptopGroupDetail)}
+              data={laptopGroups}
               searchBy="name"
             />
+            {/* modal laptop group detail */}
+            <LaptopGroupDetail
+              laptopGroup={selectedLaptopGroup}
+              open={showLaptopGroupDetail}
+              onClose={() => setShowLaptopGroupDetail(false)}
+            />
           </div>
+
         )}
 
     </div>

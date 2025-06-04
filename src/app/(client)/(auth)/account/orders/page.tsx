@@ -14,7 +14,7 @@ export async function getMyOrders() {
         );
     }
 
-    const res = await fetch(`https://top-gear-be.vercel.app/api/v1/order/my`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/order/my`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
