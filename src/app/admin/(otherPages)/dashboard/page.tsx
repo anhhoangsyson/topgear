@@ -9,7 +9,6 @@ async function fetDashBoardSumary() {
         if (!res.ok) throw new Error('Failed to fetch dashboard summary');
 
         const data = await res.json()
-        console.log('Dashboard summary data:', data);
         
         return data
     } catch (error) {

@@ -8,14 +8,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     try {
         if (!accessToken) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-        }
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })        }
 
         const locationRes = await callApi('/location', 'GET', accessToken)
-        console.log('locationRes', locationRes);
+        
         return NextResponse.json(locationRes)
-    } catch (error: any) {
-        console.log('error', error);
+    } catch (error: unknown) {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }

@@ -210,7 +210,6 @@ const Cart = ({ vouchers }: { vouchers: IVoucher[] }) => {
                     setSelectedVoucher(voucher);
                     // setVoucher
                     useCartStore.getState().setVoucher(voucher);
-                    // console.log('vouchre da chon',voucher);
 
                     setVoucherCode(voucher.code || "");
                 }}

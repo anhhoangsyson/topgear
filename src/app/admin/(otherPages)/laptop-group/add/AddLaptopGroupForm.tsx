@@ -27,7 +27,6 @@ const formSchema = z.object({
 
 export default function AddLaptopGroupForm({ laptops }: { laptops: ILaptop[] }) {
 
-    console.log('laptops passed to form:', laptops);
 
     const [isLoading, setIsLoading] = useState(false);
     // const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -82,7 +81,6 @@ export default function AddLaptopGroupForm({ laptops }: { laptops: ILaptop[] }) 
             // setIsDialogOpen(true)
 
         } catch (error) {
-            console.log('Error creating attribute:', error)
             toast({
                 title: "Có lỗi xảy ra khi tạo laptop group",
                 description: "Vui lòng thử lại sau",

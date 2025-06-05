@@ -33,7 +33,6 @@ export const authOptions: NextAuthOptions = {
           }),
         });
         const data = await res.json();
-        console.log('Login response:', data);
         
         if (res.ok && data) {
           return {
@@ -70,12 +69,10 @@ export const authOptions: NextAuthOptions = {
 
           if (response.ok) {
             const data = await response.json()
-            // console.log('token from be', data.accessToken);
 
             user.BEAccessToken = data.accessToken
             user.profileCompleted = data.user.profileCompleted;
             user.role = data.user.role;
-            // console.log('token luu trong user',user.BEAccessToken);
 
             // Lưu thông tin token hoặc dữ liệu người dùng từ backend nếu cần
 
@@ -97,7 +94,6 @@ export const authOptions: NextAuthOptions = {
         token.role = user?.role;
         token.profileCompleted = user.profileCompleted;
 
-        // console.log('token from jwt', token.accessToken);
       }
       else if (account?.access_token) {
         token.accessToken = account.access_token

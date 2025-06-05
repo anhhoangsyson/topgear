@@ -1,0 +1,205 @@
+{
+  "scripts": {
+    "quick-setup": {
+      "description": "Quick project setup for new developers",
+      "commands": [
+        "npm install",
+        "echo 'Copying environment template...'",
+        "copy .env.example .env.local",
+        "echo '✅ Setup complete! Please update .env.local with your values'"
+      ]
+    },
+    "quality-check": {
+      "description": "Run all quality checks",
+      "commands": [
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run format",
+        "echo '✅ All quality checks passed!'"
+      ]
+    },
+    "pre-commit": {
+      "description": "Pre-commit validation",
+      "commands": [
+        "npm run lint",
+        "npm run format",
+        "npx tsc --noEmit"
+      ]
+    },
+    "deep-clean": {
+      "description": "Clean project completely",
+      "commands": [
+        "rmdir /s /q node_modules",
+        "del package-lock.json",
+        "rmdir /s /q .next",
+        "npm install",
+        "echo '✅ Deep clean complete!'"
+      ]
+    },
+    "dev-full": {
+      "description": "Start development with all checks",
+      "commands": [
+        "npm run lint",
+        "npm run format",
+        "npm run dev"
+      ]
+    },
+    "build-check": {
+      "description": "Check if project builds successfully",
+      "commands": [
+        "npm run lint",
+        "npx tsc --noEmit",
+        "npm run build",
+        "echo '✅ Build successful!'"
+      ]
+    },
+    "dependency-audit": {
+      "description": "Audit project dependencies",
+      "commands": [
+        "npm audit",
+        "npx depcheck",
+        "npm outdated"
+      ]
+    },
+    "update-docs": {
+      "description": "Open documentation files for update",
+      "commands": [
+        "code LEARNING_LOG.md",
+        "code DAILY_PROGRESS.md",
+        "code TECHNICAL_DEBT.md"
+      ]
+    }
+  },
+  "workflows": {
+    "new-feature": {
+      "description": "Start working on a new feature",
+      "steps": [
+        "1. Create new branch: git checkout -b feature/feature-name",
+        "2. Update LEARNING_LOG.md with feature plan",
+        "3. Run quality checks: npm run lint",
+        "4. Start development: npm run dev",
+        "5. Follow Code Review Checklist before committing"
+      ]
+    },
+    "bug-fix": {
+      "description": "Fix a bug",
+      "steps": [
+        "1. Create branch: git checkout -b fix/bug-description",
+        "2. Reproduce the bug",
+        "3. Identify root cause",
+        "4. Implement fix",
+        "5. Test thoroughly",
+        "6. Update Technical Debt if applicable"
+      ]
+    },
+    "refactoring": {
+      "description": "Refactor existing code",
+      "steps": [
+        "1. Create branch: git checkout -b refactor/component-name",
+        "2. Review Refactoring Guide",
+        "3. Write tests (if not exist)",
+        "4. Refactor incrementally",
+        "5. Ensure all tests pass",
+        "6. Update documentation"
+      ]
+    },
+    "daily-start": {
+      "description": "Daily development routine",
+      "steps": [
+        "1. git pull origin main",
+        "2. npm install (if package.json changed)",
+        "3. Update DAILY_PROGRESS.md",
+        "4. Review Technical Debt priorities",
+        "5. Start development"
+      ]
+    },
+    "daily-end": {
+      "description": "End of day routine",
+      "steps": [
+        "1. Run quality checks",
+        "2. Commit work in progress",
+        "3. Update DAILY_PROGRESS.md",
+        "4. Push changes to remote",
+        "5. Plan tomorrow's tasks"
+      ]
+    }
+  },
+  "quick-commands": {
+    "check": "npm run lint && npx tsc --noEmit && npm run format",
+    "clean": "rmdir /s /q node_modules && del package-lock.json && npm install",
+    "fresh-start": "git pull && npm install && npm run dev",
+    "commit-check": "npm run lint && npm run format && git status",
+    "build-test": "npm run build && npm run start"
+  },
+  "development-checklist": {
+    "before-coding": [
+      "☐ Pull latest changes",
+      "☐ Check Technical Debt priorities",
+      "☐ Update progress log",
+      "☐ Create feature branch"
+    ],
+    "while-coding": [
+      "☐ Follow TypeScript strict mode",
+      "☐ Write clean, readable code",
+      "☐ Add proper error handling",
+      "☐ Use consistent naming"
+    ],
+    "before-commit": [
+      "☐ Run lint check",
+      "☐ Format code",
+      "☐ Check TypeScript errors",
+      "☐ Test functionality",
+      "☐ Update documentation"
+    ],
+    "after-feature": [
+      "☐ Update Learning Log",
+      "☐ Create pull request",
+      "☐ Review with checklist",
+      "☐ Deploy to staging"
+    ]
+  },
+  "emergency-fixes": {
+    "node-modules-issue": [
+      "1. Delete node_modules folder",
+      "2. Delete package-lock.json",
+      "3. Run npm install",
+      "4. Restart development server"
+    ],
+    "typescript-errors": [
+      "1. Check tsconfig.json",
+      "2. Restart TypeScript server in VS Code",
+      "3. Run npx tsc --noEmit",
+      "4. Fix type errors one by one"
+    ],
+    "build-failures": [
+      "1. Check for console errors",
+      "2. Verify environment variables",
+      "3. Run npm run lint",
+      "4. Check for missing dependencies"
+    ],
+    "git-issues": [
+      "1. Check git status",
+      "2. Stash changes if needed: git stash",
+      "3. Pull latest: git pull",
+      "4. Apply stash: git stash pop"
+    ]
+  },
+  "learning-resources": {
+    "next-js": [
+      "https://nextjs.org/docs",
+      "https://nextjs.org/learn"
+    ],
+    "typescript": [
+      "https://www.typescriptlang.org/docs/",
+      "https://typescript-eslint.io/rules/"
+    ],
+    "react": [
+      "https://react.dev/learn",
+      "https://react.dev/reference"
+    ],
+    "tailwind": [
+      "https://tailwindcss.com/docs",
+      "https://tailwindui.com/components"
+    ]
+  }
+}

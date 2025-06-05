@@ -19,13 +19,24 @@ const UserInfoSchema = z.object({
 
 type UserInfoForm = z.infer<typeof UserInfoSchema>;
 
+// Interface for userInfo prop based on actual API response structure
+interface UserInfoData {
+    fullname?: string;
+    email?: string;
+    usersname?: string;
+    phone?: string | number;
+    address?: string;
+    sex?: "male" | "female" | "other";
+    avatar?: string;
+}
+
 const SEX_LABELS = {
     male: "Nam",
     female: "Nữ",
     other: "Khác",
 };
 
-export default function FormAccountInfo({ userInfo }: { userInfo: any }) {
+export default function FormAccountInfo({ userInfo }: { userInfo: UserInfoData }) {
     // const { data: session, update } = useSession();
     const {data: session} = useSession();
     const [loading, setLoading] = useState(false);
@@ -76,9 +87,8 @@ export default function FormAccountInfo({ userInfo }: { userInfo: any }) {
             }
             setSuccessMsg("Cập nhật thành công!");
             // await update();
-            reset(data);
-        } catch (err: any) {
-            setErrorMsg(err.message || "Có lỗi xảy ra");
+            reset(data);        } catch (err: unknown) {
+            setErrorMsg(err instanceof Error ? err.message : "Có lỗi xảy ra");
         } finally {
             setLoading(false);
         }

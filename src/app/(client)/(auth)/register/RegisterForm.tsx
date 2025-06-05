@@ -67,14 +67,11 @@ export default function RegisterForm() {
         router.push("/login");
       } else {
         const textResponse = await response.text();
-        console.log("Phản hồi không phải JSON:", textResponse);
-        console.error("Phản hồi không phải JSON:", textResponse);
         // throw new Error("Server trả về định dạng không mong đợi");
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+      }      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: unknown) {
       // console.error("Lỗi chi tiết:", error);
-      setErrorMessage(error.message);
+      setErrorMessage(error instanceof Error ? error.message : "Đăng ký thất bại");
       toast({
         title: "Lỗi",
         description: "Đăng ký thất bại",

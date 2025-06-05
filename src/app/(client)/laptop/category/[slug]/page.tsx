@@ -18,7 +18,6 @@ async function getLaptopByBrand(slug: string) {
         }
         return data.data;
     } catch (error) {
-        console.log('Error fetching laptop by slug:', error);
 
     }
 
@@ -36,7 +35,6 @@ async function getBrandList() {
         }
         return data.data;
     } catch (error) {
-        console.log('Error fetching laptop by slug:', error);
 
     }
 

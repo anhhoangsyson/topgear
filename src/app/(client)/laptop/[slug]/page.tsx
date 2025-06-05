@@ -17,7 +17,6 @@ async function getLaptopBySlug(slug: string) {
         }
         return data.data;
     } catch (error) {
-        console.log('Error fetching laptop by slug:', error);
 
     }
 

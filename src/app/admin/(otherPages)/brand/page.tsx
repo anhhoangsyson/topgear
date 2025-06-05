@@ -45,7 +45,6 @@ export default async function BrandPage() {
       </div>
     )
   } catch (error) {
-    console.log(error, "error");
     return (
       <div className="container mx-auto py-10">
         <p className="text-red-500">Không thể tải dữ liệu thương hiệu. Vui lòng thử lại sau.</p>

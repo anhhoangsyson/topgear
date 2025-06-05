@@ -14,7 +14,6 @@ export default function AuthButtons() {
   //   // Handle response
   //   if (res.ok) {
   //     const data = await res.json();
-  //     console.log("Protected data:", data);
   //     // Do something with the data
 
   //   } else {

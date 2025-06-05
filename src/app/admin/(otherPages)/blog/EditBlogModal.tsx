@@ -154,7 +154,6 @@ export default function EditBlogModal({ open, onClose, blog }: EditBlogModalProp
     };
 
     const thumbnail = watch('thumbnail');
-    console.log("blog passed to modal:", blog);
 
     if (!open || !blog) return null;
 

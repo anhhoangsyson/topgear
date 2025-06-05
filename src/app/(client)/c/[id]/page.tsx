@@ -44,7 +44,6 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
         // `https://top-gear-be.vercel.app/api/v1/categories/categoriesByChildId/${id}`
         // );
         // const filters = await filtersResponse.json();
-        // console.log(filters.data);
 
         // setFilterData(filters.data);
       } catch (error) {
@@ -62,7 +61,6 @@ export default function ProductByCategoryPage({ params }: { params: Promise<{ id
     setLoading(true);
     try {
       const filterKeys = Object.keys(filter);
-      console.log(filter);
 
 
       const res = await fetch(`https://top-gear-be.vercel.app/api/v1/pvariants/filter/?${filterKeys.map((key) => `filterData=${key}`).join('&')}`);

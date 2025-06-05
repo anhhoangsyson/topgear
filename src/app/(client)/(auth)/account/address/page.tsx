@@ -23,7 +23,6 @@ export default async function UserAdrressesPage() {
     const accessToken = cookieStore.get('accessToken')?.value || ''
 
     const locationsData = await getListAddress(accessToken)
-    console.log(locationsData);
     
     return (
         <div className='w-full p-4'>

@@ -64,7 +64,6 @@ export default function UpdateBrandForm({ brand, onClose }: UpdateBrandFormProps
             onClose()
             window.location.reload()
         } catch (error) {
-            console.log("error", error);
             toast({
                 title: "Cập nhật danh mục thất bại",
                 variant: "destructive",

@@ -104,7 +104,6 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
                     if (!isStatusEditable) return;
                     setIsLoading(true);
                     try {
-                        console.log("Đang cập nhật trạng thái:", newStatus);
 
                         // Gửi yêu cầu cập nhật trạng thái lên server
                         const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/order/change-order-status/${order._id}`, {

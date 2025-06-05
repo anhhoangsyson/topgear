@@ -63,7 +63,6 @@ export default function LoginForm() {
       const res = await signIn("credentials", { ...data });
 
       if (res?.ok) {
-        console.log("res", res);
 
         toast({
           title: "Đăng nhập thành công",
@@ -106,7 +105,6 @@ export default function LoginForm() {
       //       }),
       //     });
       //     const authData = await authRes.json();
-      //     console.log("authData", authData);
 
       //     // naviate /
       //     router.push("/");
@@ -115,7 +113,6 @@ export default function LoginForm() {
       //   }
       // } else {
       //   const textResponse = await response.text();
-      //   console.error("Phản hồi không phải JSON:", textResponse);
       //   throw new Error("Server trả về định dạng không mong đợi");
       // }
     } catch (error) {

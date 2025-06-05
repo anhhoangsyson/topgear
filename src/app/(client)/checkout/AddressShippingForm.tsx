@@ -44,7 +44,7 @@ export default function AddressShippingForm() {
             .then(data => {
                 setAddressData(data)
             })
-            .catch(err => console.log(err))
+            .catch(err => 'Lỗi khi tải dữ liệu địa chỉ: ' + err.message)
     }, [])
 
     // filter quan/huyen khi chon tinh/tp
@@ -74,7 +74,6 @@ export default function AddressShippingForm() {
     }, [selectedDistrict, addressData.commune]);
 
     const handleAddAddress = () => {
-        console.log('Thêm địa chỉ nhận hàng');
         
     }
 

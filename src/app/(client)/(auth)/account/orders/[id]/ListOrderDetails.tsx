@@ -1,7 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/Button';
 import { formatPrice } from '@/lib/utils';
-import { IProductVariantRes, OrderDetail } from '@/types';
+import { OrderDetail } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -19,7 +19,6 @@ const Skeleton = () => {
 }
 
 export default function ListOrderDetails({ orderDetails }: { orderDetails: OrderDetail[] }) {
-    console.log('ordedetail passsed', orderDetails);
 
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);

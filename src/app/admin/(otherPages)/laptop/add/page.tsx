@@ -218,10 +218,6 @@ export default function AddLaptopPage() {
         // Gọi API để gợi ý metadata
         try {
           const formData = methods.getValues();
-          console.log('name', formData.name);
-          console.log('modelName', formData.modelName);
-          console.log('description', formData.description);
-          console.log('specifications', formData.specifications);
           
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL_NEXT_SERVER}/api/suggest-metadata`, {
             method: "POST",

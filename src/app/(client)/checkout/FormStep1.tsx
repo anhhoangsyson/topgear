@@ -9,7 +9,6 @@ import { IUser } from '../../../schemaValidations/user.schema';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useSession } from 'next-auth/react';
-import { use } from 'react';
 import useCartStore from '@/store/cartStore';
 
 // Định nghĩa các interface
@@ -154,7 +153,6 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
       const res = await fetch(`/api/user/get-access-token`, { method: 'GET' });
       const { accessToken } = await res.json();
       if (!accessToken) {
-        console.error('Không tìm thấy access token');
         return;
       }
 
@@ -214,13 +212,11 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
 
   useEffect(() => {
     if (selectedProvince) {
-      console.log('Selected province:', selectedProvince);
 
       const filteredDistricts = addressData.district.filter(
         (dist) => dist.idProvince === selectedProvince
       );
       setDistricts(filteredDistricts);
-      console.log('Filtered districts:', filteredDistricts);
 
       setCommunes([]);
       setAddressValue('district', '');
@@ -233,7 +229,6 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
       const filteredCommunes = addressData.commune.filter(
         (comm) => comm.idDistrict === selectedDistrict
       );
-      console.log('Filtered communes:', filteredCommunes);
 
       setCommunes(filteredCommunes);
       setAddressValue('ward', '');
@@ -273,26 +268,24 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
         province: provinceName,
         district: districtName,
         ward: wardName,
-        street: data.street,
-      }); // Truyền dữ liệu vào form chính
+        street: data.street,      }); // Truyền dữ liệu vào form chính
     } else {
-      console.error('Lỗi khi lưu địa chỉ:', await res.json());
+      // Handle error - could show toast notification instead
+      const errorData = await res.json();
+      // TODO: Show user-friendly error message
     }
     setShowAddAddressModal(false);
   };
 
   const onSubmit = (data: FormData) => {
-    console.log('Form submitted:', { selectedItems, shippingInfo: data });
     onSubmitStep1(data)
     // Chuyển sang bước tiếp theo với data.shippingAddress
   };
-
   // const handleFormSubmit = (data: FormData) => {
-  //   onSubmit(data); // Gọi prop onSubmit thay vì console.log
+  //   onSubmit(data); // Call prop onSubmit instead of logging
   // };
 
   // const onError = (errors ) => {
-  //   console.log('Form validation errors:', errors); // Debug lỗi validation
   // };
 
   const skeletonCustomerInfo = (

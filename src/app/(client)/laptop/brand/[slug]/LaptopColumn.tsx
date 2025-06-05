@@ -14,7 +14,6 @@ export default function LaptopColumn({ slug }: { slug: string }) {
         params.set('brand', slug);
         const fetchLaptops = async () => {
             const query = params.toString();
-            console.log('Fetching laptops with query:', query);
             const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop/filter?${query}`, {
                 method: 'GET',
             })

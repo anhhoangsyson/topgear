@@ -34,8 +34,6 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
     }
     else {
       const filterd = initialOrderList.filter(order => formatOrderStatus(order.orderStatus) === status)
-      console.log(filterd);
-
       setOrderList(filterd)
     }
   }
@@ -78,7 +76,6 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
       })
       window.location.reload()
     } catch (error) {
-      console.log(error);
     }
     finally {
       setIsLoading(false)

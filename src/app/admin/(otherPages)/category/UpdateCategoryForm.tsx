@@ -132,7 +132,6 @@ export const UpdateCategoryForm: React.FC<UpdateCategoryFormProps> = ({
       fetchCategories();
       onClose();
     } catch (error) {
-      console.log(error);
 
       toast({
         variant: "destructive",

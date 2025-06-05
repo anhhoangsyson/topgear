@@ -12,7 +12,6 @@ type LaptopGroupProps = {
 
 
 export default function LaptopGroupDetail({ open, onClose, laptopGroup }: LaptopGroupProps) {
-    console.log('laptopGroup', laptopGroup);
 
     if (!open || !laptopGroup) return null;
 

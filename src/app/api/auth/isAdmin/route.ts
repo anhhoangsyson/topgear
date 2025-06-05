@@ -17,8 +17,6 @@ export async function POST(request: Request) {
     });
 
     const data = await response.json();
-    // console.log('Admin login response:', data);
-    // console.log('role', data.data.role);
     
     if (!response.ok) {
       return NextResponse.json(

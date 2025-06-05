@@ -11,8 +11,6 @@ export default function AddressInfo({ defaultAddress }: {
   }
 }) {
 
-  console.log('defaul dc passed', defaultAddress);
-  
   return (
     <div className='p-4 w-2/6 2xl:min-w-[227px] bg-white rounded'>
       <p className='text-xl font-bold'>Địa chỉ mặc định</p>

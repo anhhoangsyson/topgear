@@ -31,7 +31,6 @@ export default async function OrderSuccess({ params }: { params: { id: string } 
         )
     }
     const order = await fetchOrderDetails(id, accessToken)
-    console.log(order);
 
     return (
         <div className='w-full h-[500px]'>

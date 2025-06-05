@@ -26,7 +26,6 @@ export default function CheckoutPage() {
                 // Giải mã và parse chuỗi JSON từ query string
                 const decodedItems = JSON.parse(decodeURIComponent(items));
                 setSelectedItems(decodedItems);
-                console.log("Selected items:", decodedItems);
 
             } catch (error) {
                 console.error("Error parsing cartItems:", error);

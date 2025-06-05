@@ -31,10 +31,8 @@ export default function LaptopsPage() {
         }
         const data = await res.json();
         setLaptops(data.data)
-        console.log(data.data);
 
       } catch (error) {
-        console.log('🚀 ~ file: page.tsx:22 ~ fetchLaptops ~ error:', error);
         toast({
           variant: "destructive",
           title: "Có lỗi xảy ra",

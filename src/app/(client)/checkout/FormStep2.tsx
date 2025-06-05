@@ -52,7 +52,6 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
   const setVoucher = useCartStore((state) => state.setVoucher);
   const selectedVoucher = useCartStore((state) => state.selectedVoucher);
 
-  // console.log(selectedVoucher);
 
   const totalPrice = selectedItems.reduce((acc, item) => acc + (item.discountPrice * item.quantity), 0);
   const totalPriceFormatted = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });

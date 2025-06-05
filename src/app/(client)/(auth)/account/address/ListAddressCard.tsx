@@ -55,7 +55,6 @@ export const fetchAccessToken = async (): Promise<string | null> => {
         }
 
         const data = await res.json();
-        console.log('Access token:', data.accessToken);
 
         return data.accessToken || null;
     } catch (error) {
@@ -137,7 +136,7 @@ export default function ListAddressCard({ locationsData }: { locationsData: Loca
         } catch (err) {
             toast({
                 title: 'Lỗi',
-                description: 'Có lỗi xảy ra, vui lòng thử lại sau',
+                description: `Có lỗi xảy ra, vui lòng thử lại sau ${err}`,
                 variant: 'destructive'
             });
         }

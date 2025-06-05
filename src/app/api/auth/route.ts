@@ -6,13 +6,11 @@ export async function POST(request: Request) {
 
     if (!accessToken) {
       return NextResponse.json({ error: 'No access token provided' }, { status: 400 });
-    }
-
-    // Lưu accessToken vào HTTP-only cookie
+    }    // Lưu accessToken vào HTTP-only cookie
     const response = NextResponse.json({ success: true });
     response.cookies.set('accessToken', accessToken, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production', // Chỉ dùng secure trong production
+      secure: process.env.NODE_ENV === 'production', // Enable secure in production
       path: '/',
       maxAge: 36000, // Hết hạn sau 1 giờ
       sameSite: 'lax'

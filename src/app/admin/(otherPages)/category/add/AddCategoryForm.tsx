@@ -74,7 +74,6 @@ export const AddCategoryForm = () => {
         });
 
         const data = await res.json();
-        console.log('resdata', data);
         setCategories(data.data);
       } catch (error) {
         toast({

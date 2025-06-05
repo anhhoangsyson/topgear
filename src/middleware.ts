@@ -11,7 +11,6 @@ const adminPaths = ['/admin']
 export async function middleware(request: NextRequest) {
     // get path from request
     const { pathname } = request.nextUrl
-    console.log('🚀 ~ file: middleware.ts:10 ~ middleware ~ pathname:', pathname);
 
     // get sessionToken from cookies to handle authentication
     const accessToken = request.cookies.get('accessToken')?.value || null
@@ -40,7 +39,6 @@ export async function middleware(request: NextRequest) {
     //         }
     //         return NextResponse.next()
     //     } catch (error) {
-    //         console.log('🚀 ~ file: middleware.ts:42 ~ middleware ~ error:', error);
 
     //         return NextResponse.redirect(new URL('/login', request.url))
     //     }

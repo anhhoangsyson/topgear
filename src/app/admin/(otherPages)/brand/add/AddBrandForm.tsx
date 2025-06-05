@@ -80,7 +80,6 @@ export default function AddBrandForm() {
             // setIsDialogOpen(true)
 
         } catch (error) {
-            console.log('Error creating attribute:', error)
             toast({
                 title: "Có lỗi xảy ra khi tạo thương hiệu",
                 description: "Vui lòng thử lại sau",
