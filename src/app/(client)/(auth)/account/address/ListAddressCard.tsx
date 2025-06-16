@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/Button'
 import { LocationRes } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import { LoaderCircle } from 'lucide-react';
@@ -8,10 +7,12 @@ import { LoaderCircle } from 'lucide-react';
 import addressData from "@/../public/data/address.json";
 
 // import for add address
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { LocationApi } from '../../../../../services/location-api';
+import { Button } from '@/components/atoms/ui/Button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/atoms/ui/dialog';
 
 interface IProvince { idProvince: string; name: string; }
 interface IDistrict { idProvince: string; idDistrict: string; name: string; }
@@ -109,31 +110,45 @@ export default function ListAddressCard({ locationsData }: { locationsData: Loca
                 district: data.district,
                 ward: data.ward,
                 street: data.street,
+                isDefault: false,
             };
-            const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/location`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-            if (res.ok) {
-                toast({
-                    title: 'Thêm địa chỉ thành công',
-                    variant: 'default',
-                    duration: 1000,
-                });
-                setShowAddAddressModal(false);
-                window.location.reload();
-            } else {
-                toast({
-                    title: 'Lỗi khi lưu địa chỉ',
-                    description: (await res.json()).message || '',
-                    variant: 'destructive'
-                });
-            }
+            
+            // const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/location`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Authorization': `Bearer ${accessToken}`,
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(payload),
+            // });
+                        
+            // if (res.ok) {
+            //     toast({
+            //         title: 'Thêm địa chỉ thành công',
+            //         variant: 'default',
+            //         duration: 1000,
+            //     });
+            //     setShowAddAddressModal(false);
+            //     window.location.reload();
+            // } else {
+            //     toast({
+            //         title: 'Lỗi khi lưu địa chỉ',
+            //         description: (await res.json()).message || '',
+            //         variant: 'destructive'
+            //     });
+            // }
+
+            // change to use new API 
+            const newLocation = await LocationApi.addLocation(payload)
+            toast({
+                title: 'Thêm địa chỉ thành công',
+                description: `Địa chỉ ${getAddressName("province", newLocation.province)}, ${getAddressName("district", newLocation.district)}, ${getAddressName("commune", newLocation.ward)}, ${newLocation.street} đã được thêm`,
+                variant: 'default',
+                duration: 1000,
+            })
         } catch (err) {
+            console.log('Error adding new address:', err);
+            
             toast({
                 title: 'Lỗi',
                 description: `Có lỗi xảy ra, vui lòng thử lại sau ${err}`,

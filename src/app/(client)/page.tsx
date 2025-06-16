@@ -8,11 +8,11 @@ import bookingOnl from "/public/bookingonline.png";
 import cardGift from "/public/cardgift.png";
 import ServiceCard from "@/components/home/ServiceCard";
 import BenefitCard from "@/components/home/BenefitCard";
-import BrandSection from "@/components/section/BrandSection/BrandSection";
-import CategorySection from "@/components/section/CategorySection/CategorySection";
-import LaptopGroupSection from "@/components/section/LaptopGroupSection/LaptopGroupSection";
 import SessionSyncer from "@/components/auth/SessionSyncer";
-import LaptopPromodSection from "@/components/section/LaptopPromodSection/LaptopPromodSection";
+import CategorySection from "@/components/organisms/section/CategorySection/CategorySection";
+import BrandSection from "@/components/organisms/section/BrandSection/BrandSection";
+import LaptopGroupSection from "@/components/organisms/section/LaptopGroupSection/LaptopGroupSection";
+import LaptopPromodSection from "@/components/organisms/section/LaptopPromodSection/LaptopPromodSection";
 
 
 

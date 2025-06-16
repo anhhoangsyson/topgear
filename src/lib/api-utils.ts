@@ -25,9 +25,8 @@ export async function handleApiResponse<T>(response: Response): Promise<T> {
 
     try {
       errorData = await response.json();
-      errorMessage = errorData.message || errorMessage;
+      errorMessage = errorData.message || errorData.error || errorMessage;
     } catch {
-      // If response is not JSON, use status text
       errorMessage = response.statusText || errorMessage;
     }
 
@@ -43,11 +42,16 @@ export async function handleApiResponse<T>(response: Response): Promise<T> {
 
 export function handleApiError(error: unknown, fallbackMessage = 'Có lỗi xảy ra') {
   console.error('API Error:', error);
-  
+
   let message = fallbackMessage;
-  
+  let shouldRedirectToLogin = false;
+
   if (error instanceof ApiException) {
     message = error.message;
+    if (error.status === 401) {
+      shouldRedirectToLogin = true;
+      message = 'Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.';
+    }
   } else if (error instanceof Error) {
     message = error.message;
   }
@@ -58,6 +62,14 @@ export function handleApiError(error: unknown, fallbackMessage = 'Có lỗi xả
     variant: "destructive",
     duration: 3000,
   });
+
+  if (shouldRedirectToLogin) {
+    // Clear token cache
+    import('@/lib/token-manager').then(({ TokenManager }) => {
+      TokenManager.clearToken();
+    });
+    window.location.href = '/login';
+  }
 }
 
 export async function apiCall<T>(
@@ -86,7 +98,6 @@ export function withLoading<T extends any[], R>(
   fn: (...args: T) => Promise<R>
 ) {
   return async (...args: T): Promise<R> => {
-    // You can add global loading state here if needed
     try {
       return await fn(...args);
     } catch (error) {

@@ -1,5 +1,5 @@
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import Footer from "@/components/organisms/layout/Footer";
+import Header from "@/components/organisms/layout/Header";
 import React from "react";
 
 export default function ClientLayout({

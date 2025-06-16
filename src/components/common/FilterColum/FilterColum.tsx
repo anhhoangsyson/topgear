@@ -1,9 +1,9 @@
 'use client'
 import { IBrand, ICategory } from '@/types'
-import { Checkbox } from "@/components/ui/checkbox"
 import React, { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/Button'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Checkbox } from '@/components/atoms/ui/checkbox'
+import { Button } from '@/components/atoms/ui/Button'
 
 const priceRanges = [
   { label: "Dưới 10 triệu", min: 0, max: 10000000 },
