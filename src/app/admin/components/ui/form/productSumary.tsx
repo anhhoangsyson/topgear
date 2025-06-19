@@ -1,12 +1,12 @@
 "use client"
 
 import { JSX, useState } from "react"
-import { Button } from "@/components/ui/Button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Badge } from "@/components/ui/badge"
 import { CheckCircle2, Loader2 } from "lucide-react"
 import { type ProductFormData, StatusProductVariant } from "@/types"
+import { Button } from "@/components/atoms/ui/Button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/atoms/ui/card"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/atoms/ui/accordion"
+import { Badge } from "@/components/atoms/ui/badge"
 
 interface ProductSummaryProps {
   productData: ProductFormData

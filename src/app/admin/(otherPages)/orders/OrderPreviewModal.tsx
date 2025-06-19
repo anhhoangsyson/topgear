@@ -1,7 +1,7 @@
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/atoms/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/atoms/ui/dialog';
+import { ScrollArea } from '@/components/atoms/ui/scroll-area';
+import { Separator } from '@/components/atoms/ui/separator';
 import { IOrderWithDetails } from '@/types';
 import React from 'react'
 

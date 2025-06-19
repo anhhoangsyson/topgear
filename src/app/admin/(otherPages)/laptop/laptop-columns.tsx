@@ -4,16 +4,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Eye, MoreHorizontal, Pencil, Trash } from 'lucide-react';
 
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
 import { toast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
-import OverlayLoader from "@/components/OverlayLoader";
 import { GoPencil } from "react-icons/go";
-import { Switch } from "@/components/ui/switch";
 import { IImage, ILaptop } from '../../../../types/index';
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/atoms/ui/Button";
+import { Badge } from "@/components/atoms/ui/badge";
+import { Switch } from "@/components/atoms/ui/switch";
+import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
 
 
 export function LaptopColumns(onShowDetail: (laptop: ILaptop) => void): ColumnDef<ILaptop>[] {

@@ -1,9 +1,8 @@
+import { Loader } from '@/components/atoms/feedback/Loader';
+import DetailLaptopPage from '@/components/pages/DetailLaptopPage';
 import { ILaptop } from '@/types';
 import { notFound } from 'next/navigation';
 import React, { Suspense } from 'react'
-import DetailProductPage from '@/components/productDetail';
-import Loading from '@/app/(client)/products/[id]/Loading';
-import DetailLaptopPage from '@/components/productDetail';
 
 async function getLaptopBySlug(slug: string) {
     try {
@@ -33,7 +32,7 @@ export default async function LaptopDetail({ params}: { params: Promise<{ slug: 
             return notFound();
         }
         return (
-            <Suspense fallback={<Loading />}  >
+            <Suspense fallback={<Loader />}  >
                 <DetailLaptopPage data={laptop} />;
             </Suspense>
         )

@@ -1,7 +1,4 @@
 'use client'
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import { IBlog } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,6 +9,9 @@ import { Controller, useForm } from 'react-hook-form';
 import ReactQuill from 'react-quill-new';
 import { z } from 'zod';
 import 'react-quill-new/dist/quill.snow.css';
+import { Button } from '@/components/atoms/ui/Button';
+import { Label } from '@/components/atoms/ui/label';
+import { Input } from '@/components/atoms/ui/input';
 interface EditBlogModalProps {
     open: boolean;
     onClose: () => void;

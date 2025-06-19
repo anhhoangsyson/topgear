@@ -1,7 +1,7 @@
 "use client";
 import { Dropdown } from "@/app/admin/components/ui/dropDown/DropDown";
 import { DropdownItem } from "@/app/admin/components/ui/dropDown/DropDownItem";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/atoms/ui/Button";
 import { defaultAvatar } from "@/lib/utils";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";

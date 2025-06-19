@@ -7,30 +7,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "axios";
 import { Upload } from 'lucide-react';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
+
 // import { Heading } from "@/components/ui/";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
 import { useToast } from "@/hooks/use-toast";
-import { Heading } from "@/components/ui/heading";
+import { Separator } from "@/components/atoms/ui/separator";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/atoms/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/atoms/ui/select";
+import { Textarea } from "@/components/atoms/ui/textarea";
+import { Checkbox } from "@/components/atoms/ui/checkbox";
+import { Button } from "@/components/atoms/ui/Button";
+import { Input } from "@/components/atoms/ui/input";
 
 const formSchema = z.object({
   name: z.string().min(1, "Tên danh mục không được để trống"),

@@ -6,13 +6,13 @@ import img4 from "/public/9481555.png";
 import img5 from "/public/chuyenphatnhanh.jpg";
 import bookingOnl from "/public/bookingonline.png";
 import cardGift from "/public/cardgift.png";
-import ServiceCard from "@/components/home/ServiceCard";
-import BenefitCard from "@/components/home/BenefitCard";
-import SessionSyncer from "@/components/auth/SessionSyncer";
 import CategorySection from "@/components/organisms/section/CategorySection/CategorySection";
 import BrandSection from "@/components/organisms/section/BrandSection/BrandSection";
 import LaptopGroupSection from "@/components/organisms/section/LaptopGroupSection/LaptopGroupSection";
 import LaptopPromodSection from "@/components/organisms/section/LaptopPromodSection/LaptopPromodSection";
+import SessionSyncer from "@/components/features/auth/components/SessionSyncer";
+import BenefitCard from "@/components/molecules/cards/BenefitCard";
+import ServiceCard from "@/components/molecules/cards/ServiceCard";
 
 
 

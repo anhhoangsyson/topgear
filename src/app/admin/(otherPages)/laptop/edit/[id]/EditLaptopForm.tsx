@@ -4,16 +4,16 @@ import { useRouter } from "next/navigation";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import OverlayLoader from "@/components/OverlayLoader";
 import { toast } from "@/hooks/use-toast";
 import BasicInfoForm from "@/app/admin/(otherPages)/laptop/add/BasicInfoForm";
 import SpecificationsForm from "@/app/admin/(otherPages)/laptop/add/SpecificationsForm";
 import ImagesAndSeoForm from "@/app/admin/(otherPages)/laptop/add/ImagesAndSeoForn";
 import PreviewForm from "@/app/admin/(otherPages)/laptop/add/PreviewForm";
-import { Button } from "@/components/ui/Button";
 import { ILaptop, ISeoMetadata } from "@/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/atoms/ui/tabs";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/atoms/ui/card";
+import { Button } from "@/components/atoms/ui/Button";
+import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
 
 // Định nghĩa schema cho từng bước
 const basicInfoSchema = z.object({

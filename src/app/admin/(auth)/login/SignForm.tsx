@@ -1,12 +1,12 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { signIn } from 'next-auth/react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/atoms/ui/card';
+import { Alert, AlertDescription } from '@/components/atoms/ui/alert';
+import { Label } from '@/components/atoms/ui/label';
+import { Input } from '@/components/atoms/ui/input';
+import { Button } from '@/components/atoms/ui/Button';
 
 export default function SignInForm() {
   const [formData, setFormData] = useState({

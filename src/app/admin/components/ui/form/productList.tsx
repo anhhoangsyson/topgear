@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/Button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
 import { Edit, Eye, Trash2 } from "lucide-react"
 import { ProductFormData } from "@/types"
+import { Badge } from "@/components/atoms/ui/badge"
+import { Button } from "@/components/atoms/ui/Button"
+import { Table, TableHead } from "@/components/atoms/ui/table"
+import { TableBody, TableCell, TableHeader, TableRow } from "@/app/admin/components/ecommerce/table"
 
 // Mẫu dữ liệu sản phẩm - Trong thực tế, số biến thể sẽ được tính từ cơ sở dữ liệu
 const sampleProducts = [

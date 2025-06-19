@@ -1,7 +1,6 @@
 import { ICategory, ILaptop } from '@/types';
 import { notFound } from 'next/navigation';
 import React, { Suspense } from 'react'
-import Loading from '@/app/(client)/products/[id]/Loading';
 import FilterColum from '@/components/common/FilterColum/FilterColum';
 import LaptopColumn from '@/app/(client)/laptop/brand/[slug]/LaptopColumn';
 
@@ -50,7 +49,7 @@ export default async function LaptopsByBrandPage({ params, }: { params: Promise<
         }
         return (
             <div>
-                <Suspense fallback={<Loading />}  >
+                <Suspense fallback={<>loading</>}  >
                     <div className='flex'>
                         {/* filter column */}
                         <FilterColum

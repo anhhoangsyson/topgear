@@ -1,16 +1,10 @@
 "use client";
 
+import { Checkbox } from "@/components/atoms/ui/checkbox";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/atoms/ui/form";
+import { Input } from "@/components/atoms/ui/input";
+import { Separator } from "@/components/atoms/ui/separator";
 import { useFormContext } from "react-hook-form";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 
 export default function SpecificationsForm() {
   const { control } = useFormContext();

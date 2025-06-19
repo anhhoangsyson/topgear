@@ -2,22 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
+
 import { X, Upload, Plus } from 'lucide-react';
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
 import { IImage } from "@/types";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/atoms/ui/form";
+import { Button } from "@/components/atoms/ui/Button";
+import { Input } from "@/components/atoms/ui/input";
+import { Separator } from "@/components/atoms/ui/separator";
+import { Badge } from "@/components/atoms/ui/badge";
+import { Textarea } from "@/components/atoms/ui/textarea";
 
 interface ImagesAndSeoFormProps {
   suggestedMetadata: any;

@@ -4,13 +4,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Eye, MoreHorizontal, Pencil, Trash } from 'lucide-react';
 
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
 import { toast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
-import OverlayLoader from "@/components/OverlayLoader";
 import { GoPencil } from "react-icons/go";
-import { Switch } from "@/components/ui/switch";
 import { IImage, ILaptop, ILaptopGroup } from '../../../../types/index';
+import { Button } from "@/components/atoms/ui/Button";
+import { Switch } from "@/components/atoms/ui/switch";
+import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
 
 
 

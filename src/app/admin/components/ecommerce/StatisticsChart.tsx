@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Chart from "react-apexcharts";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import ChartTab from "@/app/admin/components/common/ChartTab";

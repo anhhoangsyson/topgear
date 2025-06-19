@@ -2,9 +2,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/Button";
 import * as z from "zod";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/atoms/ui/Button";
 
 // Schema FE khớp BE (dựa trên users.dto.ts)
 const UserInfoSchema = z.object({

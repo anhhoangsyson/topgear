@@ -2,12 +2,12 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, LoaderCircle } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import { formatPaymentMethod, formatPrice } from "@/lib/utils";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { IOrderWithDetails } from "@/types";
+import { Button } from "@/components/atoms/ui/Button";
 
 // export type OrderRes = {
 //     _id: string;

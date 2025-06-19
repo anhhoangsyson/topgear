@@ -4,12 +4,12 @@ import 'react-quill-new/dist/quill.snow.css';
 import ReactQuill from 'react-quill-new';
 import { useSession } from 'next-auth/react';
 import { toast } from '@/hooks/use-toast';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/Button';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Label } from '@/components/atoms/ui/label';
+import { Input } from '@/components/atoms/ui/input';
+import { Button } from '@/components/atoms/ui/Button';
 
 const blogSchema = z.object({
     title: z.string().min(3, "Tiêu đề phải có ít nhất 3 ký tự"),

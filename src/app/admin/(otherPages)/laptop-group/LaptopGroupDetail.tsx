@@ -1,5 +1,5 @@
 import LaptopCardSecond from '@/app/admin/(otherPages)/laptop-group/LaptopCardSecond';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/atoms/ui/dialog';
 import { ILaptopGroup } from '@/types';
 import React from 'react'
 // import { ILaptopGroup } from '../../../../types/index';

@@ -4,14 +4,12 @@ import { JSX } from "react"
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/Button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { type ICategory, type IProduct, type ProductFormValues, productSchema } from "@/types"
-import { getCategories } from "@/services/api"
+import { Input } from "@/components/atoms/ui/input"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/atoms/ui/form"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/atoms/ui/select"
+import { Button } from "@/components/atoms/ui/Button"
 
 interface ProductFormProps {
   onSubmit: (data: ProductFormValues) => Promise<void>
@@ -31,19 +29,26 @@ export default function ProductForm({
     resolver: zodResolver(productSchema),
     defaultValues: initialData
       ? {
-          productName: initialData.productName,
-          categoriesId: initialData.categoriesId,
-        }
+        productName: initialData.productName,
+        categoriesId: initialData.categoriesId,
+      }
       : {
-          productName: "",
-          categoriesId: "",
-        },
+        productName: "",
+        categoriesId: "",
+      },
   })
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const result = await getCategories()
+        // const result = await getCategories()
+        const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/categories`, {
+          method: "GET",
+        })
+        if (!res.ok) {
+          throw new Error("Không thể lấy danh mục sản phẩm")
+        }
+        const result = await res.json()
         if (result.success && result.data) {
           setCategories(result.data)
         } else {
@@ -100,7 +105,7 @@ export default function ProductForm({
                 <SelectContent>
                   {categories.map((category) => (
                     <SelectItem key={category._id} value={category._id || ""}>
-                      {category.categoryName}
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

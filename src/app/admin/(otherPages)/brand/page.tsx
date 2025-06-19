@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { IBrand } from "@/types";
 import { brandColumns } from "@/app/admin/(otherPages)/brand/brand-columns";
 import { DataTable } from "@/components/common/data-table";
+import { Button } from "@/components/atoms/ui/Button";
 
 
 

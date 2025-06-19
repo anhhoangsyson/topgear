@@ -1,4 +1,27 @@
 # Daily Progress Tracker
+## Hôm nay: 16/6/2025
+
+### Mục tiêu hôm nay
+- [x] Sử dụng Atomic Desgin Parttern để tái quản lý cấu trúc đặt thư mục của dự án.
+- [x] Tách biệt api và ra khỏi components UI.
+
+### ✅ Đã hoàn thành
+- [x] **Đã sắp xếp lại các thư mục trong /src/components theo Atomic Parttern** 
+
+### 🔄 Đang làm 
+- Tiếp tục refactor các component theo cấu trúc, lúc trước vô tình viết theo cấu trúc colocation structure
+
+### 🧠 Kiến thức học được hôm nay
+- Hôm nay không học được gì nhiều, ngoài cơ bản của Atomic Parttern.
+
+### Mục tiêu ngày mai
+- [ ] Ít nhất phải tách xong component UI của phần (client) từ cấu trúc lococation thành atomic parrtern.
+- [ ] Hiểu duọc flow của cách tách api ra làm nhiều lớp.
+- [ ] Thực hành tách api trong có trong home page và tìm hiểu xem businesss logic và mấy cái kia là gì.
+
+
+
+
 
 ## 📅 Hôm nay: 5 tháng 6, 2025
 

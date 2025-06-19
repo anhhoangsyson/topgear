@@ -1,5 +1,5 @@
 'use client'
-import LaptopSection from '@/components/section/LaptopSection/LaptopSection'
+import LaptopSection from '@/components/organisms/section/LaptopSection/LaptopSection';
 import { ILaptop } from '@/types'
 import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'

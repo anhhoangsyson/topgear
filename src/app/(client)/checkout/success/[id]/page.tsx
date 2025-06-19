@@ -1,5 +1,4 @@
 import Navigation from '@/app/(client)/checkout/success/[id]/Navigation';
-import { Button } from '@/components/ui/Button';
 import { cookies } from 'next/headers'
 import React from 'react'
 import { GiConfirmed } from "react-icons/gi";

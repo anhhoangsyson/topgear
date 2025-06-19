@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from 'lucide-react';
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/Button";
 import { toast } from "@/hooks/use-toast";
-import { Loader } from "@/components/Loader";
 import { DataTable } from "@/components/common/data-table";
 import { LaptopGroupColumns } from "@/app/admin/(otherPages)/laptop-group/laptop-group-columns";
 import BlogPreview from "@/app/admin/(otherPages)/blog/BlogPreview";
 import { BlogColumns } from "@/app/admin/(otherPages)/blog/BlogColumns";
 import { IBlog } from "@/types";
 import EditBlogModal from "@/app/admin/(otherPages)/blog/EditBlogModal";
+import { Loader } from "@/components/atoms/feedback/Loader";
+import { Button } from "@/components/atoms/ui/Button";
+import { Separator } from "@/components/atoms/ui/separator";
 
 export default function BlogsPage() {
   const router = useRouter();

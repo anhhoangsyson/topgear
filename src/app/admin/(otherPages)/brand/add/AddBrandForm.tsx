@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { string, z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
-import { Button } from '@/components/ui/Button'
-import { Textarea } from '@/components/ui/textarea'
 import { AlertDialogCustom } from '@/app/admin/components/ui/AlerDialog'
-import OverlayLoader from '@/components/OverlayLoader'
+import { Textarea } from '@/components/atoms/ui/textarea'
+import { Input } from '@/components/atoms/ui/input'
+import { Button } from '@/components/atoms/ui/Button'
+import OverlayLoader from '@/components/atoms/feedback/OverlayLoader'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/atoms/ui/form'
 
 
 

@@ -4,15 +4,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Eye, MoreHorizontal, Pencil, Trash, Trash2 } from 'lucide-react';
 
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
 import { toast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
-import OverlayLoader from "@/components/OverlayLoader";
 import { GoPencil } from "react-icons/go";
-import { Switch } from "@/components/ui/switch";
 import { IBlog } from '../../../../types/index';
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/atoms/ui/Button";
+import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
 
 
 

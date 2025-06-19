@@ -1,6 +1,6 @@
 "use client";
 
-import { Heading } from "@/components/ui/heading";
+import { Heading } from "@/components/atoms/ui/heading";
 import { AddCategoryForm } from "./AddCategoryForm";
 
 export default function AddCategoryPage() {

@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import useCartStore, { CartItem } from '@/store/cartStore';
 import Image from 'next/image';
-import { Button } from '@/components/ui/Button';
 import { AiOutlineDelete } from "react-icons/ai";
-import VoucherModal from '@/components/Voucher/VoucherModal';
 import { IVoucher } from '@/types';
 import { useSession } from 'next-auth/react';
 import { toast } from '@/hooks/use-toast';
+import { Button } from '@/components/atoms/ui/Button';
+import VoucherModal from '@/components/organisms/container/Voucher/VoucherModal';
 const Cart = ({ vouchers }: { vouchers: IVoucher[] }) => {
     const { data: session } = useSession();
     const isProfileCompleted = session?.user?.profileCompleted || false;

@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/app/admin/components/ecommerce/table";
-import { Badge } from "@/components/ui/badge";
 import { formatOrderStatus } from '../../../../lib/utils';
+import { Badge } from "@/components/atoms/ui/badge";
 
 // Define the TypeScript interface for the table rows
 interface Product {

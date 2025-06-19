@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from 'lucide-react';
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/Button";
 import { ILaptop } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import { Loader } from "@/components/Loader";
 import { DataTable } from "@/components/common/data-table";
 import { LaptopColumns } from "@/app/admin/(otherPages)/laptop/laptop-columns";
 import LaptopDetailModal from "@/app/admin/(otherPages)/laptop/LaptopDetailModal";
+import { Loader } from "@/components/atoms/feedback/Loader";
+import { Button } from "@/components/atoms/ui/Button";
+import { Separator } from "@/components/atoms/ui/separator";
 
 export default function LaptopsPage() {
   const router = useRouter();

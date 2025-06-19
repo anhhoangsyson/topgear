@@ -1,9 +1,9 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { Badge } from "@/components/atoms/ui/badge";
+import { Separator } from "@/components/atoms/ui/separator";
 
 interface PreviewFormProps {
   brands: any[];

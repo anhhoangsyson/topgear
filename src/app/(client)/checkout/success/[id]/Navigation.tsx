@@ -1,5 +1,5 @@
 'use client'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/atoms/ui/Button'
 import React from 'react'
 
 export default function Navigation() {

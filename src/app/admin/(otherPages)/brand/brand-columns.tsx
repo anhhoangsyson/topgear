@@ -2,18 +2,18 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, LoaderCircle } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import WrapModal from "@/components/common/WrapModal";
-import { Switch } from "@/components/ui/switch";
 import { GoPencil } from "react-icons/go";
 import { toast } from "@/hooks/use-toast";
 import { IBrand } from "@/types";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
-import OverlayLoader from "@/components/OverlayLoader";
 import UpdateBrandForm from "@/app/admin/(otherPages)/brand/UpdateBrandForm";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/atoms/ui/Button";
+import { Switch } from "@/components/atoms/ui/switch";
+import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
 
 //  field render in table
 // name: string;

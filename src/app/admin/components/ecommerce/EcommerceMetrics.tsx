@@ -1,6 +1,6 @@
 "use client";
 import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon } from "@/app/admin/icons";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/atoms/ui/badge";
 import { ChartAreaIcon } from "lucide-react";
 import React from "react";
 interface EcommerceMetricsPropps {

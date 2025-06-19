@@ -1,5 +1,5 @@
 'use client'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/atoms/ui/Button'
 import { ILaptop } from '@/types'
 import { X } from 'lucide-react'
 import Image from 'next/image'

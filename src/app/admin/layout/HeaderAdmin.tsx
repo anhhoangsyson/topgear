@@ -1,14 +1,11 @@
 'use client'
 import { ThemeToggleButton } from "@/app/admin/components/common/ThemeToggleButton";
-import NotificationDropdown from "@/app/admin/components/header/NotificationDropdown";
 import UserDropdown from "@/app/admin/components/header/UserDropDown";
 import { useSidebar } from "@/context/admin/SidebarContext";
 import { defaultAvatar } from "@/lib/utils";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
 
 const AdminHeader: React.FC = () => {
 

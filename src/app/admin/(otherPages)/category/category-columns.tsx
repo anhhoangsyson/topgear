@@ -3,19 +3,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, Pencil, Trash } from 'lucide-react';
 
-import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
 import { toast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
-import OverlayLoader from "@/components/OverlayLoader";
 import WrapModal from "@/components/common/WrapModal";
-import UpdateBrandForm from "@/app/admin/(otherPages)/brand/UpdateBrandForm";
 import { GoPencil } from "react-icons/go";
-import { Switch } from "@/components/ui/switch";
 import { UpdateCategoryForm } from "@/app/admin/(otherPages)/category/UpdateCategoryForm";
 import { ICategory } from '../../../../types/index';
+import { Checkbox } from "@/components/atoms/ui/checkbox";
+import { Button } from "@/components/atoms/ui/Button";
+import { Switch } from "@/components/atoms/ui/switch";
+import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
 
 export type Category = {
     _id: string;

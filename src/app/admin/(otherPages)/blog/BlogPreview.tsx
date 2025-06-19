@@ -1,5 +1,4 @@
-import { Button } from '@/components/ui/Button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/atoms/ui/Button';
 import { formatDate } from '@/lib/utils';
 import { IBlog } from '@/types';
 import { X } from 'lucide-react';

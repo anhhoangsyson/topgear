@@ -1,10 +1,10 @@
 'use client'
 import React, { useState } from 'react'
 import { formatPrice, formatDate, formatOrderStatus } from '../../../../../lib/utils';
-import { Button } from '@/components/ui/Button';
 import { fetchAccessToken } from '@/app/(client)/(auth)/account/address/ListAddressCard';
 import { toast } from '@/hooks/use-toast';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/atoms/ui/Button';
+import { Badge } from '@/components/atoms/ui/badge';
 
 interface InititalOrderList {
   _id: string

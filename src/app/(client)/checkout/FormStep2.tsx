@@ -2,15 +2,15 @@
 import { RiCashLine } from "react-icons/ri";
 import { SiZalo } from "react-icons/si";
 import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
 import useCartStore, { CartItem } from "@/store/cartStore";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
-import VoucherModal from "@/components/Voucher/VoucherModal";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/atoms/ui/Button";
+import VoucherModal from "@/components/organisms/container/Voucher/VoucherModal";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/atoms/ui/dialog";
 
 type PaymentMethod = 'cash' | 'zalopay';
 

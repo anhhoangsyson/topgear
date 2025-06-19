@@ -5,16 +5,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   BoxCubeIcon,
-  CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
   ListIcon,
   PageIcon,
-  PieChartIcon,
-  PlugInIcon,
   TableIcon,
-  UserCircleIcon,
   BoxIconLine
 } from "@/app/admin/icons/index";
 import { useSidebar } from "@/context/admin/SidebarContext";

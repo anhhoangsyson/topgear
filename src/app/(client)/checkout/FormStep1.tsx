@@ -6,10 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { IUser } from '../../../schemaValidations/user.schema';
-import { Button } from '@/components/ui/Button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useSession } from 'next-auth/react';
 import useCartStore from '@/store/cartStore';
+import { Button } from '@/components/atoms/ui/Button';
+import { Dialog, DialogContent } from '@radix-ui/react-dialog';
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/atoms/ui/dialog';
 
 // Định nghĩa các interface
 interface IProvince {
