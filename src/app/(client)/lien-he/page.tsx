@@ -1,5 +1,5 @@
+import { Button } from "@/components/atoms/ui/Button";
 import Wraper from "@/components/core/Wraper";
-import {Button} from "@/components/ui/Button";
 import React from "react";
 
 export default function LienHePage() {

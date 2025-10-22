@@ -9,8 +9,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { toast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/atoms/ui/Button";
 
 export default function RegisterForm() {
   const router = useRouter();
