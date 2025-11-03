@@ -53,9 +53,24 @@ export const authOptions: NextAuthOptions = {
           
           console.log('[NextAuth Credentials] ✅ Got token, length:', token.length);
           
+          // Backend có thể trả về structure:
+          // { data: { user: { profileCompleted, role, ... }, token } } 
+          // hoặc { data: { profileCompleted, role, ..., token } }
+          const userData = data.data?.user || data.data || data.user || {};
+          
+          console.log('[NextAuth Credentials] 📊 User data structure:', {
+            hasData: !!data.data,
+            hasUser: !!data.data?.user,
+            hasProfileCompleted: !!(userData.profileCompleted),
+            userDataKeys: Object.keys(userData),
+            fullData: data
+          });
+          
           return {
-            ...data.data,
+            ...userData,
             BEAccessToken: token, // Lưu access token từ backend
+            profileCompleted: userData.profileCompleted ?? true, // Nếu không có thì default true (cho admin)
+            role: userData.role,
           }; // Đăng nhập thành công
         }
         return null; // Đăng nhập thất bại
