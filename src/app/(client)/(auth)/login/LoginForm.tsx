@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import AuthButtons from "@/components/atoms/custom/AuthButton";
 import { Button } from "@/components/atoms/ui/Button";
 export default function LoginForm() {
@@ -60,22 +60,75 @@ export default function LoginForm() {
       //   }
       // );
 
-      const res = await signIn("credentials", { ...data });
+      const res = await signIn("credentials", { ...data, redirect: false });
 
       if (res?.ok) {
+        // ✅ Đợi session update (có thể mất vài ms)
+        let session = await getSession();
+        let retries = 0;
+        const maxRetries = 5;
+        
+        // Retry nếu chưa có accessToken (session có thể chưa update)
+        while (!session?.accessToken && retries < maxRetries) {
+          console.log(`[LoginForm] ⏳ Waiting for session to update... (attempt ${retries + 1}/${maxRetries})`);
+          await new Promise(resolve => setTimeout(resolve, 200)); // Đợi 200ms
+          session = await getSession();
+          retries++;
+        }
+        
+        if (session?.accessToken) {
+          console.log('[LoginForm] ✅ Got accessToken from session, saving to cookie...');
+          console.log('[LoginForm] 📝 Token length:', session.accessToken.length);
+          
+          // ✅ Lưu token vào cookie (giống Facebook login)
+          try {
+            const cookieRes = await fetch("/api/auth", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                accessToken: session.accessToken,
+              }),
+            });
+            
+            if (cookieRes.ok) {
+              console.log('[LoginForm] ✅ Token saved to cookie successfully');
+            } else {
+              const errorText = await cookieRes.text();
+              console.warn('[LoginForm] ⚠️ Failed to save token to cookie:', errorText);
+            }
+          } catch (error) {
+            console.error('[LoginForm] ❌ Error saving token to cookie:', error);
+          }
+        } else {
+          console.error('[LoginForm] ❌ No accessToken in session after login (tried', maxRetries, 'times)');
+          console.error('[LoginForm] Session data:', {
+            hasSession: !!session,
+            hasAccessToken: !!session?.accessToken,
+            sessionKeys: session ? Object.keys(session) : [],
+            userKeys: session?.user ? Object.keys(session.user) : []
+          });
+        }
 
         toast({
           title: "Đăng nhập thành công",
           description: "Chào mừng thượng đế đến với hệ thống Top Gear!",
         });
 
-        // await fetch(`${process.env.NEXTAUTH_UR}/api/auth`, {
-        //   method: "POST",
-        //   body: JSON.stringify({ accessToken: data.accessToken }),
-        // })
-
-        // router.push("/account");
-
+        // Redirect sau khi lưu cookie thành công
+        const callbackUrl = searchParams.get("callbackUrl") || "/account";
+        router.push(callbackUrl);
+        router.refresh(); // Refresh để update session
+      } else {
+        // Login failed
+        const error = res?.error || "Đăng nhập thất bại";
+        setErrorMessage(error);
+        toast({
+          title: "Lỗi",
+          description: error,
+          variant: "destructive",
+        });
       }
       // const contentType = response.headers.get("content-type");
 

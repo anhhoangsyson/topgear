@@ -1,10 +1,10 @@
 'use client'
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/atoms/ui/Button';
 import { formatPrice } from '@/lib/utils';
 import { OrderDetail } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 const Skeleton = () => {
     return (
@@ -20,12 +20,12 @@ const Skeleton = () => {
 
 export default function ListOrderDetails({ orderDetails }: { orderDetails: OrderDetail[] }) {
 
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState<string | null>(null);
+    // const [loading, setLoading] = useState(true);
 
 
     // if (loading) return <div><Skeleton /></div>;
-    if (error) return <div>Error: {error}</div>;
+    // if (error) return <div>Error: {error}</div>;
 
 
     return (

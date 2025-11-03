@@ -10,8 +10,8 @@ export function caculateSalePercent(price: number, priceSale: number) {
   return salePercent;
 }
 
-export function formatPrice(price: any) {
-  if (price == null || isNaN(price)) return "0 ₫";
+export function formatPrice(price: string) {
+  if (price == null || isNaN(Number(price))) return "0 ₫";
 
   return Number(price).toLocaleString("vi-VN", {
     style: "currency",

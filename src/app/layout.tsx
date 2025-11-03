@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider } from "@/context/admin/SidebarContext";
 import { AuthProvider } from "@/components/features/auth/providers/AuthProvider";
+import NotificationProvider from "@/components/providers/NotificationProvider";
 import { Toaster } from "@/components/atoms/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
@@ -21,9 +22,11 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`antialiased`}>
         <AuthProvider>
-          <SidebarProvider>{children}</SidebarProvider>
-          {/* use toaster for gender notification for action. Ex: login success or login failed */}
-          <Toaster />
+          <NotificationProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+            {/* use toaster for gender notification for action. Ex: login success or login failed */}
+            <Toaster />
+          </NotificationProvider>
         </AuthProvider>
       </body>
     </html>

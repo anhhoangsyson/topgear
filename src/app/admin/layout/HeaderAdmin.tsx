@@ -1,6 +1,7 @@
 'use client'
 import { ThemeToggleButton } from "@/app/admin/components/common/ThemeToggleButton";
 import UserDropdown from "@/app/admin/components/header/UserDropDown";
+import AdminNotificationDropdown from "@/app/admin/components/header/AdminNotificationDropdown";
 import { useSidebar } from "@/context/admin/SidebarContext";
 import { defaultAvatar } from "@/lib/utils";
 import Image from "next/image";
@@ -189,8 +190,8 @@ const AdminHeader: React.FC = () => {
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
 
-            {/* <NotificationDropdown /> */}
             {/* <!-- Notification Menu Area --> */}
+            <AdminNotificationDropdown />
           </div>
           {/* <!-- User Area --> */}
           <UserDropdown />

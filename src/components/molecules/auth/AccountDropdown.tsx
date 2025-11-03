@@ -5,6 +5,7 @@ import { defaultAvatar } from '@/lib/utils'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
+import NotificationDropdown from '@/components/molecules/notification/NotificationDropdown'
 
 export default function AccountDropdown({ user }: { user: { name: string, image: string, email: string } }) {
 
@@ -15,7 +16,8 @@ export default function AccountDropdown({ user }: { user: { name: string, image:
         signOut({ callbackUrl: "/" });
     }
     return (
-        <div>
+        <div className="flex items-center gap-4">
+            <NotificationDropdown />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Avatar>
@@ -41,7 +43,7 @@ export default function AccountDropdown({ user }: { user: { name: string, image:
                             Địa chỉ
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                         <Link href="/account/notification">
                             Thông báo
                         </Link>

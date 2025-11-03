@@ -1,163 +1,203 @@
 # Top Gear - E-commerce Platform
 
-A modern e-commerce platform built with Next.js, TypeScript, and Tailwind CSS. This project focuses on delivering a high-quality, maintainable codebase following industry best practices.
+Website bán laptop và phụ kiện công nghệ, được xây dựng với Next.js 14 và TypeScript.
 
-## 🚀 Project Overview
+## 🚀 Tính năng chính
 
-Top Gear is an e-commerce platform specializing in laptops and tech accessories. The project emphasizes:
-- **Code Quality**: Clean, maintainable, and well-documented code
-- **Performance**: Optimized for speed and user experience
-- **Security**: Following security best practices
-- **Developer Experience**: Easy to understand and contribute to
+### 👤 Khách hàng (Customer)
+- ✅ Đăng ký / Đăng nhập (Email + Facebook)
+- ✅ Xem danh sách sản phẩm (Laptop, phụ kiện)
+- ✅ Tìm kiếm, lọc sản phẩm theo thương hiệu, danh mục
+- ✅ Chi tiết sản phẩm
+- ✅ Giỏ hàng
+- ✅ Thanh toán (COD, Online)
+- ✅ Theo dõi đơn hàng
+- ✅ Quản lý địa chỉ giao hàng
+- ✅ Thông báo real-time (Socket.io)
+- ✅ Blog/Tin tức
 
-## 🛠️ Tech Stack
+### 👨‍💼 Admin
+- ✅ Đăng nhập admin
+- ✅ Dashboard thống kê
+- ✅ Quản lý sản phẩm (Laptop, Laptop Group)
+- ✅ Quản lý danh mục (Category)
+- ✅ Quản lý thương hiệu (Brand)
+- ✅ Quản lý đơn hàng
+- ✅ Quản lý blog
+- ✅ Thông báo real-time khi có đơn hàng mới
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: Radix UI
-- **State Management**: React Query + Zustand
+## 🛠️ Công nghệ sử dụng
+
+- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
+- **UI Components**: Radix UI, Shadcn/ui
+- **State Management**: Zustand, React Query
+- **Authentication**: NextAuth.js (Email + Facebook)
 - **Database**: MongoDB
-- **Authentication**: NextAuth.js
-- **Code Quality**: ESLint + Biome
+- **Real-time**: Socket.io
+- **Form**: React Hook Form + Zod validation
 
-## 📁 Project Structure
+## 📁 Cấu trúc thư mục
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable UI components
-├── hooks/              # Custom React hooks
-├── lib/                # Utility functions and configurations
-├── store/              # State management (Zustand)
-├── types/              # TypeScript type definitions
-└── schemaValidations/  # Form validation schemas
+├── app/                          # Next.js App Router (Pages & API Routes)
+│   ├── (client)/                 # Trang dành cho khách hàng
+│   │   ├── (auth)/               # Trang cần đăng nhập
+│   │   │   ├── account/          # Quản lý tài khoản, đơn hàng, địa chỉ
+│   │   │   ├── login/            # Đăng nhập
+│   │   │   └── register/         # Đăng ký
+│   │   ├── cart/                 # Giỏ hàng
+│   │   ├── checkout/             # Thanh toán
+│   │   ├── laptop/               # Trang laptop
+│   │   ├── blogs/                # Blog/Tin tức
+│   │   └── page.tsx              # Trang chủ
+│   ├── admin/                    # Trang dành cho admin
+│   │   ├── (auth)/               # Đăng nhập admin
+│   │   ├── (otherPages)/         # Các trang quản lý
+│   │   │   ├── dashboard/        # Dashboard thống kê
+│   │   │   ├── laptop/           # Quản lý laptop
+│   │   │   ├── orders/           # Quản lý đơn hàng
+│   │   │   ├── category/         # Quản lý danh mục
+│   │   │   ├── brand/            # Quản lý thương hiệu
+│   │   │   └── blog/             # Quản lý blog
+│   │   └── components/           # Components riêng cho admin
+│   └── api/                      # API Routes
+│       ├── auth/                 # Authentication API
+│       ├── laptop/               # Laptop API
+│       ├── user/                 # User API
+│       └── ...
+│
+├── components/                    # Components dùng chung
+│   ├── atoms/                    # Component nhỏ nhất (Button, Input, Badge...)
+│   ├── molecules/                # Component trung bình (Card, Form field...)
+│   ├── organisms/                # Component lớn (Header, Footer, Section...)
+│   ├── providers/                # Context Providers (Notification, Auth...)
+│   └── common/                   # Components dùng chung
+│
+├── lib/                          # Utilities & Helpers
+│   ├── api-client.ts             # API client (call backend)
+│   ├── token-manager.ts          # Quản lý token
+│   ├── utils.ts                  # Utility functions
+│   └── ...
+│
+├── store/                         # Zustand stores (State management)
+│   ├── cartStore.ts              # State giỏ hàng
+│   ├── notificationStore.ts      # State thông báo
+│   └── ...
+│
+├── services/                      # API services
+│   ├── notification-api.ts       # API thông báo
+│   ├── user-api.ts               # API user
+│   └── ...
+│
+├── hooks/                         # Custom React Hooks
+│   ├── use-socket.ts             # Hook kết nối Socket.io
+│   └── use-toast.ts              # Hook hiển thị toast
+│
+├── types/                         # TypeScript types
+│   ├── notification.ts           # Types thông báo
+│   └── ...
+│
+└── schemaValidations/             # Zod validation schemas
+    ├── auth.schema.ts             # Validation đăng nhập/đăng ký
+    └── ...
 ```
 
-## 🎯 Getting Started
+## 🚀 Cài đặt và chạy
 
-1. **Clone and install dependencies:**
+### 1. Cài đặt dependencies
 ```bash
-git clone <repository-url>
-cd top-gear
 npm install
 ```
 
-2. **Set up environment variables:**
-```bash
-cp .env.example .env.local
-# Fill in your environment variables
+### 2. Tạo file `.env.local`
+```env
+# Database
+MONGODB_URI=your_mongodb_connection_string
+
+# NextAuth
+NEXTAUTH_SECRET=your_secret_key
+NEXTAUTH_URL=http://localhost:3001
+
+# API Backend
+NEXT_PUBLIC_EXPRESS_API_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL_NEXT_SERVER=http://localhost:3001
+
+# Socket.io (Backend URL)
+NEXT_PUBLIC_SOCKET_URL=http://localhost:3000
+
+# Facebook OAuth (nếu dùng)
+FACEBOOK_CLIENT_ID=your_facebook_client_id
+FACEBOOK_CLIENT_SECRET=your_facebook_client_secret
 ```
 
-3. **Run the development server:**
+### 3. Chạy development server
 ```bash
 npm run dev
 ```
 
-4. **Open your browser:**
-Visit [http://localhost:3000](http://localhost:3000) to see the application.
+Mở [http://localhost:3001](http://localhost:3001) để xem website.
 
-## 📚 Documentation
-
-### 📖 Getting Started
-- **[Quick Start](./QUICK_START.md)** - 30-second setup guide
-- **[Setup Guide](./SETUP_GUIDE.md)** - Complete installation and configuration guide
-- **[Development Workflow](./DEVELOPMENT_WORKFLOW.md)** - Daily development practices and workflows
-
-### 🔧 Development Resources
-- **[Code Review Checklist](./CODE_REVIEW_CHECKLIST.md)** - Ensure code quality standards
-- **[Refactoring Guide](./REFACTORING_GUIDE.md)** - Best practices for code improvements
-- **[Technical Debt Tracker](./TECHNICAL_DEBT.md)** - Monitor and manage technical debt
-
-### 📝 Project Management
-- **[Learning Log](./LEARNING_LOG.md)** - Track learning progress and improvements
-- **[Daily Progress](./DAILY_PROGRESS.md)** - Daily development tracking
-- **[Improvement Plan](./IMPROVEMENT_PLAN.md)** - Roadmap for project enhancements
-
-### 🤖 Automation Tools
-- **[Tools Guide](./TOOLS_GUIDE.md)** - Complete guide to all automation tools
-- **[dev-helper.ps1](./dev-helper.ps1)** - PowerShell automation for common tasks
-- **[code-analyzer.ps1](./code-analyzer.ps1)** - Code quality analysis and reporting
-- **[setup-hooks.ps1](./setup-hooks.ps1)** - Git hooks setup for automatic validation
-- **[dev-scripts.json](./dev-scripts.json)** - Development workflows and checklists
-
-### 📋 Quick Reference
-- **Environment Setup**: Copy `.env.example` to `.env.local` and configure
-- **Code Standards**: Follow TypeScript strict mode and ESLint rules
-- **Commit Format**: Use conventional commits (feat/fix/docs/refactor)
-- **Before PR**: Run `npm run lint` and `npm run format`
-
-## 🔧 Available Scripts
+## 📝 Scripts
 
 ```bash
-# Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run format       # Format code with Biome
-
-# Automation Tools (PowerShell)
-.\dev-helper.ps1 setup        # Quick project setup
-.\dev-helper.ps1 dev          # Start development with checks
-.\dev-helper.ps1 check        # Run all quality checks
-.\dev-helper.ps1 commit "msg" # Smart commit with validation
-.\code-analyzer.ps1           # Analyze code quality
-.\code-analyzer.ps1 stats     # Project statistics
+npm run dev      # Chạy development server
+npm run build    # Build cho production
+npm run start    # Chạy production server
+npm run lint     # Kiểm tra lỗi code
+npm run format   # Format code
 ```
 
-## 📋 Best Practices
+## 🔑 Tính năng chi tiết
 
-This project follows several best practices:
+### Authentication (Xác thực)
+- **NextAuth.js**: Hỗ trợ đăng nhập bằng Email/Password và Facebook
+- **JWT Token**: Lưu token từ backend để authenticate
+- **Session Management**: Quản lý session với NextAuth
 
-1. **Code Organization**: Clear folder structure and component organization
-2. **Type Safety**: Comprehensive TypeScript usage
-3. **Error Handling**: Consistent error handling patterns
-4. **Performance**: Optimized images, code splitting, and caching
-5. **Accessibility**: WCAG compliant UI components
-6. **Testing**: (In progress) Unit and integration tests
+### Real-time Notifications (Thông báo real-time)
+- **Socket.io**: Kết nối real-time với backend
+- **Customer**: Nhận thông báo về đơn hàng
+- **Admin**: Nhận thông báo khi có đơn hàng mới
+- **Toast + Badge**: Hiển thị thông báo và số lượng chưa đọc
 
-## 🤝 Contributing
+### Shopping Cart (Giỏ hàng)
+- **Zustand Store**: Quản lý state giỏ hàng
+- **Persist**: Lưu giỏ hàng vào localStorage
+- **Add/Remove/Update**: Các thao tác với giỏ hàng
 
-1. **Before contributing**, read our documentation:
-   - Check the [Code Review Checklist](./CODE_REVIEW_CHECKLIST.md)
-   - Review the [Refactoring Guide](./REFACTORING_GUIDE.md)
-   - Update the [Learning Log](./LEARNING_LOG.md) with your changes
+### Order Management (Quản lý đơn hàng)
+- **Checkout**: 2 bước (Thông tin + Thanh toán)
+- **Payment**: COD và Online payment
+- **Order Tracking**: Theo dõi trạng thái đơn hàng
 
-2. **Development workflow:**
-   - Create a feature branch
-   - Make your changes following our guidelines
-   - Test your changes thoroughly
-   - Submit a pull request with detailed description
+### Admin Panel
+- **Dashboard**: Thống kê doanh thu, đơn hàng
+- **CRUD**: Quản lý sản phẩm, danh mục, thương hiệu
+- **Order Management**: Xem và xử lý đơn hàng
+- **Blog Management**: Quản lý blog/tin tức
 
-## 📊 Project Metrics
+## 🔧 Cấu trúc quan trọng
 
-- **Code Quality**: Maintaining high standards with linting and formatting
-- **Performance**: Monitoring Core Web Vitals
-- **Security**: Regular security audits and best practices
-- **Documentation**: Comprehensive documentation for all features
+### API Routes (`src/app/api/`)
+- Tất cả API routes của Next.js
+- Proxy requests tới backend Express
+- Handle authentication
 
-## 🚀 Deployment
+### Components Structure
+- **Atoms**: Button, Input, Badge... (Component nhỏ, tái sử dụng)
+- **Molecules**: Card, Form field... (Kết hợp atoms)
+- **Organisms**: Header, Footer, Section... (Component lớn)
+- **Providers**: Context providers (Notification, Auth)
 
-The application is optimized for deployment on Vercel:
+### State Management
+- **Zustand**: Quản lý state client-side (Cart, Notifications)
+- **React Query**: Quản lý server state (Data fetching, caching)
 
-1. **Connect your repository** to Vercel
-2. **Configure environment variables** in Vercel dashboard
-3. **Deploy automatically** on every push to main branch
+## 📞 Liên hệ
 
-For other platforms, use the standard Next.js build process:
-```bash
-npm run build
-npm run start
-```
-
-## 📞 Support
-
-For questions or issues:
-- Check the documentation in this repository
-- Review the [Technical Debt Tracker](./TECHNICAL_DEBT.md) for known issues
-- Create an issue in the repository
+Nếu có vấn đề hoặc câu hỏi, vui lòng tạo issue trong repository.
 
 ---
 
-**Note**: This project is continuously improved based on best practices and lessons learned. Check the [Learning Log](./LEARNING_LOG.md) for the latest updates and improvements.
+**Lưu ý**: Project này đang trong quá trình phát triển, có thể có một số tính năng chưa hoàn thiện.

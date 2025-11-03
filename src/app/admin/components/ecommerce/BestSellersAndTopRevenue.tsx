@@ -41,9 +41,9 @@ export default function BestSellersAndTopRevenue({
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-2">
-            <span className="font-medium">{topRevenueProduct.name}</span>
+            <span className="font-medium">{topRevenueProduct?.name || 'Không có sản phẩm'}</span>
             <span className="text-green-600 font-bold text-lg">
-              {topRevenueProduct.revenue.toLocaleString("vi-VN")} đ
+              {topRevenueProduct?.revenue?.toLocaleString("vi-VN") || 0} đ
             </span>
           </div>
         </CardContent>

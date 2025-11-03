@@ -204,6 +204,9 @@ export default function ListAddressCard({ locationsData }: { locationsData: Loca
                 description: 'Có lỗi xảy ra, vui lòng thử lại sau',
                 variant: 'destructive'
             })
+
+            console.log(error);
+            
             setIsLoading(false)
             return
         }
@@ -252,7 +255,7 @@ export default function ListAddressCard({ locationsData }: { locationsData: Loca
             })
             window.location.reload()
         } catch (error) {
-
+            console.error('Lỗi khi xóa địa chỉ:', error);
         }
         finally {
             setIsLoading(false)

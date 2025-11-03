@@ -2,6 +2,7 @@ import BestSellersAndTopRevenue from "@/app/admin/components/ecommerce/BestSelle
 import { EcommerceMetrics } from "@/app/admin/components/ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "@/app/admin/components/ecommerce/MonthlySalesChart";
 import RecentOrders from "@/app/admin/components/ecommerce/RecentOrders";
+import OrderNotificationWidget from "@/app/admin/components/ecommerce/OrderNotificationWidget";
 import type { Metadata } from "next";
 import React from "react";
 
@@ -69,6 +70,8 @@ export const metadata: Metadata = {
 
 export default async function Ecommerce() {
     const data = await fetchData();
+    console.log(data);
+    console.log(data.topRevenueProduct);
 
     if (!data) return <div>Error loading data</div>;
 
@@ -99,6 +102,9 @@ export default async function Ecommerce() {
                 <MonthlySalesChart
                     monthlySales={data.monthlySalesFull}
                 />
+            </div>
+            <div className="col-span-12">
+                <OrderNotificationWidget />
             </div>
             <div className="col-span-12">
                 <RecentOrders

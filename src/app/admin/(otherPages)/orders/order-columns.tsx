@@ -63,7 +63,7 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
             accessorKey: "totalAmount",
             header: "Giá trị đơn hàng",
             cell: ({ row }) => (
-                <div>{formatPrice((row.getValue("totalAmount") as string[])) || "#Nan"}</div>
+                <div>{formatPrice((row.getValue("totalAmount") as string)) || "#Nan"}</div>
             ),
         },
         {
