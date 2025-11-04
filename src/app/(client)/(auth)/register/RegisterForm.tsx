@@ -30,10 +30,10 @@ export default function RegisterForm() {
   const onSubmit = async (data: RegisterType) => {
     setLoading(true);
     setErrorMessage("");
-
+      
     try {
       const response = await fetch(
-        "https://top-gear-be.vercel.app/api/v1/auth/register",
+        `${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/auth/register`,
         {
           method: "POST",
           headers: {
@@ -44,9 +44,9 @@ export default function RegisterForm() {
             password: data.password,
             usersname: data.username,
             fullname: data.fullname,
-            phone: data.phone,
-            address: data.address,
-            sex: data.sex === "male" ? "nam" : "nữ",
+            // phone: data.phone,
+            // address: data.address,
+            // sex: data.sex === "male" ? "nam" : "nữ",
           }),
         }
       );
@@ -131,7 +131,7 @@ export default function RegisterForm() {
         </div>
 
         {/* Phone */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-base font-semibold">Số điện thoại</label>
           <input
             type="text"
@@ -141,10 +141,10 @@ export default function RegisterForm() {
           {errors.phone && (
             <p className="text-red-500">{errors.phone.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Address */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-base font-semibold">Địa chỉ</label>
           <input
             type="text"
@@ -154,7 +154,7 @@ export default function RegisterForm() {
           {errors.address && (
             <p className="text-red-500">{errors.address.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Sex */}
         <div className="mb-4">

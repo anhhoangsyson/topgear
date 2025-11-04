@@ -50,7 +50,7 @@ export default function Footer() {
         {/* <Image src={} width={100} height={100} /> */}
         <div className="flex items-center gap-4">
           <p className="text-base font-normal">
-            Coppy right @2025 by Top Gear Store. Design by Top Gear Store
+            Coppy right @2025 by E-COM Store. Design by E-COM Store
           </p>
         </div>
       </div>

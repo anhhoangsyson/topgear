@@ -36,7 +36,7 @@ export default async function OrderSuccess({ params }: { params: { id: string } 
             <div className='grid'>
                 <GiConfirmed className='my-4 w-36 h-36 text-[#0e1746] mx-auto' />
                 <h2 className='font-semibold text-gray-800 text-4xl text-center'>Đặt hàng thành công!!!</h2>
-                <h3 className='my-4 text-sm font-normal text-gray-500 text-center'>Cảm ơn thượng đế vì đã tin tưởng và mua hàng của TOP GEAR.</h3>
+                <h3 className='my-4 text-sm font-normal text-gray-500 text-center'>Cảm ơn thượng đế vì đã tin tưởng và mua hàng của E-COM.</h3>
                 <Navigation/>
             </div>
         </div>

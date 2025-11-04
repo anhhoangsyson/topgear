@@ -26,56 +26,60 @@ export default function Navbar() {
     // }, [])
 
     return (
-        <div className='flex my-4 gap-x-4'>
-            {/* right side is menu categories */}
-            <nav className='flex flex-col rounded pb-4 w-60 bg-white '>
-                <ul className="">
-                    {categoriesMenu.map((item, index) => (
-                        <li
-                            key={index}
-                            className='relative group px-4 py-3 hover:bg-gray-100 hover:text-blue-500 '
-                        >
-                            <Link
-                                className='font-nomral text-sm '
-                                href={`/c/${item._id}`}>
-                                {item.categoryName}
-                            </Link>
-                            {/* dropdown menu */}
-                            <div
-                                className={`grid grid-cols-5 absolute -top- ${topPosition[index]} left-full min-w-[800px] w-full rounded bg-white opacity-0 invisible shadow-lg group-hover:opacity-100 group-hover:visible group-hover:shadow-lg group-hover:z-10 transition-all duration-300 ease-in-out`}>
-                                {item.children.map((child, index) => (
-                                    <div
-                                        key={index}
-                                        className='block py-3 px-4 text-[#0e1746] font-semibold text-base h-full'>
-                                        {child.categoryName}
+        <div className='flex flex-col lg:flex-row my-4 gap-4'>
+            {/* Categories Menu - Hidden on mobile, shown on desktop */}
+            {categoriesMenu.length > 0 && (
+                <nav className='hidden lg:flex flex-col rounded pb-4 w-60 bg-white'>
+                    <ul className="">
+                        {categoriesMenu.map((item, index) => (
+                            <li
+                                key={index}
+                                className='relative group px-4 py-3 hover:bg-gray-100 hover:text-blue-500 '
+                            >
+                                <Link
+                                    className='font-normal text-sm '
+                                    href={`/c/${item._id}`}>
+                                    {item.categoryName}
+                                </Link>
+                                {/* dropdown menu */}
+                                <div
+                                    className={`grid grid-cols-5 absolute -top- ${topPosition[index]} left-full min-w-[800px] w-full rounded bg-white opacity-0 invisible shadow-lg group-hover:opacity-100 group-hover:visible group-hover:shadow-lg group-hover:z-10 transition-all duration-300 ease-in-out`}>
+                                    {item.children.map((child, index) => (
                                         <div
-                                            className='grid grid-cols-1 gap-2 mt-2'>
-                                            {child.children.map((subChild, index) => (
-                                                <div
-                                                    key={index}
-                                                    className='text-gray-500 hover:text-blue-500 text-xs font-normal text-nowrap rounded'>
-                                                    <Link
-                                                        href={`/c/${subChild._id}`}
-                                                    >
-                                                        {subChild.categoryName}
-                                                    </Link>
-                                                </div>
-                                            ))}
+                                            key={index}
+                                            className='block py-3 px-4 text-[#0e1746] font-semibold text-base h-full'>
+                                            {child.categoryName}
+                                            <div
+                                                className='grid grid-cols-1 gap-2 mt-2'>
+                                                {child.children.map((subChild, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className='text-gray-500 hover:text-blue-500 text-xs font-normal text-nowrap rounded'>
+                                                        <Link
+                                                            href={`/c/${subChild._id}`}
+                                                        >
+                                                            {subChild.categoryName}
+                                                        </Link>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-            {/* left side is banner */}
-            <div className="w-full h-full mx-auto rounded">
+                                    ))}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            )}
+            
+            {/* Banner - Full width on mobile, flex-1 on desktop */}
+            <div className="w-full lg:flex-1 mx-auto rounded">
                 <Image
                     className="w-full h-auto rounded"
                     alt="banner"
-                    src={banner}>
-                </Image>
+                    src={banner}
+                    priority
+                />
             </div>
         </div>
     )

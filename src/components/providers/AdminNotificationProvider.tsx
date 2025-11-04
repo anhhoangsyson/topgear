@@ -116,14 +116,6 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
 
   // Handle incoming notifications from socket
   const handleNotification = useCallback((data: INotification) => {
-    console.log('[AdminNotificationProvider] 🔔 Received notification from socket:', {
-      id: data._id || data.id,
-      type: data.type,
-      title: data.title,
-      userId: data.userId,
-      isRead: data.isRead
-    });
-    
     // Backend trả về type là string (lowercase): 'order', 'comment', etc.
     const notificationType = typeof data.type === 'string' ? data.type.toLowerCase() : data.type;
     
@@ -133,13 +125,7 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
       notificationType === NotificationType.ORDER_CREATED || 
       notificationType === NotificationType.ORDER_CANCELLED;
     
-    console.log('[AdminNotificationProvider] 📊 Notification type check:', {
-      notificationType,
-      isOrderNotification
-    });
-    
     if (isOrderNotification) {
-      console.log('[AdminNotificationProvider] ✅ Processing order notification');
       addNotification(data);
       
       // Play sound notification
@@ -152,10 +138,6 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
         duration: data.data?.priority === 'high' ? 10000 : 5000,
         variant: data.data?.priority === 'high' ? 'destructive' : 'default',
       });
-      
-      console.log('[AdminNotificationProvider] ✅ Notification added to store and toast shown');
-    } else {
-      console.log('[AdminNotificationProvider] ⏭️ Skipping non-order notification');
     }
   }, [addNotification]);
 
@@ -165,25 +147,11 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
   }, [setUnreadCount]);
 
   // Setup socket connection - chỉ cần authenticated và isAdmin
-  // Socket sẽ tự authenticate và server sẽ trả về userId qua 'authenticated' event
-  // NOTE: Socket vẫn connect ngay cả khi userId undefined (server sẽ authenticate từ token)
-  // NOTE: Nếu socket không connect được, notifications vẫn có thể fetch từ API
   useSocket(
     status === 'authenticated' && isAdmin ? (userId || undefined) : undefined,
     handleNotification,
     handleUnreadCountUpdate
   );
-  
-  // Debug: Log socket connection status
-  useEffect(() => {
-    if (status === 'authenticated' && isAdmin) {
-      console.log('[AdminNotificationProvider] 🔌 Socket connection status:', {
-        userId,
-        shouldConnect: !!userId || true, // Socket vẫn connect nếu có token
-        note: 'Socket will connect automatically. If timeout, check backend is running on port 3000'
-      });
-    }
-  }, [userId, status, isAdmin]);
 
   // Fetch initial notifications when admin is authenticated
   useEffect(() => {

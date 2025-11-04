@@ -25,7 +25,7 @@ export default async function BlogPage() {
       <div className="pt-12">
         <div className="text-center">
           <span className="text-5xl font-bold text-gray-700 text-center">
-            Top Gear Blogs
+            E-COM Blogs
           </span>
         </div>
         <p className="text-center font-normal text-base text-gray-500 mt-4 ">

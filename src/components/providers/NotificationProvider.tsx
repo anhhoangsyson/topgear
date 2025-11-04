@@ -163,7 +163,7 @@ export default function NotificationProvider({ children }: NotificationProviderP
     // Skip nếu là admin
     if (isAdmin) return;
     
-    console.log('[NotificationProvider] 📊 Unread count updated from socket:', count);
+    // Unread count updated from socket
     setUnreadCount(count);
   }, [setUnreadCount, isAdmin]);
 
@@ -193,59 +193,36 @@ export default function NotificationProvider({ children }: NotificationProviderP
       // Nếu không có userId, log để debug
       if (!userId) {
         console.error('[NotificationProvider] ❌❌❌ userId is UNDEFINED!');
-        console.error('[NotificationProvider] Session data:', JSON.stringify(session, null, 2));
+        // Safe log session (tránh circular reference errors)
+        console.error('[NotificationProvider] Session data:', {
+          hasSession: !!session,
+          status: status,
+          user: session?.user ? {
+            id: session.user.id,
+            name: session.user.name,
+            email: session.user.email,
+            role: session.user.role,
+            profileCompleted: session.user.profileCompleted,
+            keys: Object.keys(session.user)
+          } : null,
+          hasAccessToken: !!session?.accessToken,
+          accessTokenLength: session?.accessToken?.length,
+          provider: session?.provider,
+          sessionKeys: session ? Object.keys(session) : []
+        });
       }
     }
   }, [status, userId, session, isAdmin]);
 
   // Setup socket connection - chỉ cần authenticated và không phải admin
-  // Socket sẽ tự authenticate và server sẽ trả về userId qua 'authenticated' event
-  // NOTE: useSocket sẽ connect với token, không cần userId thật (chỉ cần truthy value để trigger)
-  // NOTE: Nếu socket không connect được, notifications vẫn có thể fetch từ API
   const shouldConnectSocket = status === 'authenticated' && !isAdmin;
-  
-  // Pass userId nếu có, hoặc 'connect' string để trigger connection
-  // useSocket sẽ connect với token, không phụ thuộc vào giá trị userId này
-  // QUAN TRỌNG: Phải có giá trị truthy để useSocket không skip connection
   const socketUserId = shouldConnectSocket ? (userId || 'connect-now') : undefined;
-  
-  console.log('[NotificationProvider] 🔌 useSocket will be called with:', {
-    shouldConnectSocket,
-    userId,
-    socketUserId,
-    status,
-    isAdmin
-  });
   
   useSocket(
     socketUserId,
     handleNotification,
     handleUnreadCountUpdate
   );
-  
-  // Debug: Log socket connection status
-  useEffect(() => {
-    if (status === 'authenticated' && !isAdmin) {
-      console.log('[NotificationProvider] 🔌 Socket connection status:', {
-        userId,
-        shouldConnect: shouldConnectSocket,
-        isAdmin,
-        status,
-        note: 'Socket will connect automatically. If timeout, check backend is running on port 3000'
-      });
-      
-      // Test: Log để confirm socket sẽ được gọi
-      if (shouldConnectSocket) {
-        console.log('[NotificationProvider] ✅✅✅ useSocket WILL BE CALLED for customer');
-      } else {
-        console.warn('[NotificationProvider] ⚠️ useSocket WILL NOT BE CALLED:', {
-          status,
-          isAdmin,
-          shouldConnectSocket
-        });
-      }
-    }
-  }, [status, userId, isAdmin, shouldConnectSocket]);
 
   // Fetch initial notifications when user is authenticated
   useEffect(() => {

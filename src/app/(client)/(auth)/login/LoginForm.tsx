@@ -113,7 +113,7 @@ export default function LoginForm() {
 
         toast({
           title: "Đăng nhập thành công",
-          description: "Chào mừng thượng đế đến với hệ thống Top Gear!",
+          description: "Chào mừng thượng đế đến với hệ thống E-COM!",
         });
 
         // Redirect sau khi lưu cookie thành công
@@ -137,7 +137,7 @@ export default function LoginForm() {
       //   if (response.ok) {
       //     toast({
       //       title: "Đăng nhập thành công",
-      //       description: "Chào mừng thượng đế đến với hệ thống Top Gear!",
+      //       description: "Chào mừng thượng đế đến với hệ thống E-COM!",
       //     });
 
       //     // save data user (ex: token) in localStorage

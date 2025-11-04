@@ -144,7 +144,7 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
           const orderId = result?.data?.data?._id;
           toast({
             title: 'Đặt hàng thành công',
-            description: 'Cảm ơn bạn đã đặt hàng tại Top Gear!',
+            description: 'Cảm ơn bạn đã đặt hàng tại E-COM!',
             duration: 3000,
             variant: 'default',
           })

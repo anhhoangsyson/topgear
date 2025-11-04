@@ -18,34 +18,38 @@ export default function LaptopCard({ laptop }: { laptop: ILaptop }) {
             : 0
 
     return (
-        <Card className="flex flex-col items-center justify-between shadow-md hover:shadow-lg transition-all duration-300 p-2">
-            <Link className="w-full h-auto relative block"
+        <Card className="flex flex-col h-full shadow-md hover:shadow-lg transition-all duration-300 p-2 sm:p-3">
+            <Link className="w-full h-auto relative block mb-2"
                 href={`/laptop/${laptop.slug}`}
             >
-                <Image
-                    className="w-full h-auto object-cover rounded"
-                    src={laptop.images[0].imageUrl}
-                    alt={laptop.images[0].altText || laptop.name}
-                    width={300}
-                    height={200}
-                />
+                <div className="relative w-full aspect-square overflow-hidden rounded">
+                    <Image
+                        className="w-full h-full object-cover"
+                        src={laptop.images[0].imageUrl}
+                        alt={laptop.images[0].altText || laptop.name}
+                        width={300}
+                        height={300}
+                    />
+                </div>
                 {percent > 0 && (
-                    <span className="absolute top-2 left-2 mt-1 px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-semibold">
+                    <span className="absolute top-2 left-2 px-2 py-1 bg-red-500 text-white text-xs sm:text-sm font-semibold rounded shadow-md">
                         -{percent}%
                     </span>
                 )}
             </Link>
-            <CardContent className="flex flex-col min-h-32 py-2 w-full">
-                <CardTitle className="text-[11px] font-normal h-full max-h-20 overflow-hidden text-ellipsis  sm:whitespace-normal sm:line-clamp-2">
+            <CardContent className="flex flex-col flex-1 py-2 w-full px-1">
+                <CardTitle className="text-xs sm:text-sm font-normal line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem] mb-2">
                     {formatLaptopName(laptop.name, laptop.specifications)}
                 </CardTitle>
-                <div className="flex flex-col items-start mt-2">
-                    <span className="text-blue-500 font-bold text-[14px]">
+                <div className="flex flex-col items-start mt-auto gap-1">
+                    <span className="text-blue-500 font-bold text-sm sm:text-base break-words">
                         {formatPrice(laptop.discountPrice)}
                     </span>
-                    <span className="text-gray-500 line-through text-[13px]">
-                        {formatPrice(laptop.price)}
-                    </span>
+                    {laptop.price && laptop.price > laptop.discountPrice && (
+                        <span className="text-gray-500 line-through text-xs sm:text-sm">
+                            {formatPrice(laptop.price)}
+                        </span>
+                    )}
                 </div>
             </CardContent>
             <CardFooter className="w-full p-0 mt-2">
@@ -59,7 +63,7 @@ export default function LaptopCard({ laptop }: { laptop: ILaptop }) {
                             image: laptop.images[0].imageUrl,
                         })
                     }}
-                    className="w-full text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white"
+                    className="w-full text-xs sm:text-sm text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white py-2 px-2 sm:px-4 whitespace-nowrap"
                     variant="ghost"
                 >
                     Thêm vào giỏ hàng

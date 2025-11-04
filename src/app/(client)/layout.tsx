@@ -8,7 +8,7 @@ export default function ClientLayout({
   return (
     <>
       <Header />
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[106px]">{children}</div>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 md:mt-20">{children}</div>
       <Footer />
       
     </>

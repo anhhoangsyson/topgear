@@ -36,7 +36,7 @@ const services = [
   {
     icon: cardGift,
     title: "Thẻ quà tặng",
-    description: "Tặng quà ẩm thực đặc sắc với Thẻ quà tặng từ Top Gear",
+    description: "Tặng quà ẩm thực đặc sắc với Thẻ quà tặng từ E-COM",
   },
 ];
 
@@ -44,17 +44,17 @@ const benefits = [
   {
     title: "Bộ sưu tập laptop đẳng cấp",
     description:
-      "Mua sắm dễ dàng tại Top Gear với bộ sưu tập laptop đẳng cấp! Chúng tôi cung cấp nhiều mẫu từ các thương hiệu uy tín như Apple, Dell, HP, Lenovo, đáp ứng nhu cầu học tập, làm việc và giải trí.",
+      "Mua sắm dễ dàng tại E-COM với bộ sưu tập laptop đẳng cấp! Chúng tôi cung cấp nhiều mẫu từ các thương hiệu uy tín như Apple, Dell, HP, Lenovo, đáp ứng nhu cầu học tập, làm việc và giải trí.",
   },
   {
     title: "Trải nghiệm dịch vụ chuyên nghiệp",
     description:
-      "Dịch vụ hàng đầu tại Top Gear! Đội ngũ chuyên viên sẵn sàng tư vấn và hỗ trợ bạn chọn được chiếc laptop phù hợp với nhu cầu và ngân sách, cam kết bảo hành dài hạn và hỗ trợ sau bán hàng tuyệt vời.",
+      "Dịch vụ hàng đầu tại E-COM! Đội ngũ chuyên viên sẵn sàng tư vấn và hỗ trợ bạn chọn được chiếc laptop phù hợp với nhu cầu và ngân sách, cam kết bảo hành dài hạn và hỗ trợ sau bán hàng tuyệt vời.",
   },
   {
     title: "Giá cạnh tranh, ưu đãi hấp dẫn",
     description:
-      "Mua sắm dễ dàng tại Top Gear với bộ sưu tập laptop đẳng cấp! Chúng tôi cung cấp nhiều mẫu từ các thương hiệu uy tín như Apple, Dell, HP, Lenovo, đáp ứng nhu cầu học tập, làm việc và giải trí.",
+      "Mua sắm dễ dàng tại E-COM với bộ sưu tập laptop đẳng cấp! Chúng tôi cung cấp nhiều mẫu từ các thương hiệu uy tín như Apple, Dell, HP, Lenovo, đáp ứng nhu cầu học tập, làm việc và giải trí.",
   },
 ];
 
@@ -159,7 +159,7 @@ export default async function Home() {
           {/* <div className="grid grid-col-4 gap-y-8 py-28">
             <div>
               <h2 className="text-center text-5xl font-bold text-blue-600">
-                Sản phẩm của Top Gear
+                Sản phẩm của E-COM
               </h2>
               <h4 className="text-center text-xl font-light my-3">
                 Các sản phẩm và Phụ kiện với giá ưu đãi
@@ -234,7 +234,7 @@ export default async function Home() {
               <div className="flex flex-col justify-center">
                 <p className="mt-3 w-9/12 break-words text-gray-500">
                   Đừng bỏ lỡ những chương trình khuyến mãi và ưu đãi đặc biệt tại
-                  Top Gear! Với mong muốn mang lại giá trị tốt nhất cho khách
+                  E-COM! Với mong muốn mang lại giá trị tốt nhất cho khách
                   hàng, chúng tôi thường xuyên cập nhật các chương trình giảm giá,
                   quà tặng và ưu đãi đặc biệt cho từng dòng sản phẩm. Hãy theo dõi
                   trang web hoặc đăng ký nhận tin từ chúng tôi để không bỏ lỡ bất

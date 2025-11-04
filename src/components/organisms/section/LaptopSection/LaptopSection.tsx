@@ -20,8 +20,8 @@ export default function LaptopSection({ laptops }: { laptops: ILaptop[] }) {
 
     return (
         <SectionWrapper>
-            <h2 className='text-2xl font-bold text-left my-4'>Laptop tại Top Gear</h2>
-            <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4'>
+            <h2 className='text-2xl font-bold text-left my-4'>Laptop tại E-COM</h2>
+            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4'>
                 {/* render laptop */}
                 {laptopToShow.map((laptop) => (
                     <LaptopCard

@@ -1,4 +1,4 @@
-# Top Gear - E-commerce Platform
+# E-COM - E-commerce Platform
 
 Website bán laptop và phụ kiện công nghệ, được xây dựng với Next.js 14 và TypeScript.
 
