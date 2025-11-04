@@ -7,6 +7,7 @@ import { useNotificationStore } from '@/store/notificationStore';
 import { NotificationAPI } from '@/services/notification-api';
 import { INotification, NotificationType } from '@/types/notification';
 import { toast } from '@/hooks/use-toast';
+import { showBrowserNotification } from '@/lib/push-notification';
 
 interface AdminNotificationProviderProps {
   children: React.ReactNode;
@@ -119,11 +120,18 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
     // Backend trả về type là string (lowercase): 'order', 'comment', etc.
     const notificationType = typeof data.type === 'string' ? data.type.toLowerCase() : data.type;
     
-    // Chỉ xử lý order notifications cho admin
+    // Xử lý TẤT CẢ order notifications cho admin:
+    // - Đơn hàng mới (ORDER_CREATED)
+    // - Thay đổi trạng thái đơn hàng (ORDER_STATUS_CHANGED) - từ customer
+    // - Yêu cầu hủy đơn hàng (ORDER_CANCELLED) - từ customer
+    // - Đơn hàng hoàn thành (ORDER_COMPLETED)
     const isOrderNotification = 
       notificationType === 'order' || 
       notificationType === NotificationType.ORDER_CREATED || 
-      notificationType === NotificationType.ORDER_CANCELLED;
+      notificationType === NotificationType.ORDER_STATUS_CHANGED ||
+      notificationType === NotificationType.ORDER_CANCELLED ||
+      notificationType === NotificationType.ORDER_COMPLETED ||
+      (data.data?.orderId && notificationType !== NotificationType.SYSTEM_ANNOUNCEMENT);
     
     if (isOrderNotification) {
       addNotification(data);
@@ -138,6 +146,30 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
         duration: data.data?.priority === 'high' ? 10000 : 5000,
         variant: data.data?.priority === 'high' ? 'destructive' : 'default',
       });
+
+      // Show browser push notification (if permission granted)
+      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+        try {
+          await showBrowserNotification({
+            title: data.title,
+            body: data.message,
+            icon: '/favicon.svg',
+            badge: '/favicon.svg',
+            data: {
+              url: data.link || data.data?.link || `/admin/orders?orderId=${data.data?.orderId || ''}`,
+              orderId: data.data?.orderId,
+              notificationId: data._id || data.id,
+              ...data.data
+            },
+            tag: data._id || data.id || 'notification',
+            requireInteraction: data.data?.priority === 'high',
+            vibrate: data.data?.priority === 'high' ? [200, 100, 200] : [200],
+            priority: data.data?.priority || 'normal'
+          });
+        } catch (error) {
+          console.error('[AdminNotificationProvider] Error showing browser notification:', error);
+        }
+      }
     }
   }, [addNotification]);
 
@@ -181,11 +213,16 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
           console.log('[AdminNotificationProvider] Unread count response:', unreadCountRes);
 
           if (notificationsRes.success) {
-            // Filter chỉ lấy order notifications
-            const orderNotifications = notificationsRes.data.notifications.filter(
-              n => n.type === NotificationType.ORDER_CREATED || 
-                   n.type === NotificationType.ORDER_CANCELLED
-            );
+            // Filter lấy TẤT CẢ order notifications (không filter theo priority hay totalAmount)
+            const orderNotifications = notificationsRes.data.notifications.filter(n => {
+              const type = typeof n.type === 'string' ? n.type.toLowerCase() : n.type;
+              return type === 'order' ||
+                     type === NotificationType.ORDER_CREATED || 
+                     type === NotificationType.ORDER_STATUS_CHANGED ||
+                     type === NotificationType.ORDER_CANCELLED ||
+                     type === NotificationType.ORDER_COMPLETED ||
+                     (n.data?.orderId && type !== NotificationType.SYSTEM_ANNOUNCEMENT);
+            });
             console.log('[AdminNotificationProvider] Setting order notifications:', orderNotifications.length);
             setNotifications(orderNotifications);
           }

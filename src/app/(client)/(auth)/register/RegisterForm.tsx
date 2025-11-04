@@ -7,10 +7,12 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/atoms/ui/Button";
+import { Loader } from "@/components/atoms/feedback/Loader";
+import { Mail, Lock, User, UserCircle, ArrowRight, LogIn, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -83,131 +85,216 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="my-20">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="2xl:w-1/3 max-w-xl mx-auto p-4 border rounded shadow-md bg-white"
-      >
-        <h2 className="text-xl font-bold mb-4">Đăng ký tài khoản</h2>
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-
-        {/* Full Name */}
-        <div className="mb-4">
-          <label className="block text-base font-semibold">Họ và Tên</label>
-          <input
-            type="text"
-            {...register("fullname")}
-            className="w-full p-2 border rounded bg-gray-100 focus:bg-white"
-          />
-          {errors.fullname && (
-            <p className="text-red-500">{errors.fullname.message}</p>
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50 py-8 sm:py-12 lg:py-16 px-4 sm:px-6">
+      <div className="max-w-md mx-auto">
+        {/* Logo/Header */}
+        <div className="text-center mb-8 sm:mb-12">
+          <Link href="/" className="inline-block mb-4">
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl sm:text-2xl">E</span>
+              </div>
+              <span className="text-2xl sm:text-3xl font-bold text-gray-900">E-COM</span>
+            </div>
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+            Tạo tài khoản mới
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600">
+            Đăng ký để bắt đầu mua sắm ngay hôm nay
+          </p>
         </div>
 
-        {/* Username */}
-        <div className="mb-4">
-          <label className="block text-base font-semibold">Tên đăng nhập</label>
-          <input
-            type="text"
-            {...register("username")}
-            className="w-full p-2 border rounded bg-gray-100 focus:bg-white"
-          />
-          {errors.username && (
-            <p className="text-red-500">{errors.username.message}</p>
-          )}
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 sm:p-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {errorMessage && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{errorMessage}</p>
+              </div>
+            )}
+
+            {/* Full Name */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Họ và Tên <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  {...register("fullname")}
+                  placeholder="Nguyễn Văn A"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm sm:text-base"
+                />
+              </div>
+              {errors.fullname && (
+                <p className="text-red-500 text-xs mt-1">{errors.fullname.message}</p>
+              )}
+            </div>
+
+            {/* Username */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Tên đăng nhập <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <UserCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  {...register("username")}
+                  placeholder="username"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm sm:text-base"
+                />
+              </div>
+              {errors.username && (
+                <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="email"
+                  {...register("email")}
+                  placeholder="example@email.com"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm sm:text-base"
+                />
+              </div>
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+              )}
+            </div>
+
+            {/* Sex */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Giới tính
+              </label>
+              <select
+                {...register("sex")}
+                className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm sm:text-base bg-white"
+              >
+                {Object.entries(SEX_LABELS).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Mật khẩu <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="password"
+                  {...register("password")}
+                  placeholder="Nhập mật khẩu"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm sm:text-base"
+                />
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Xác nhận mật khẩu <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="password"
+                  {...register("confirmPassword")}
+                  placeholder="Nhập lại mật khẩu"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm sm:text-base"
+                />
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 sm:py-4 rounded-lg font-semibold text-sm sm:text-base transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader size="sm" variant="white" />
+                  Đang xử lý...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
+                  Đăng ký
+                </span>
+              )}
+            </Button>
+          </form>
+
+          {/* Divider */}
+          <div className="flex items-center my-6 sm:my-8">
+            <div className="flex-1 border-t border-gray-300"></div>
+            <span className="px-4 text-sm text-gray-500">hoặc</span>
+            <div className="flex-1 border-t border-gray-300"></div>
+          </div>
+
+          {/* Login Link */}
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-3">
+              Đã có tài khoản?
+            </p>
+            <Link href="/login">
+              <Button
+                variant="outline"
+                className="w-full border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-700 hover:text-blue-600 py-3 sm:py-4 rounded-lg font-semibold text-sm sm:text-base transition-all"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <LogIn className="w-5 h-5" />
+                  Đăng nhập
+                </span>
+              </Button>
+            </Link>
+          </div>
+
+          {/* Footer */}
+          <div className="mt-6 sm:mt-8 text-center">
+            <Link
+              href="/"
+              className="text-sm text-gray-600 hover:text-blue-600 transition-colors inline-flex items-center gap-1"
+            >
+              <ArrowRight className="w-4 h-4 rotate-180" />
+              Quay lại trang chủ
+            </Link>
+          </div>
         </div>
 
-        {/* Email */}
-        <div className="mb-4">
-          <label className="block text-base font-semibold">Email</label>
-          <input
-            type="email"
-            {...register("email")}
-            className="w-full p-2 border rounded bg-gray-100 focus:bg-white"
-          />
-          {errors.email && (
-            <p className="text-red-500">{errors.email.message}</p>
-          )}
-        </div>
-
-        {/* Phone */}
-        {/* <div className="mb-4">
-          <label className="block text-base font-semibold">Số điện thoại</label>
-          <input
-            type="text"
-            {...register("phone")}
-            className="w-full p-2 border rounded bg-gray-100 focus:bg-white"
-          />
-          {errors.phone && (
-            <p className="text-red-500">{errors.phone.message}</p>
-          )}
-        </div> */}
-
-        {/* Address */}
-        {/* <div className="mb-4">
-          <label className="block text-base font-semibold">Địa chỉ</label>
-          <input
-            type="text"
-            {...register("address")}
-            className="w-full p-2 border rounded bg-gray-100 focus:bg-white"
-          />
-          {errors.address && (
-            <p className="text-red-500">{errors.address.message}</p>
-          )}
-        </div> */}
-
-        {/* Sex */}
-        <div className="mb-4">
-          <label className="block text-base font-semibold">Giới tính</label>
-          <select
-            {...register("sex")}
-            className="w-full p-2 border rounded bg-gray-100 focus:bg-white"
-          >
-            {Object.entries(SEX_LABELS).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Password */}
-        <div className="mb-4">
-          <label className="block text-base font-semibold">Mật khẩu</label>
-          <input
-            type="password"
-            {...register("password")}
-            className="w-full p-2 border rounded bg-gray-100 focus:bg-white"
-          />
-          {errors.password && (
-            <p className="text-red-500">{errors.password.message}</p>
-          )}
-        </div>
-
-        {/* Confirm Password */}
-        <div className="mb-4">
-          <label className="block text-base font-semibold">
-            Xác nhận mật khẩu
-          </label>
-          <input
-            type="password"
-            {...register("confirmPassword")}
-            className="w-full p-2 border rounded bg-gray-100 focus:bg-white"
-          />
-          {errors.confirmPassword && (
-            <p className="text-red-500">{errors.confirmPassword.message}</p>
-          )}
-        </div>
-
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          className="w-full bg-blue-500 text-white"
-          disabled={loading}
-        >
-          {loading ? "Đang xử lý..." : "Đăng ký"}
-        </Button>
-      </form>
+        {/* Terms */}
+        <p className="mt-6 text-center text-xs text-gray-500">
+          Bằng cách đăng ký, bạn đồng ý với{" "}
+          <Link href="/" className="text-blue-600 hover:underline">
+            Điều khoản sử dụng
+          </Link>{" "}
+          và{" "}
+          <Link href="/" className="text-blue-600 hover:underline">
+            Chính sách bảo mật
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

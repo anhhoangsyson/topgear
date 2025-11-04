@@ -132,7 +132,7 @@ export default async function Home() {
   return (
     <>
       <SessionSyncer />
-      <div className="bg-white">
+      <div className="bg-gray-50">
         {/* Category Filter Bar */}
         <CategorySection
           categories={categories}
@@ -149,7 +149,7 @@ export default async function Home() {
           laptopPromods={laptopPromods}
         />
 
-        <div className="mx-auto">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           {/* <FlashSaleSection
             bannerFlashSale1={bannerFlashSale1}
             data={FlashSale}
@@ -179,13 +179,13 @@ export default async function Home() {
           {/* </div> */}
           {/* </div> */}
 
-          <div className="grid grid-cols-2 my-8">
-            <div className="flex flex-col justify-center">
-              <h3 className="text-4xl text-blue-500 font-semibold">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12 sm:mb-16 lg:mb-20">
+            <div className="flex flex-col justify-center order-2 md:order-1">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl text-blue-500 font-semibold">
                 Thương mại điện tử
               </h3>
-              <p className="mt-3 w-9/12 break-words text-gray-500">
-                Khám phá thế giới công nghệ với những sản phẩm đa dạng tại 8bit!
+              <p className="mt-3 w-full md:w-9/12 break-words text-sm sm:text-base text-gray-500">
+                Khám phá thế giới công nghệ với những sản phẩm đa dạng tại E-COM!
                 Dù bạn là game thủ, người làm việc sáng tạo, hay chỉ đơn giản muốn
                 nâng cấp chiếc máy tính cá nhân của mình, chúng tôi đều có các sản
                 phẩm phù hợp. Các sản phẩm của chúng tôi đều được nhập khẩu chính
@@ -193,36 +193,38 @@ export default async function Home() {
                 tín như Apple, Dell, HP, Asus, và nhiều hãng khác.
               </p>
               <div>
-                <button className="px-4 py-2 mt-3 text-white text-sm bg-blue-600 rounded-md uppercase">
+                <button className="px-4 py-2 mt-3 text-white text-xs sm:text-sm bg-blue-600 rounded-md uppercase hover:bg-blue-700 transition-colors">
                   Mua hàng ngay
                 </button>
               </div>
             </div>
-            <div>
+            <div className="order-1 md:order-2">
               <Image
                 src={img1 || "/placeholder.svg"}
                 alt="hero"
                 width={800}
                 height={400}
+                className="w-full h-auto rounded-lg"
               />
             </div>
           </div>
 
 
 
-          <div className="grid grid-cols-2 my-32 gap-x-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12 sm:mb-16 lg:mb-20">
             {/* Left banner */}
-            <div>
+            <div className="order-1">
               <Image
                 src={img2 || "/placeholder.svg"}
                 alt="hero"
                 width={800}
                 height={400}
+                className="w-full h-auto rounded-lg"
               />
             </div>
             {/* Right banner */}
-            <div className="flex gap-9">
-              <div className="flex flex-col gap-y-2 justify-center">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-9 order-2">
+              <div className="hidden md:flex flex-col gap-y-2 justify-center">
                 {[0, 1, 2, 3].map((index) => (
                   <button
                     key={`dot-${index}`}
@@ -232,7 +234,7 @@ export default async function Home() {
                 ))}
               </div>
               <div className="flex flex-col justify-center">
-                <p className="mt-3 w-9/12 break-words text-gray-500">
+                <p className="mt-3 w-full md:w-9/12 break-words text-sm sm:text-base text-gray-500">
                   Đừng bỏ lỡ những chương trình khuyến mãi và ưu đãi đặc biệt tại
                   E-COM! Với mong muốn mang lại giá trị tốt nhất cho khách
                   hàng, chúng tôi thường xuyên cập nhật các chương trình giảm giá,
@@ -241,8 +243,8 @@ export default async function Home() {
                   kỳ ưu đãi nào.
                 </p>
                 <div>
-                  <button className="px-4 py-2 mt-3 text-white text-sm bg-blue-600 rounded-md uppercase">
-                    mua sắm apple watch ngay
+                  <button className="px-4 py-2 mt-3 text-white text-xs sm:text-sm bg-blue-600 rounded-md uppercase hover:bg-blue-700 transition-colors">
+                    mua sắm ngay
                   </button>
                 </div>
               </div>
@@ -250,26 +252,26 @@ export default async function Home() {
           </div>
 
           {/* Banner 3 */}
-          <div className="grid grid-cols-1 gap-y-12">
+          <div className="grid grid-cols-1 gap-y-8 md:gap-y-12 mb-12 sm:mb-16 lg:mb-20">
             <Image
-              className="h-[300px] w-full object-cover rounded-md"
+              className="h-[200px] sm:h-[250px] md:h-[300px] w-full object-cover rounded-md"
               src={img3 || "/placeholder.svg"}
               alt="hero"
               width={800}
               height={300}
             />
-            <div className="text-center">
-              <p className="font-semibold text-3xl uppercase inline-block">
+            <div className="text-center px-4">
+              <p className="font-semibold text-xl sm:text-2xl md:text-3xl uppercase inline-block">
                 Khám phá các lựa chọn &nbsp;
               </p>
-              <h1 className="font-semibold text-3xl uppercase text-blue-500 inline-block">
+              <h1 className="font-semibold text-xl sm:text-2xl md:text-3xl uppercase text-blue-500 inline-block">
                 laptop đẳng cấp &nbsp;
               </h1>
-              <p className="font-semibold text-3xl uppercase inline-block">
+              <p className="font-semibold text-xl sm:text-2xl md:text-3xl uppercase inline-block">
                 của chúng tôi
               </p>
             </div>
-            <div className="grid grid-cols-3 gap-x-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-x-16 gap-y-8">
               {benefits.map((benefit, index) => (
                 <BenefitCard
                   key={`benefit-${index}`}
@@ -281,19 +283,19 @@ export default async function Home() {
           </div>
 
           {/* Services section */}
-          <div className="pt-12">
-            <div>
-              <h4 className="mt-2 text-base font-semibold text-blue-500">
+          <div className="mb-12 sm:mb-16 lg:mb-20">
+            <div className="px-4 md:px-0">
+              <h4 className="mt-2 text-sm sm:text-base font-semibold text-blue-500">
                 Dịch vụ của chúng tôi
               </h4>
-              <h2 className="mt-2 text-3xl font-semibold">
+              <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-semibold">
                 Đem đến trải nghiệm tốt nhất cho bạn
               </h2>
-              <p className="mt-2 text-sm font-normal text-gray-500">
+              <p className="mt-2 text-xs sm:text-sm font-normal text-gray-500">
                 Chúng tôi luôn sẵn sàng phục vụ với các dịch vụ chất lượng cao.
               </p>
             </div>
-            <div className="mt-12 grid grid-cols-4 gap-x-8">
+            <div className="mt-8 md:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-x-8">
               {services.map((service, index) => (
                 <ServiceCard
                   key={`service-${index}`}
@@ -306,12 +308,12 @@ export default async function Home() {
           </div>
 
           {/* Contact section */}
-          <div className="grid grid-cols-3 mt-24">
-            <div className="col-span-1">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="col-span-1 lg:col-span-1">
               <div>
                 {contactInfo.map((info, index) => (
-                  <div key={`contact-${index}`} className="mb-11">
-                    <div className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-50">
+                  <div key={`contact-${index}`} className="mb-6 md:mb-11">
+                    <div className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-full bg-blue-50">
                       <svg
                         width="18"
                         height="15"
@@ -329,9 +331,9 @@ export default async function Home() {
                       </svg>
                     </div>
                     <div>
-                      <p className="mt-2 text-base font-bold">{info.title}</p>
-                      <p className="mt-2 text-sm font-normal">{info.subtitle}</p>
-                      <p className="mt-2 text-sm font-normal text-blue-400">
+                      <p className="mt-2 text-sm md:text-base font-bold">{info.title}</p>
+                      <p className="mt-2 text-xs md:text-sm font-normal">{info.subtitle}</p>
+                      <p className="mt-2 text-xs md:text-sm font-normal text-blue-400 break-words">
                         {info.contact}
                       </p>
                     </div>
@@ -339,8 +341,8 @@ export default async function Home() {
                 ))}
               </div>
             </div>
-            <div className="col-span-2">
-              <div className="w-full h-full">
+            <div className="col-span-1 lg:col-span-2">
+              <div className="w-full h-[300px] md:h-[400px] lg:h-full rounded-lg overflow-hidden">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1959.2173532270174!2d106.622246!3d10.854504!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752bee0b0ef9e5%3A0x5b4da59e47aa97a8!2zQ8O0bmcgVmnDqm4gUGjhuqduIE3hu4FtIFF1YW5nIFRydW5n!5e0!3m2!1svi!2sus!4v1739176826639!5m2!1svi!2sus"
                   width="100%"
@@ -349,6 +351,7 @@ export default async function Home() {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full"
                 ></iframe>
               </div>
             </div>

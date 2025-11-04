@@ -5,22 +5,23 @@ import LeftSideDetailLaptop from "@/components/molecules/cards/LeftSideDetailPro
 import { ListRelatedLaptop } from "@/components/molecules/cards/ListRelatedLaptop";
 
 const DetailLaptopPage = ({ data }: { data: ILaptop }) => {
-
   return (
-    <Wraper className="mt-8">
-      {/* detail product */}
-      <div className="mt-7 flex flex-col md:justify-between items-start gap-5 md:flex-row">
-        <CardDetailLaptop data={data} />
-        <LeftSideDetailLaptop data={data.specifications} />
-      </div>
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+      <Wraper>
+        {/* Main Product Detail Section */}
+        <div className="flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-6 mb-8 lg:mb-12">
+          <CardDetailLaptop data={data} />
+          <LeftSideDetailLaptop data={data.specifications} />
+        </div>
 
-      {/* related products */}
-      <ListRelatedLaptop
-        excludeId={data._id}
-        brandId={data.brandId._id}
-        categoryId={data.categoryId._id}
-      />
-    </Wraper>
+        {/* Related Products Section */}
+        <ListRelatedLaptop
+          excludeId={data._id}
+          brandId={data.brandId._id}
+          categoryId={data.categoryId._id}
+        />
+      </Wraper>
+    </div>
   );
 };
 

@@ -16,6 +16,8 @@ import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { getNotificationLink, handleNotificationClick } from '@/lib/notification-utils';
+import { useRouter } from 'next/navigation';
 
 interface NotificationItemProps {
   notification: INotification;
@@ -52,28 +54,10 @@ const getNotificationIcon = (type: NotificationType | string) => {
   return '🔔';
 };
 
-const getNotificationLink = (notification: INotification): string | null => {
-  // Ưu tiên link ở top level (theo API docs)
-  if (notification.link) {
-    return notification.link;
-  }
-  
-  // Fallback: generate link từ data
-  if (notification.data?.orderId) {
-    return `/account/orders/${notification.data.orderId}`;
-  }
-  if (notification.data?.productId) {
-    return `/laptop/${notification.data.productId}`;
-  }
-  if (notification.data?.voucherId) {
-    return '/cart';
-  }
-  return null;
-};
-
 export default function NotificationItem({ notification }: NotificationItemProps) {
   const { markAsRead, deleteNotification } = useNotificationStore();
   const [isDeleting, setIsDeleting] = React.useState(false);
+  const router = useRouter();
 
   // Get notification ID (backend có thể trả về _id hoặc id)
   const notificationId = notification._id || notification.id || '';
@@ -95,6 +79,17 @@ export default function NotificationItem({ notification }: NotificationItemProps
         variant: 'destructive',
       });
     }
+  };
+
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await handleNotificationClick(notification, {
+      markAsRead,
+      markAsReadAPI: async (id: string) => {
+        await NotificationAPI.markAsRead(id);
+      },
+      router,
+    });
   };
 
   const handleDelete = async () => {
@@ -179,14 +174,14 @@ export default function NotificationItem({ notification }: NotificationItemProps
 
   if (link) {
     return (
-      <Link href={link} onClick={handleMarkAsRead} className="block">
+      <div onClick={handleClick} className="cursor-pointer block">
         {content}
-      </Link>
+      </div>
     );
   }
 
   return (
-    <div onClick={handleMarkAsRead} className="cursor-pointer">
+    <div onClick={handleClick} className="cursor-pointer">
       {content}
     </div>
   );

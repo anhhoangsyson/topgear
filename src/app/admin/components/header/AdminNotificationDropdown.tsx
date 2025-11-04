@@ -8,7 +8,7 @@ import { NotificationAPI } from '@/services/notification-api';
 import { INotification, NotificationType } from '@/types/notification';
 import { formatDate, formatPrice } from '@/lib/utils';
 import { Badge } from '@/components/atoms/ui/badge';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, AlertCircle, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -24,12 +24,15 @@ export default function AdminNotificationDropdown() {
   } = useNotificationStore();
   const router = useRouter();
 
-  // Filter chỉ lấy order notifications (backend trả về lowercase 'order')
+  // Filter lấy TẤT CẢ order notifications (không filter theo priority hay totalAmount)
   const orderNotifications = notifications.filter(n => {
     const type = typeof n.type === 'string' ? n.type.toLowerCase() : n.type;
     return type === 'order' || 
            type === NotificationType.ORDER_CREATED || 
-           type === NotificationType.ORDER_CANCELLED;
+           type === NotificationType.ORDER_STATUS_CHANGED ||
+           type === NotificationType.ORDER_CANCELLED ||
+           type === NotificationType.ORDER_COMPLETED ||
+           (n.data?.orderId && type !== NotificationType.SYSTEM_ANNOUNCEMENT);
   });
 
   // Sort theo priority và thời gian
@@ -53,7 +56,7 @@ export default function AdminNotificationDropdown() {
     const notificationId = notification._id || notification.id;
     if (!notificationId) return;
 
-    // Mark as read
+    // Mark as read FIRST
     if (!notification.isRead) {
       try {
         await NotificationAPI.markAsRead(notificationId);
@@ -63,14 +66,19 @@ export default function AdminNotificationDropdown() {
       }
     }
 
-    // Navigate to order page (ưu tiên link ở top level, sau đó mới data.link)
+    // Close dropdown
+    setIsOpen(false);
+
+    // Navigate to order detail page
     const link = notification.link || notification.data?.link;
     if (notification.data?.orderId) {
+      // Navigate to order detail page with orderId
       router.push(`/admin/orders?orderId=${notification.data.orderId}`);
-      setIsOpen(false);
     } else if (link) {
       router.push(link);
-      setIsOpen(false);
+    } else {
+      // Fallback to orders page
+      router.push('/admin/orders');
     }
   };
 
@@ -88,7 +96,10 @@ export default function AdminNotificationDropdown() {
               const type = typeof n.type === 'string' ? n.type.toLowerCase() : n.type;
               return type === 'order' || 
                      type === NotificationType.ORDER_CREATED || 
-                     type === NotificationType.ORDER_CANCELLED;
+                     type === NotificationType.ORDER_STATUS_CHANGED ||
+                     type === NotificationType.ORDER_CANCELLED ||
+                     type === NotificationType.ORDER_COMPLETED ||
+                     (n.data?.orderId && type !== NotificationType.SYSTEM_ANNOUNCEMENT);
             });
             setNotifications(orderNotifs);
             setUnreadCount(response.data.pagination.unreadCount);
@@ -106,8 +117,14 @@ export default function AdminNotificationDropdown() {
     if (typeStr === 'order' || typeStr === NotificationType.ORDER_CREATED) {
       return '📦';
     }
+    if (typeStr === NotificationType.ORDER_STATUS_CHANGED) {
+      return '🔄';
+    }
     if (typeStr === NotificationType.ORDER_CANCELLED || typeStr === 'order_cancelled') {
-      return '🔔';
+      return '❌';
+    }
+    if (typeStr === NotificationType.ORDER_COMPLETED) {
+      return '✅';
     }
     return '🔔';
   };
@@ -140,8 +157,8 @@ export default function AdminNotificationDropdown() {
         
         {/* Unread Badge */}
         {unreadOrderNotifications.length > 0 && (
-          <span className="absolute right-0 top-0.5 z-10 h-2 w-2 rounded-full bg-orange-400 flex">
-            <span className="absolute inline-flex w-full h-full bg-orange-400 rounded-full opacity-75 animate-ping"></span>
+          <span className="absolute -top-1 -right-1 z-10 h-5 w-5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-lg">
+            {unreadOrderNotifications.length > 9 ? '9+' : unreadOrderNotifications.length}
           </span>
         )}
       </button>
@@ -199,64 +216,76 @@ export default function AdminNotificationDropdown() {
               <li key={notification._id || notification.id || index}>
                 <DropdownItem
                   onItemClick={() => handleNotificationClick(notification)}
-                  className={`flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5 cursor-pointer ${
-                    !notification.isRead ? 'bg-blue-50 dark:bg-blue-900/10' : ''
+                  className={`relative flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5 cursor-pointer transition-all ${
+                    !notification.isRead 
+                      ? 'bg-blue-50 dark:bg-blue-900/10 border-l-4 border-l-blue-500' 
+                      : 'bg-white dark:bg-gray-900'
                   } ${
                     notification.data?.priority === 'high' 
-                      ? 'border-l-4 border-l-red-500' 
+                      ? 'border-l-4 border-l-red-500 shadow-sm' 
                       : ''
                   }`}
                 >
-                  <div className="flex-1">
+                  {/* Unread indicator dot */}
+                  {!notification.isRead && (
+                    <div className="absolute left-2 top-1/2 -translate-y-1/2">
+                      <div className={`h-2.5 w-2.5 rounded-full ${getNotificationColor(notification.data?.priority)} animate-pulse`} />
+                    </div>
+                  )}
+                  
+                  <div className="flex-1 ml-1">
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-2 flex-1">
-                        <span className="text-2xl">{getNotificationIcon(notification.type)}</span>
-                        <div className="flex-1">
-                          <span className="font-medium text-gray-800 dark:text-white/90 text-sm block">
-                            {notification.title}
-                          </span>
-                          {notification.data?.priority === 'high' && (
-                            <Badge 
-                              variant="destructive" 
-                              className="mt-1 text-xs px-2 py-0"
-                            >
-                              Ưu tiên cao
-                            </Badge>
-                          )}
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="text-2xl flex-shrink-0">{getNotificationIcon(notification.type)}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-gray-900 dark:text-white text-sm truncate">
+                              {notification.title}
+                            </span>
+                            {getPriorityBadge(notification.data?.priority)}
+                          </div>
                         </div>
                       </div>
-                      {!notification.isRead && (
-                        <span className={`h-2 w-2 rounded-full ${getNotificationColor(notification.data?.priority)} flex-shrink-0 mt-2`} />
-                      )}
                     </div>
 
                     {/* Message */}
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <p className={`text-sm mb-2 line-clamp-2 ${
+                      !notification.isRead 
+                        ? 'text-gray-900 dark:text-gray-100 font-medium' 
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}>
                       {notification.message}
                     </p>
 
                     {/* Order Info */}
-                    {notification.data?.orderId && (
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                        <span className="font-medium">Mã đơn:</span> {notification.data.orderId}
-                      </div>
-                    )}
+                    <div className="flex flex-wrap items-center gap-3 mb-2">
+                      {notification.data?.orderId && (
+                        <div className="flex items-center gap-1 text-xs">
+                          <span className="font-semibold text-gray-700 dark:text-gray-300">Mã đơn:</span>
+                          <span className="font-mono text-blue-600 dark:text-blue-400 font-medium">
+                            #{notification.data.orderId.slice(-8)}
+                          </span>
+                        </div>
+                      )}
 
-                    {notification.data?.totalAmount && (
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                        <span className="font-medium">Giá trị:</span> {
-                          formatPrice(
-                            typeof notification.data.totalAmount === 'number' 
-                              ? String(notification.data.totalAmount)
-                              : String(notification.data.totalAmount)
-                          )
-                        }
-                      </div>
-                    )}
+                      {notification.data?.totalAmount && (
+                        <div className="flex items-center gap-1 text-xs">
+                          <span className="font-semibold text-gray-700 dark:text-gray-300">Giá trị:</span>
+                          <span className="font-semibold text-green-600 dark:text-green-400">
+                            {formatPrice(
+                              typeof notification.data.totalAmount === 'number' 
+                                ? String(notification.data.totalAmount)
+                                : String(notification.data.totalAmount)
+                            )}
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Time */}
-                    <div className="flex items-center gap-2 text-gray-500 text-xs dark:text-gray-400 mt-2">
+                    <div className="flex items-center gap-1.5 text-gray-500 text-xs dark:text-gray-400 mt-2">
+                      <Clock className="w-3 h-3" />
                       <span>{formatDate(notification.createdAt)}</span>
                     </div>
                   </div>

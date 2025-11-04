@@ -123,8 +123,8 @@ export default function Header() {
 
         <Link href={"/"}>
           <Image
-            src="/logo.png"
-            alt="logo"
+            src="/logo-icon.svg"
+            alt="E-COM Logo"
             width={40}
             height={40}
             className="cursor-pointer"
@@ -137,8 +137,11 @@ export default function Header() {
             {menuNavData.map((item, index) => (
               <li key={index}>
                 <Link
-                  className={`px-4 py-2 text-sm ${pathName == item.url ? "text-blue-600 font-semibold" : ""
-                    }`}
+                  className={`px-4 py-2 text-sm rounded transition-colors ${
+                    pathName == item.url 
+                      ? "text-blue-400 font-semibold bg-white/10" 
+                      : "text-white hover:text-blue-300 hover:bg-white/5"
+                  }`}
                   href={item.url}
                 >
                   {item.name}
@@ -237,8 +240,11 @@ export default function Header() {
             {menuNavData.map((item, index) => (
               <li key={index}>
                 <Link
-                  className={`block px-4 py-3 rounded hover:bg-white/10 ${pathName == item.url ? "text-blue-600 font-semibold bg-white/5" : ""
-                    }`}
+                  className={`block px-4 py-3 rounded transition-colors ${
+                    pathName == item.url 
+                      ? "text-blue-400 font-semibold bg-white/10" 
+                      : "text-white hover:text-blue-300 hover:bg-white/5"
+                  }`}
                   href={item.url}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >

@@ -1,195 +1,346 @@
+'use client'
 import { Button } from "@/components/atoms/ui/Button";
 import Wraper from "@/components/core/Wraper";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Mail, MapPin, Phone, Clock, MessageCircle, Send, CheckCircle2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
+import { LocationRes } from "@/types";
+import addressData from "@/../public/data/address.json";
+
+// Helper function to get address name from ID
+function getAddressName(type: "province" | "district" | "commune", id: string) {
+  const provinceMap = Object.fromEntries(addressData.province.map((item: any) => [item.idProvince, item.name]));
+  const districtMap = Object.fromEntries(addressData.district.map((item: any) => [item.idDistrict, item.name]));
+  const communeMap = Object.fromEntries(addressData.commune.map((item: any) => [item.idCommune, item.name]));
+  
+  if (type === "province") return provinceMap[id] || "Không xác định";
+  if (type === "district") return districtMap[id] || "Không xác định";
+  if (type === "commune") return communeMap[id] || "Không xác định";
+  return "Không xác định";
+}
 
 export default function LienHePage() {
+  const { data: session } = useSession();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [defaultAddress, setDefaultAddress] = useState<string>("123 Đường ABC, Quận XYZ, TP.HCM");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitting(false);
+      toast({
+        description: "Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.",
+        duration: 3000,
+      });
+      setFormData({ firstName: '', lastName: '', email: '', message: '' });
+    }, 1000);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value
+    });
+  };
+
+  // Fetch default address if user is logged in
+  useEffect(() => {
+    const fetchDefaultAddress = async () => {
+      // Check if user is logged in (session exists)
+      if (!session?.user) {
+        console.log('[Contact] User not logged in, using default address');
+        return;
+      }
+
+      try {
+        console.log('[Contact] Fetching default address...');
+        
+        const res = await fetch('/api/user/location', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        console.log('[Contact] Location API response status:', res.status);
+
+        if (res.ok) {
+          const data = await res.json();
+          console.log('[Contact] Location data:', data);
+          
+          const locations: LocationRes[] = data.data || [];
+          console.log('[Contact] Found locations:', locations.length);
+          
+          if (locations.length === 0) {
+            console.log('[Contact] No locations found, keeping default address');
+            return;
+          }
+          
+          const defaultLocation = locations.find((loc: LocationRes) => loc.isDefault);
+          
+          if (defaultLocation) {
+            console.log('[Contact] Found default location:', defaultLocation);
+            const provinceName = getAddressName("province", defaultLocation.province);
+            const districtName = getAddressName("district", defaultLocation.district);
+            const wardName = getAddressName("commune", defaultLocation.ward);
+            const fullAddress = `${defaultLocation.street}, ${wardName}, ${districtName}, ${provinceName}`;
+            console.log('[Contact] Setting address to:', fullAddress);
+            setDefaultAddress(fullAddress);
+          } else {
+            // If no default address, use first address
+            console.log('[Contact] No default location found, using first location');
+            const firstLocation = locations[0];
+            const provinceName = getAddressName("province", firstLocation.province);
+            const districtName = getAddressName("district", firstLocation.district);
+            const wardName = getAddressName("commune", firstLocation.ward);
+            const fullAddress = `${firstLocation.street}, ${wardName}, ${districtName}, ${provinceName}`;
+            console.log('[Contact] Setting address to first location:', fullAddress);
+            setDefaultAddress(fullAddress);
+          }
+        } else {
+          const errorData = await res.json().catch(() => ({}));
+          console.error('[Contact] Failed to fetch locations:', res.status, res.statusText, errorData);
+        }
+      } catch (error) {
+        console.error('[Contact] Error fetching default address:', error);
+      }
+    };
+
+    fetchDefaultAddress();
+  }, [session]);
+
+  const contactInfo = [
+    {
+      icon: Mail,
+      title: "Email",
+      description: "Liên hệ với chúng tôi qua email",
+      value: "ecomcontact@gmail.com",
+      link: "mailto:ecomcontact@gmail.com",
+      color: "text-blue-600"
+    },
+    {
+      icon: Phone,
+      title: "Số điện thoại",
+      description: "Làm việc từ thứ 2 đến thứ 7 hàng tuần",
+      value: "0123456789",
+      link: "tel:0123456789",
+      color: "text-green-600"
+    },
+    {
+      icon: MapPin,
+      title: "Địa chỉ",
+      description: session?.user ? "Địa chỉ mặc định của bạn" : "Văn phòng của chúng tôi",
+      value: defaultAddress,
+      link: "#",
+      color: "text-red-600"
+    },
+    {
+      icon: Clock,
+      title: "Giờ làm việc",
+      description: "Thời gian hỗ trợ khách hàng",
+      value: "Thứ 2 - Thứ 7: 8:00 - 17:00",
+      link: "#",
+      color: "text-purple-600"
+    },
+  ];
+
   return (
-    <Wraper>
-      <p className="font-semibold text-base text-blue-500 mt-32">
-        Liên hệ với chúng tôi
-      </p>
-      <div className="grid grid-cols-2 mt-28">
-        <div className="col-span-1">
-          <div className="grid grid-cols-2 gap-y-8 mt-4">
-            <div className="mb-11">
-              <div className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-50">
-                <svg
-                  width="18"
-                  height="15"
-                  viewBox="0 0 18 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12 lg:py-16">
+      <Wraper>
+        {/* Header Section */}
+        <div className="text-center mb-12 sm:mb-16">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Liên hệ với chúng tôi
+          </h1>
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+            Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ với chúng tôi qua các phương thức dưới đây.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          {/* Contact Info Cards */}
+          <div className="space-y-6">
+            {contactInfo.map((info, index) => {
+              const IconComponent = info.icon;
+              return (
+                <a
+                  key={index}
+                  href={info.link}
+                  className="block group"
+                  onClick={(e) => {
+                    if (info.link === '#') e.preventDefault();
+                  }}
                 >
-                  <path
-                    d="M17.125 2.95508V11.7051C17.125 12.2024 16.9275 12.6793 16.5758 13.0309C16.2242 13.3825 15.7473 13.5801 15.25 13.5801H2.75C2.25272 13.5801 1.77581 13.3825 1.42417 13.0309C1.07254 12.6793 0.875 12.2024 0.875 11.7051V2.95508M17.125 2.95508C17.125 2.4578 16.9275 1.98088 16.5758 1.62925C16.2242 1.27762 15.7473 1.08008 15.25 1.08008H2.75C2.25272 1.08008 1.77581 1.27762 1.42417 1.62925C1.07254 1.98088 0.875 2.4578 0.875 2.95508M17.125 2.95508V3.15758C17.125 3.4777 17.0431 3.7925 16.887 4.07199C16.7309 4.35148 16.5059 4.58636 16.2333 4.75425L9.98333 8.60008C9.68767 8.78219 9.34725 8.87862 9 8.87862C8.65275 8.87862 8.31233 8.78219 8.01667 8.60008L1.76667 4.75508C1.4941 4.58719 1.26906 4.35232 1.11297 4.07282C0.95689 3.79333 0.874965 3.47853 0.875 3.15841V2.95508"
-                    stroke="#3B82F6"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="mt-2 text-base font-bold">Email</p>
-                <p className="mt-2 text-sm font-normal">
-                  Liên hệ với chúng tôi
-                </p>
-                <p className="mt-2 text-sm font-normal text-blue-400">
-                  topgearcontact@gmail.com
-                </p>
-              </div>
-            </div>
-            <div className="mb-11">
-              <div className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-50">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12.5 8.75C12.5 9.41304 12.2366 10.0489 11.7678 10.5178C11.2989 10.9866 10.663 11.25 10 11.25C9.33696 11.25 8.70107 10.9866 8.23223 10.5178C7.76339 10.0489 7.5 9.41304 7.5 8.75C7.5 8.08696 7.76339 7.45107 8.23223 6.98223C8.70107 6.51339 9.33696 6.25 10 6.25C10.663 6.25 11.2989 6.51339 11.7678 6.98223C12.2366 7.45107 12.5 8.08696 12.5 8.75Z"
-                    stroke="#3B82F6"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M16.25 8.75C16.25 14.7017 10 18.125 10 18.125C10 18.125 3.75 14.7017 3.75 8.75C3.75 7.0924 4.40848 5.50268 5.58058 4.33058C6.75268 3.15848 8.3424 2.5 10 2.5C11.6576 2.5 13.2473 3.15848 14.4194 4.33058C15.5915 5.50268 16.25 7.0924 16.25 8.75Z"
-                    stroke="#3B82F6"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="mt-2 text-base font-bold">Chat trực tuyến</p>
-                <p className="mt-2 text-sm font-normal">
-                  Chúng tôi hỗ trợ trực tuyến 24/7
-                </p>
-                <p className="mt-2 text-sm font-normal text-blue-400">
-                  Liên hệ
-                </p>
-              </div>
-            </div>
-            <div className="mb-11">
-              <div className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-50">
-                <svg
-                  width="18"
-                  height="15"
-                  viewBox="0 0 18 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M17.125 2.95508V11.7051C17.125 12.2024 16.9275 12.6793 16.5758 13.0309C16.2242 13.3825 15.7473 13.5801 15.25 13.5801H2.75C2.25272 13.5801 1.77581 13.3825 1.42417 13.0309C1.07254 12.6793 0.875 12.2024 0.875 11.7051V2.95508M17.125 2.95508C17.125 2.4578 16.9275 1.98088 16.5758 1.62925C16.2242 1.27762 15.7473 1.08008 15.25 1.08008H2.75C2.25272 1.08008 1.77581 1.27762 1.42417 1.62925C1.07254 1.98088 0.875 2.4578 0.875 2.95508M17.125 2.95508V3.15758C17.125 3.4777 17.0431 3.7925 16.887 4.07199C16.7309 4.35148 16.5059 4.58636 16.2333 4.75425L9.98333 8.60008C9.68767 8.78219 9.34725 8.87862 9 8.87862C8.65275 8.87862 8.31233 8.78219 8.01667 8.60008L1.76667 4.75508C1.4941 4.58719 1.26906 4.35232 1.11297 4.07282C0.95689 3.79333 0.874965 3.47853 0.875 3.15841V2.95508"
-                    stroke="#3B82F6"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="mt-2 text-base font-bold">
-                  Số điện thoại liên hệ
-                </p>
-                <p className="mt-2 text-sm font-normal">
-                  Làm việc từ thứ 2 đến thứ 7 hàng tuần
-                </p>
-                <p className="mt-2 text-sm font-normal text-blue-400">
-                  0123456789
-                </p>
-              </div>
-            </div>
-            <div className="mb-11">
-              <div className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-50">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1.875 5.625C1.875 12.5283 7.47167 18.125 14.375 18.125H16.25C16.7473 18.125 17.2242 17.9275 17.5758 17.5758C17.9275 17.2242 18.125 16.7473 18.125 16.25V15.1067C18.125 14.6767 17.8325 14.3017 17.415 14.1975L13.7292 13.2758C13.3625 13.1842 12.9775 13.3217 12.7517 13.6233L11.9433 14.7008C11.7083 15.0142 11.3025 15.1525 10.935 15.0175C9.57073 14.5159 8.33179 13.7238 7.30398 12.696C6.27618 11.6682 5.48406 10.4293 4.9825 9.065C4.8475 8.6975 4.98583 8.29167 5.29917 8.05667L6.37667 7.24833C6.67917 7.0225 6.81583 6.63667 6.72417 6.27083L5.8025 2.585C5.75178 2.38225 5.63477 2.20225 5.47004 2.07361C5.30532 1.94498 5.10234 1.87507 4.89333 1.875H3.75C3.25272 1.875 2.77581 2.07254 2.42417 2.42417C2.07254 2.77581 1.875 3.25272 1.875 3.75V5.625Z"
-                    stroke="#3B82F6"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="mt-2 text-base font-bold">
-                  Số điện thoại liên hệ
-                </p>
-                <p className="mt-2 text-sm font-normal">
-                  Làm việc từ thứ 2 đến thứ 7 hàng tuần
-                </p>
-                <p className="mt-2 text-sm font-normal text-blue-400">
-                  0123456789
-                </p>
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 hover:shadow-md hover:border-blue-300 transition-all duration-200">
+                    <div className="flex items-start gap-4">
+                      <div className={`flex-shrink-0 p-3 rounded-xl bg-gray-50 group-hover:bg-blue-50 transition-colors ${info.color}`}>
+                        <IconComponent className="w-6 h-6" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                          {info.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {info.description}
+                        </p>
+                        <p className={`text-sm sm:text-base font-medium ${info.color} break-words`}>
+                          {info.value}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+
+            {/* Chat Support Card */}
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg p-6 text-white">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 p-3 rounded-xl bg-white/20">
+                  <MessageCircle className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold mb-1">
+                    Chat trực tuyến
+                  </h3>
+                  <p className="text-sm text-blue-100 mb-3">
+                    Chúng tôi hỗ trợ trực tuyến 24/7
+                  </p>
+                  <Button
+                    variant="secondary"
+                    className="bg-white text-blue-600 hover:bg-blue-50 font-semibold"
+                    onClick={() => {
+                      toast({
+                        description: "Tính năng chat trực tuyến sẽ sớm được triển khai!",
+                        duration: 2000,
+                      });
+                    }}
+                  >
+                    Bắt đầu chat
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-span-1 bg-gray-50 p-6 rounded-md">
-          <form>
-            <div className="grid grid-cols-2 gap-4">
+
+          {/* Contact Form */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-blue-50 rounded-lg">
+                <Send className="w-5 h-5 text-blue-600" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                Gửi tin nhắn cho chúng tôi
+              </h2>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label 
+                    htmlFor="firstName" 
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Họ của bạn <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="firstName"
+                    type="text"
+                    required
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none"
+                    placeholder="Nguyễn"
+                  />
+                </div>
+
+                <div>
+                  <label 
+                    htmlFor="lastName" 
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Tên của bạn <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="lastName"
+                    type="text"
+                    required
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none"
+                    placeholder="Văn A"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="text-gray-500" htmlFor="firstName">
-                  Họ của bạn
+                <label 
+                  htmlFor="email" 
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Địa chỉ email <span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="firstName"
-                  className="block mt-2 px-5 py-2.5 w-full border border-gray-200 rounded-md shadow-sm"
-                  placeholder="John"
-                  type="text"
+                  id="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none"
+                  placeholder="example@gmail.com"
                 />
               </div>
 
               <div>
-                <label className="text-gray-500" htmlFor="lastName">
-                  Tên của bạn
+                <label 
+                  htmlFor="message" 
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Nội dung tin nhắn <span className="text-red-500">*</span>
                 </label>
-                <input
-                  id="lastName"
-                  className="block mt-2 px-5 py-2.5 border border-gray-200 rounded-md shadow-sm"
-                  placeholder="Doe"
-                  type="text"
+                <textarea
+                  id="message"
+                  required
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={6}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none resize-none"
+                  placeholder="Nhập nội dung tin nhắn của bạn..."
                 />
               </div>
-              <div className="col-span-1">
-                <label className="text-gray-500" htmlFor="email">
-                  Địa chỉ email
-                </label>
-                <input
-                  id="email"
-                  className="block mt-2 px-5 py-2.5 w-full border border-gray-200 rounded-md shadow-sm"
-                  placeholder="johndoe@gmail.com"
-                  type="text"
-                />
-              </div>
-            </div>
-            <label className="block text-gray-500 mt-4" htmlFor="message">
-              Nội dung tin nhắn
-            </label>
-            <textarea
-              className="block mt-2 px-5 py-2.5 w-full h-32 border border-gray-200 rounded-md shadow-sm"
-              name="message"
-              id="mesaage"
-            ></textarea>
-            <div className="mt-4">
-              <Button className="w-full" variant="default">
-                Gửi tin nhắn
+
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 sm:py-4 text-base sm:text-lg font-semibold transition-colors"
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="animate-spin mr-2">⏳</span>
+                    Đang gửi...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5 mr-2 inline" />
+                    Gửi tin nhắn
+                  </>
+                )}
               </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
-    </Wraper>
+      </Wraper>
+    </div>
   );
 }

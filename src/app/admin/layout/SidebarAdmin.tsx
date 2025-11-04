@@ -317,23 +317,23 @@ const SidebarAdmin: React.FC = () => {
             <>
               <Image
                 className="dark:hidden"
-                src="/Logo.png"
-                alt="Logo"
-                width={80}
-                height={80}
+                src="/logo.svg"
+                alt="E-COM Logo"
+                width={120}
+                height={40}
               />
               <Image
                 className="hidden dark:block"
-                src="/Logo.png"
-                alt="Logo"
-                width={80}
-                height={80}
+                src="/logo.svg"
+                alt="E-COM Logo"
+                width={120}
+                height={40}
               />
             </>
           ) : (
             <Image
-              src="/Logo.png"
-              alt="Logo"
+              src="/logo-icon.svg"
+              alt="E-COM Logo"
               width={32}
               height={32}
             />

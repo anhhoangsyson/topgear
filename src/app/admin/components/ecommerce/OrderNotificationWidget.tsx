@@ -13,12 +13,15 @@ import Link from 'next/link';
 export default function OrderNotificationWidget() {
   const { notifications, unreadCount } = useNotificationStore();
 
-  // Filter chỉ lấy order notifications (backend trả về lowercase 'order')
+  // Filter lấy TẤT CẢ order notifications (không filter theo priority hay totalAmount)
   const orderNotifications = notifications.filter(n => {
     const type = typeof n.type === 'string' ? n.type.toLowerCase() : n.type;
     return (type === 'order' || 
             type === NotificationType.ORDER_CREATED || 
-            type === NotificationType.ORDER_CANCELLED) && 
+            type === NotificationType.ORDER_STATUS_CHANGED ||
+            type === NotificationType.ORDER_CANCELLED ||
+            type === NotificationType.ORDER_COMPLETED ||
+            (n.data?.orderId && type !== NotificationType.SYSTEM_ANNOUNCEMENT)) && 
            !n.isRead;
   });
 

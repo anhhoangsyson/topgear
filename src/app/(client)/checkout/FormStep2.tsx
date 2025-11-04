@@ -175,42 +175,42 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
 
   return (
 
-    <div className="relative h-screen">
+    <div className="relative min-h-screen pb-24 sm:pb-28 md:pb-32">
       {/* Hiển thị lớp overlay khi isLoading = true */}
       {isLoading && (
         <div className="fixed w-screen h-screen inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-60">
           <LoaderCircle className="animate-spin text-blue-500 w-12 h-12" />
         </div>
       )}
-      <div className='h-screen'>
+      <div className='min-h-screen'>
         {/* Giá */}
-        <div className='w-full p-4 bg-white rounded'>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Số lượng sản phẩm</p>
-            <p className='text-gray-900 text-sm font-thin'>{totalQuantity}</p>
+        <div className='w-full p-3 sm:p-4 bg-white rounded mb-3 sm:mb-4'>
+          <div className='flex items-center justify-between mb-3 sm:mb-4'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Số lượng sản phẩm</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-semibold'>{totalQuantity}</p>
           </div>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Tiền hàng (tạm tính)</p>
-            <p className='text-gray-900 text-sm font-thin'>{totalPriceFormatted}</p>
+          <div className='flex items-center justify-between mb-3 sm:mb-4'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Tiền hàng (tạm tính)</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-semibold break-words'>{totalPriceFormatted}</p>
           </div>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Giảm giá</p>
-            <p className='text-gray-900 text-sm font-thin'>{discountFormatted}</p>
+          <div className='flex items-center justify-between mb-3 sm:mb-4'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Giảm giá</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-semibold break-words'>{discountFormatted}</p>
           </div>
-          <div className='flex items-center justify-between border-t border-gray-300 my-2 pt-8'>
-            <p className='text-sm font-thin text-gray-600'>
-              <strong className='font-semibold text-black'>Tổng tiền </strong>(Đã gồm VAT)
+          <div className='flex items-center justify-between border-t border-gray-300 my-2 pt-4 sm:pt-8'>
+            <p className='text-xs sm:text-sm font-medium text-gray-700'>
+              <strong className='font-bold text-black'>Tổng tiền </strong><span className='hidden sm:inline font-normal'>(Đã gồm VAT)</span>
             </p>
-            <p className='text-black text-sm font-thin'>{finalTotalFormatted}</p>
+            <p className='text-black text-xs sm:text-sm font-bold break-words'>{finalTotalFormatted}</p>
           </div>
         </div>
 
         {/* Phương thức thanh toán */}
-        <h3 className='my-2 mt-8 uppercase'>Phương thức thanh toán</h3>
-        <div className='w-full p-4 bg-white rounded'>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Phương thức đã chọn</p>
-            <p className='text-gray-900 text-sm font-thin'>
+        <h3 className='my-2 mt-4 sm:mt-6 md:mt-8 uppercase text-sm sm:text-base'>Phương thức thanh toán</h3>
+        <div className='w-full p-3 sm:p-4 bg-white rounded mb-3 sm:mb-4'>
+          <div className='flex items-center justify-between mb-3 sm:mb-4'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Phương thức đã chọn</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-semibold text-right break-words'>
               {paymentMethod === 'cash' ? 'Thanh toán khi nhận hàng' : paymentMethod === 'zalopay' ? 'ZaloPay' : 'Chưa chọn'}
             </p>
           </div>
@@ -218,7 +218,7 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
             type='button'
             onClick={() => setShowPaymentModal(true)}
             variant='outline'
-            className='mt-2'
+            className='mt-2 w-full sm:w-auto text-xs sm:text-sm'
           >
             Chọn phương thức thanh toán
           </Button>
@@ -261,11 +261,12 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
         </Dialog>
 
         {/* Mã giảm giá */}
-        <div className="w-full p-4 bg-white rounded">
-          <h3 className='my-2 mt-8 uppercase'>Mã giảm giá</h3>
+        <div className="w-full p-3 sm:p-4 bg-white rounded mb-3 sm:mb-4">
+          <h3 className='my-2 mt-4 sm:mt-6 md:mt-8 uppercase text-sm sm:text-base mb-3 sm:mb-4'>Mã giảm giá</h3>
           <Button
             onClick={() => { setShowVoucherModal(true) }}
             variant='outline'
+            className='w-full sm:w-auto text-xs sm:text-sm'
           >
             Chọn hoặc nhập khuyến mãi
           </Button>
@@ -273,41 +274,41 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
 
 
         {/* Thông tin nhận hàng */}
-        <h3 className='my-2 mt-8 uppercase'>Thông tin nhận hàng</h3>
-        <div className='w-full p-4 bg-white rounded'>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Khách hàng</p>
-            <p className='text-gray-900 text-sm font-thin'>{customerInfo.name}</p>
+        <h3 className='my-2 mt-4 sm:mt-6 md:mt-8 uppercase text-sm sm:text-base'>Thông tin nhận hàng</h3>
+        <div className='w-full p-3 sm:p-4 bg-white rounded mb-3 sm:mb-4'>
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-1 sm:gap-0'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Khách hàng</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-medium break-words text-right sm:text-left'>{customerInfo.name}</p>
           </div>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Số điện thoại</p>
-            <p className='text-gray-900 text-sm font-thin'>{customerInfo.phone}</p>
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-1 sm:gap-0'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Số điện thoại</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-medium break-words text-right sm:text-left'>{customerInfo.phone}</p>
           </div>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Email</p>
-            <p className='text-gray-900 text-sm font-thin'>{customerInfo.email || 'Không có'}</p>
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-1 sm:gap-0'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Email</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-medium break-words text-right sm:text-left'>{customerInfo.email || 'Không có'}</p>
           </div>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Nhận hàng tại</p>
-            <p className='text-gray-900 text-sm font-thin'>{customerInfo.address}</p>
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-1 sm:gap-0'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Nhận hàng tại</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-medium break-words text-right sm:text-left'>{customerInfo.address}</p>
           </div>
-          <div className='flex items-center justify-between mb-4'>
-            <p className='text-sm font-thin text-gray-600'>Ghi chú</p>
-            <p className='text-gray-900 text-sm font-thin'>{customerInfo.note || 'Không có'}</p>
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-1 sm:gap-0'>
+            <p className='text-xs sm:text-sm font-normal text-gray-600'>Ghi chú</p>
+            <p className='text-gray-900 text-xs sm:text-sm font-medium break-words text-right sm:text-left'>{customerInfo.note || 'Không có'}</p>
           </div>
 
         </div>
 
         {/* Tổng tiền và nút thanh toán */}
-        <div className='mx-auto p-3 fixed bottom-0 rounded-tl rounded-tr h-28 w-[600px] bg-white shadow-lg'>
-          <div className='flex items-center justify-between mt-2'>
-            <p className='text-sm font-semibold text-gray-900'>Tổng tiền:</p>
-            <p className='text-sm font-semibold text-red-500'>{finalTotalFormatted}</p>
+        <div className='fixed bottom-0 left-0 right-0 sm:left-auto sm:right-auto sm:w-full sm:max-w-2xl mx-auto p-3 sm:p-4 rounded-tl-lg rounded-tr-lg sm:rounded-tl sm:rounded-tr h-auto sm:h-28 bg-white shadow-2xl border-t border-gray-200 z-[60]'>
+          <div className='flex items-center justify-between mb-2 sm:mb-0 sm:mt-2'>
+            <p className='text-xs sm:text-sm font-semibold text-gray-900'>Tổng tiền:</p>
+            <p className='text-xs sm:text-sm font-semibold text-red-500 break-words'>{finalTotalFormatted}</p>
           </div>
           <Button
             onClick={handlePayment}
             variant={'destructive'}
-            className='w-full mt-4 bg-red-500'
+            className='w-full mt-2 sm:mt-4 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm font-semibold py-2.5 sm:py-2'
           >
             Đặt hàng
           </Button>

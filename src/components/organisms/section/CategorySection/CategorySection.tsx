@@ -31,24 +31,28 @@ const banners = [
 export default function CategorySection({ categories, }: { categories: ICategory[] }) {
     return (
         <SectionWrapper>
-            <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-2 flex flex-col items-start relative">
-                    {/* Danh mục dọc */}
-                    <ul className="w-48">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                {/* Menu Categories - Ẩn trên mobile, hiển thị trên desktop */}
+                <div className="hidden lg:block lg:col-span-2 flex flex-col items-start relative">
+                    <ul className="w-full">
                         {categories.map((cat: ICategory) => (
                             <li
                                 key={cat._id}
-                                className={`p-3 cursor-pointer hover:bg-blue-50 `}
+                                className="p-3 cursor-pointer hover:bg-blue-50 rounded transition-colors"
                             >
                                 <Link
-                                    href={`laptop/category/${cat.slug}`}>
+                                    href={`laptop/category/${cat.slug}`}
+                                    className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                                >
                                     {cat.name}
                                 </Link>
                             </li>
                         ))}
                     </ul>
                 </div>
-                <div className="col-span-10">
+                
+                {/* Slideshow - Full width trên mobile, col-span-10 trên desktop */}
+                <div className="col-span-1 lg:col-span-10">
                     <SlideBanner banners={banners} />
                 </div>
             </div>

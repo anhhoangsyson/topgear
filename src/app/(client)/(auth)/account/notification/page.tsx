@@ -26,20 +26,19 @@ export default function NotificationPage() {
   const [hasMore, setHasMore] = useState(true);
   const [isMarkingAll, setIsMarkingAll] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [totalCounts, setTotalCounts] = useState({
+    all: 0,
+    unread: 0,
+    read: 0,
+  });
 
   const limit = 20;
 
-  // Filter notifications based on active tab
+  // Filter notifications based on active tab - use notifications from store (already filtered by API)
   const filteredNotifications = React.useMemo(() => {
-    switch (activeTab) {
-      case 'unread':
-        return notifications.filter((n) => !n.isRead);
-      case 'read':
-        return notifications.filter((n) => n.isRead);
-      default:
-        return notifications;
-    }
-  }, [notifications, activeTab]);
+    // Since we're fetching filtered data from API, notifications in store are already filtered
+    return notifications;
+  }, [notifications]);
 
   // Load more notifications
   const loadMore = async () => {
@@ -127,9 +126,31 @@ export default function NotificationPage() {
 
         if (response.success) {
           setNotifications(response.data.notifications);
-          setUnreadCount(response.data.pagination.unreadCount);
-          setHasMore(response.data.pagination.totalPages > 1);
+          const unreadCount = response.data.pagination?.unreadCount || 0;
+          const total = response.data.pagination?.total || 0;
+          setUnreadCount(unreadCount);
+          setHasMore(response.data.pagination?.totalPages > 1);
           setPage(1);
+          
+          // Update counts based on current tab
+          if (activeTab === 'all') {
+            const readCount = total - unreadCount;
+            setTotalCounts({
+              all: total || 0,
+              unread: unreadCount || 0,
+              read: readCount >= 0 ? readCount : 0,
+            });
+          } else if (activeTab === 'unread') {
+            setTotalCounts(prev => ({
+              ...prev,
+              unread: total || 0,
+            }));
+          } else if (activeTab === 'read') {
+            setTotalCounts(prev => ({
+              ...prev,
+              read: total || 0,
+            }));
+          }
         }
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -139,63 +160,75 @@ export default function NotificationPage() {
     fetchNotifications();
   }, [activeTab, setNotifications, setUnreadCount]);
 
-  const unreadNotifications = notifications.filter((n) => !n.isRead);
-  const readNotifications = notifications.filter((n) => n.isRead);
-
   return (
     <div className="w-full space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-    <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Thông báo
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {unreadCount > 0
-              ? `Bạn có ${unreadCount} thông báo chưa đọc`
-              : 'Bạn không có thông báo mới'}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {unreadNotifications.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleMarkAllAsRead}
-              disabled={isMarkingAll}
-            >
-              <Check className="mr-2 h-4 w-4" />
-              Đánh dấu tất cả đã đọc
-            </Button>
-          )}
-          {readNotifications.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDeleteAllRead}
-              disabled={isDeleting}
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Xóa đã đọc
-            </Button>
-          )}
+      <div className="mb-6 pb-4 border-b">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Thông báo
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              {unreadCount > 0
+                ? `Bạn có ${unreadCount} thông báo chưa đọc`
+                : 'Bạn không có thông báo mới'}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {unreadCount > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleMarkAllAsRead}
+                disabled={isMarkingAll}
+                className="text-xs"
+              >
+                <Check className="mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Đánh dấu tất cả đã đọc</span>
+                <span className="sm:hidden">Đánh dấu đã đọc</span>
+              </Button>
+            )}
+            {totalCounts.read > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDeleteAllRead}
+                disabled={isDeleting}
+                className="text-xs"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Xóa đã đọc</span>
+                <span className="sm:hidden">Xóa</span>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="all" className="flex items-center gap-2">
+          <TabsTrigger value="all" className="flex items-center justify-center gap-2 text-xs sm:text-sm">
             <Bell className="h-4 w-4" />
-            Tất cả ({notifications.length})
+            <span className="hidden sm:inline">
+              Tất cả ({isNaN(totalCounts.all) ? filteredNotifications.length : totalCounts.all})
+            </span>
+            <span className="sm:hidden">Tất cả</span>
           </TabsTrigger>
-          <TabsTrigger value="unread" className="flex items-center gap-2">
+          <TabsTrigger value="unread" className="flex items-center justify-center gap-2 text-xs sm:text-sm">
             <BellOff className="h-4 w-4" />
-            Chưa đọc ({unreadNotifications.length})
+            <span className="hidden sm:inline">
+              Chưa đọc ({isNaN(totalCounts.unread) ? unreadCount : totalCounts.unread})
+            </span>
+            <span className="sm:hidden">Chưa đọc</span>
           </TabsTrigger>
-          <TabsTrigger value="read" className="flex items-center gap-2">
+          <TabsTrigger value="read" className="flex items-center justify-center gap-2 text-xs sm:text-sm">
             <Bell className="h-4 w-4" />
-            Đã đọc ({readNotifications.length})
+            <span className="hidden sm:inline">
+              Đã đọc ({isNaN(totalCounts.read) ? 0 : totalCounts.read})
+            </span>
+            <span className="sm:hidden">Đã đọc</span>
           </TabsTrigger>
         </TabsList>
 

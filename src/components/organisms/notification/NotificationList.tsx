@@ -2,8 +2,8 @@
 
 import { INotification } from '@/types/notification';
 import NotificationItem from '@/components/molecules/notification/NotificationItem';
-import { LoaderCircle } from 'lucide-react';
 import React from 'react';
+import { Loader } from '@/components/atoms/feedback/Loader';
 
 interface NotificationListProps {
   notifications: INotification[];
@@ -18,8 +18,9 @@ export default function NotificationList({
 }: NotificationListProps) {
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <LoaderCircle className="h-8 w-8 animate-spin text-gray-400" />
+      <div className="flex flex-col items-center justify-center py-12 gap-3">
+        <Loader size="lg" variant="default" />
+        <p className="text-sm text-gray-600">Đang tải thông báo...</p>
       </div>
     );
   }

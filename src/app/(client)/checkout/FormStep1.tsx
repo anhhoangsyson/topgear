@@ -9,8 +9,8 @@ import { IUser } from '../../../schemaValidations/user.schema';
 import { useSession } from 'next-auth/react';
 import useCartStore from '@/store/cartStore';
 import { Button } from '@/components/atoms/ui/Button';
-import { Dialog, DialogContent } from '@radix-ui/react-dialog';
-import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/atoms/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/atoms/ui/dialog';
+import { toast } from '@/hooks/use-toast';
 
 // Định nghĩa các interface
 interface IProvince {
@@ -182,19 +182,6 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
 
       if (locationsRes.status === 200) {
         setLocations(locationsData.data || []);
-        const defaultLocation = locationsData.data.find((loc: ILocation) => loc.isDefault);
-        if (defaultLocation) {
-          const provinceName = addressData.province.find(p => p.idProvince === defaultLocation.province)?.name || '';
-          const districtName = addressData.district.find(d => d.idDistrict === defaultLocation.district)?.name || '';
-          const wardName = addressData.commune.find(c => c.idCommune === defaultLocation.ward)?.name || '';
-
-          setValue('shippingAddress', {
-            province: provinceName,
-            district: districtName,
-            ward: wardName,
-            street: defaultLocation.street,
-          });
-        }
       } else {
         console.error('Lỗi lấy danh sách location:', locationsData);
       }
@@ -210,6 +197,35 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
       .then((data: IAddressData) => setAddressData(data))
       .catch((err) => console.error('Lỗi tải dữ liệu:', err));
   }, []);
+
+  // Auto-select default address in dropdown when both addressData and locations are loaded
+  const [selectedLocationId, setSelectedLocationId] = useState<string>('');
+
+  useEffect(() => {
+    if (addressData.province.length === 0 || locations.length === 0) {
+      return;
+    }
+
+    const defaultLocation = locations.find((loc: ILocation) => loc.isDefault);
+    const locationToUse = defaultLocation || locations[0];
+    
+    if (locationToUse && !selectedLocationId) {
+      // Auto-select the default location in dropdown
+      setSelectedLocationId(locationToUse._id);
+      
+      // Trigger the onChange logic to set form values
+      const provinceName = addressData.province.find(p => p.idProvince === locationToUse.province)?.name || '';
+      const districtName = addressData.district.find(d => d.idDistrict === locationToUse.district)?.name || '';
+      const wardName = addressData.commune.find(c => c.idCommune === locationToUse.ward)?.name || '';
+
+      setValue('shippingAddress', {
+        province: provinceName,
+        district: districtName,
+        ward: wardName,
+        street: locationToUse.street,
+      });
+    }
+  }, [addressData, locations, setValue, selectedLocationId]);
 
   useEffect(() => {
     if (selectedProvince) {
@@ -240,6 +256,16 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
   const handleAddNewAddress = async (data: AddressFormData) => {
     const accessToken = session?.data?.accessToken;
 
+    if (!accessToken) {
+      toast({
+        title: "Lỗi",
+        description: "Vui lòng đăng nhập để thêm địa chỉ",
+        variant: "destructive",
+        duration: 2000,
+      });
+      return;
+    }
+
     const payload = {
       province: data.province, // idProvince
       district: data.district, // idDistrict
@@ -247,35 +273,68 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
       street: data.street,
     };
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/location`, { // Sửa endpoint
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/location`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      const newLocation = await res.json();
-      setLocations([...locations, newLocation.data]);
+      if (res.ok) {
+        const newLocation = await res.json();
+        const addedLocation = newLocation.data;
+        setLocations([...locations, addedLocation]);
 
-      // anh xa id -> name de pass vao formstep2
-      const provinceName = addressData.province.find(p => p.idProvince === data.province)?.name || '';
-      const districtName = addressData.district.find(d => d.idDistrict === data.district)?.name || '';
-      const wardName = addressData.commune.find(c => c.idCommune === data.ward)?.name || '';
+        // anh xa id -> name de pass vao formstep2
+        const provinceName = addressData.province.find(p => p.idProvince === data.province)?.name || '';
+        const districtName = addressData.district.find(d => d.idDistrict === data.district)?.name || '';
+        const wardName = addressData.commune.find(c => c.idCommune === data.ward)?.name || '';
 
-      setValue('shippingAddress', {
-        province: provinceName,
-        district: districtName,
-        ward: wardName,
-        street: data.street,      }); // Truyền dữ liệu vào form chính
-    } else {
-      // Handle error - could show toast notification instead
-      const errorData = await res.json();
-      // TODO: Show user-friendly error message
+        setValue('shippingAddress', {
+          province: provinceName,
+          district: districtName,
+          ward: wardName,
+          street: data.street,
+        });
+
+        // Select the newly added address in dropdown
+        setSelectedLocationId(addedLocation._id);
+
+        // Reset form
+        addressForm.reset({
+          province: '',
+          district: '',
+          ward: '',
+          street: '',
+        });
+
+        toast({
+          title: "Thành công",
+          description: "Đã thêm địa chỉ mới thành công!",
+          duration: 2000,
+        });
+
+        setShowAddAddressModal(false);
+      } else {
+        const errorData = await res.json();
+        toast({
+          title: "Lỗi",
+          description: errorData.message || "Không thể thêm địa chỉ. Vui lòng thử lại.",
+          variant: "destructive",
+          duration: 2000,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Lỗi",
+        description: "Đã xảy ra lỗi khi thêm địa chỉ. Vui lòng thử lại.",
+        variant: "destructive",
+        duration: 2000,
+      });
     }
-    setShowAddAddressModal(false);
   };
 
   const onSubmit = (data: FormData) => {
@@ -290,75 +349,81 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
   // };
 
   const skeletonCustomerInfo = (
-    <div className='w-full p-4 bg-white rounded'>
+    <div className='w-full p-4 sm:p-6 bg-white rounded-xl shadow-sm border border-gray-200'>
       <div className='flex items-center justify-between gap-x-4 mb-4'>
-        <div className='w-1/2 h-4 bg-gray-200 animate-pulse rounded'></div>
-        <div className='w-1/4 h-3 bg-gray-200 animate-pulse rounded'></div>
+        <div className='h-5 w-32 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse rounded'></div>
+        <div className='h-4 w-24 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse rounded'></div>
       </div>
-      <div className='w-12 h-3 bg-gray-200 animate-pulse rounded mb-1'></div>
-      <div className='w-full h-8 bg-gray-200 animate-pulse rounded'></div>
+      <div className='space-y-3'>
+        <div className='h-3 w-20 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse rounded'></div>
+        <div className='h-10 w-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse rounded'></div>
+        <div className='h-3 w-20 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse rounded'></div>
+        <div className='h-10 w-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse rounded'></div>
+      </div>
     </div>
   );
 
   return (
-    <div className='h-screen'>
+    <div className='min-h-screen pb-24 sm:pb-28 md:pb-32'>
       {/* Thông tin sản phẩm */}
       {selectedItems.map((item) => (
-        <div key={item._id} className='grid grid-cols-5 p-4 rounded bg-white pb-4'>
-          <div className='col-span-1 object-cover'>
-            <Image className='rounded' alt={item.name} height={100} width={100} src={item.image} />
+        <div key={item._id} className='grid grid-cols-5 gap-2 sm:gap-4 p-3 sm:p-4 rounded bg-white mb-3 sm:mb-4'>
+          <div className='col-span-1 object-cover flex-shrink-0'>
+            <Image className='rounded w-full h-auto' alt={item.name} height={80} width={80} src={item.image} />
           </div>
-          <div className='col-span-3'>
-            <p className='p-2 text-gray-700 text-sm text-wrap'>{item.name}</p>
-            <div className='flex px-2'>
-              <p className='text-[15px] font-thin text-red-500'>
+          <div className='col-span-3 min-w-0'>
+            <p className='p-1 sm:p-2 text-gray-700 text-xs sm:text-sm font-normal text-wrap line-clamp-2'>{item.name}</p>
+            <div className='flex px-1 sm:px-2 flex-wrap gap-1'>
+              <p className='text-xs sm:text-[15px] font-semibold text-red-500'>
                 {item.discountPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                {item.discountPrice !== item.price && (
-                  <span className='text-gray-400 line-through ml-2'>
-                    {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                  </span>
-                )}
               </p>
+              {item.discountPrice !== item.price && (
+                <span className='text-gray-400 line-through text-xs sm:text-sm font-normal'>
+                  {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                </span>
+              )}
             </div>
           </div>
           <div className='col-span-1 flex items-center justify-center'>
-            <p className='text-sm font-thin text-center'>
-              Số lượng: <span className='text-red-500 font-thin text-sm'>{item.quantity}</span>
+            <p className='text-xs sm:text-sm font-normal text-center'>
+              SL: <span className='text-red-500 font-semibold'>{item.quantity}</span>
             </p>
           </div>
         </div>
       ))}
 
       {/* Form thông tin giao hàng */}
-      <h3 className='my-2 mt-8 uppercase'>Thông tin giao hàng</h3>
+      <h3 className='my-2 mt-4 sm:mt-6 md:mt-8 uppercase text-sm sm:text-base'>Thông tin giao hàng</h3>
       {loading ? skeletonCustomerInfo : (
-        <form onSubmit={handleSubmit(onSubmit)} className='w-full p-4 bg-white rounded'>
-          <div className='flex items-center justify-between gap-x-4 mb-4'>
-            <p className='text-gray-700 text-sm font-thin'>{customerInfo.fullname}</p>
-            <p className='text-gray-400 text-xs font-thin'>{(customerInfo.phone)}</p>
+        <form onSubmit={handleSubmit(onSubmit)} className='w-full p-3 sm:p-4 bg-white rounded'>
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-x-4 mb-3 sm:mb-4'>
+            <p className='text-gray-700 text-xs sm:text-sm font-medium break-words'>{customerInfo.fullname}</p>
+            <p className='text-gray-400 text-xs font-normal'>{customerInfo.phone}</p>
           </div>
 
           {/* Email */}
-          <div className='my-4'>
-            <label className='block text-xs font-thin text-gray-400' htmlFor='email'>EMAIL</label>
+          <div className='my-3 sm:my-4'>
+            <label className='block text-xs font-medium text-gray-500 uppercase mb-1' htmlFor='email'>EMAIL</label>
             <input
               {...register('email')}
-              className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500'
+              className='w-full p-1 sm:p-2 border-b-2 border-b-gray-700 outline-none text-gray-800 text-xs sm:text-sm font-normal focus-within:border-b-blue-500'
               id='email'
-              type='text'
+              type='email'
               defaultValue={customerInfo.email}
             />
-            {errors.email && <p className='text-red-500 text-xs'>{errors.email.message}</p>}
-            <p className='mt-2 text-[11px] font-thin text-gray-400'>
+            {errors.email && <p className='text-red-500 text-xs mt-1'>{errors.email.message}</p>}
+            <p className='mt-2 text-[10px] sm:text-[11px] font-normal text-gray-400'>
               (*) Hóa đơn VAT sẽ được gửi qua email này
             </p>
           </div>
 
           {/* Chọn địa chỉ giao hàng */}
-          <div className='my-4'>
-            <label className='block text-xs font-thin text-gray-400 uppercase'>Địa chỉ giao hàng</label>
+          <div className='my-3 sm:my-4'>
+            <label className='block text-xs font-medium text-gray-500 uppercase mb-2'>Địa chỉ giao hàng</label>
             <select
+              value={selectedLocationId}
               onChange={(e) => {
+                setSelectedLocationId(e.target.value);
                 const selected = locations.find(loc => loc._id === e.target.value);
                 if (selected) {
 
@@ -374,7 +439,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
                   });
                 }
               }}
-              className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500'
+              className='w-full p-1 sm:p-2 border-b-2 border-b-gray-700 outline-none text-gray-800 text-xs sm:text-sm font-normal focus-within:border-b-blue-500'
             >
               <option value=''>Chọn địa chỉ có sẵn</option>
               {locations.map((loc) => {
@@ -387,23 +452,23 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
                   </option>)
               })}
             </select>
-            {errors.shippingAddress?.province && <p className='text-red-500 text-xs'>{errors.shippingAddress.province.message}</p>}
+            {errors.shippingAddress?.province && <p className='text-red-500 text-xs mt-1'>{errors.shippingAddress.province.message}</p>}
             <Button
               type='button'
               onClick={() => setShowAddAddressModal(true)}
               variant='outline'
-              className='mt-2'
+              className='mt-2 w-full sm:w-auto text-xs sm:text-sm'
             >
               Thêm địa chỉ mới
             </Button>
           </div>
 
           {/* Ghi chú */}
-          <div className='my-4'>
-            <label className='block text-xs font-thin text-gray-400 uppercase'>Ghi chú</label>
+          <div className='my-3 sm:my-4'>
+            <label className='block text-xs font-medium text-gray-500 uppercase mb-2'>Ghi chú</label>
             <input
               {...register('note')}
-              className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500'
+              className='w-full p-1 sm:p-2 border-b-2 border-b-gray-700 outline-none text-gray-800 text-xs sm:text-sm font-normal focus-within:border-b-blue-500'
               id='note'
               type='text'
             />
@@ -420,10 +485,10 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
           </DialogHeader>
           <div className='space-y-4'>
             <div>
-              <label className='block text-xs font-thin text-gray-400 uppercase'>Tỉnh/Thành phố</label>
+              <label className='block text-xs font-medium text-gray-500 uppercase mb-1'>Tỉnh/Thành phố</label>
               <select
                 {...registerAddress('province')}
-                className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500'
+                className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-normal focus-within:border-b-blue-500'
               >
                 <option value=''>Chọn tỉnh/thành phố</option>
                 {addressData.province.map((prov) => (
@@ -436,11 +501,11 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
             </div>
 
             <div>
-              <label className='block text-xs font-thin text-gray-400 uppercase'>Quận/Huyện</label>
+              <label className='block text-xs font-medium text-gray-500 uppercase mb-1'>Quận/Huyện</label>
               <select
                 {...registerAddress('district')}
                 disabled={!selectedProvince}
-                className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500 disabled:opacity-50'
+                className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-normal focus-within:border-b-blue-500 disabled:opacity-50'
               >
                 <option value=''>Chọn quận/huyện</option>
                 {districts.map((dist) => (
@@ -453,11 +518,11 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
             </div>
 
             <div>
-              <label className='block text-xs font-thin text-gray-400 uppercase'>Phường/Xã</label>
+              <label className='block text-xs font-medium text-gray-500 uppercase mb-1'>Phường/Xã</label>
               <select
                 {...registerAddress('ward')}
                 disabled={!selectedDistrict}
-                className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500 disabled:opacity-50'
+                className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-normal focus-within:border-b-blue-500 disabled:opacity-50'
               >
                 <option value=''>Chọn phường/xã</option>
                 {communes.map((comm) => (
@@ -470,10 +535,10 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
             </div>
 
             <div>
-              <label className='block text-xs font-thin text-gray-400 uppercase'>Đường/Phố</label>
+              <label className='block text-xs font-medium text-gray-500 uppercase mb-1'>Đường/Phố</label>
               <input
                 {...registerAddress('street')}
-                className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-thin focus-within:border-b-blue-500'
+                className='w-full p-1 border-b-2 border-b-gray-700 outline-none text-gray-800 text-sm font-normal focus-within:border-b-blue-500'
                 type='text'
               />
               {addressErrors.street && <p className='text-red-500 text-xs'>{addressErrors.street.message}</p>}
@@ -481,35 +546,35 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
           </div>
           <DialogFooter>
             <Button
-              onClick={handleAddressSubmit(handleAddNewAddress)}
-              variant='destructive'
-              className='bg-blue-500'
-            >
-              Lưu và chọn
-            </Button>
-            <Button
+              type="button"
               onClick={() => setShowAddAddressModal(false)}
               variant='outline'
             >
               Hủy
+            </Button>
+            <Button
+              type="button"
+              onClick={handleAddressSubmit(handleAddNewAddress)}
+              className='bg-blue-500 hover:bg-blue-600 text-white'
+            >
+              Lưu và chọn
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Tổng tiền */}
-      <div className='mx-auto p-3 fixed bottom-0 rounded-tl rounded-tr h-28 w-[600px] bg-white shadow-lg'>
-        <div className='flex items-center justify-between mt-2'>
-          <p className='text-sm font-semibold text-gray-900'>Tổng tiền tạm tính:</p>
-          <p className='text-sm font-semibold text-red-500'>
+      <div className='fixed bottom-0 left-0 right-0 sm:left-auto sm:right-auto sm:w-full sm:max-w-2xl mx-auto p-3 sm:p-4 rounded-tl-lg rounded-tr-lg sm:rounded-tl sm:rounded-tr h-auto sm:h-28 bg-white shadow-2xl border-t border-gray-200 z-[60]'>
+        <div className='flex items-center justify-between mb-2 sm:mb-0 sm:mt-2'>
+          <p className='text-xs sm:text-sm font-semibold text-gray-900'>Tổng tiền tạm tính:</p>
+          <p className='text-xs sm:text-sm font-semibold text-red-500'>
             {finalTotalFormatted}
           </p>
         </div>
         <Button
-
-          onClick={handleSubmit(onSubmitStep1)} // Thêm onError để debug
+          onClick={handleSubmit(onSubmitStep1)}
           variant={'destructive'}
-          className='w-full mt-4 bg-red-500'
+          className='w-full mt-2 sm:mt-4 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm font-semibold py-2.5 sm:py-2'
         >
           Tiếp tục
         </Button>

@@ -109,20 +109,18 @@ const AdminHeader: React.FC = () => {
 
           <Link href="/" className="lg:hidden">
             <Image
-              width={154}
-              height={32}
+              width={120}
+              height={40}
               className="dark:hidden"
-              src={defaultAvatar}
-              // src="./images/logo/logo.svg"
-              alt="Logo"
+              src="/logo.svg"
+              alt="E-COM Logo"
             />
             <Image
-              width={154}
-              height={32}
+              width={120}
+              height={40}
               className="hidden dark:block"
-              src={defaultAvatar}
-              // src="./images/logo/logo-dark.svg"
-              alt="Logo"
+              src="/logo.svg"
+              alt="E-COM Logo"
             />
           </Link>
 

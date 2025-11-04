@@ -25,17 +25,12 @@ export default async function UserAdrressesPage() {
     const locationsData = await getListAddress(accessToken)
     
     return (
-        <div className='w-full p-4'>
-            {/* Title */}
-            <p className='font-bold text-xl'>Địa chỉ</p>
-            {/* add new address */}
-            {/* <div className='flex justify-center items-center mt-4 w-full h-[68px] bg-white text-sm font-light border-dashed border-gray-400 border-2 rounded cursor-pointer'>
-                Thêm địa chỉ mới
-            </div> */}
-            {/* address */}
-            <ListAddressCard
-             locationsData={locationsData?.data} />
-
+        <div className='w-full'>
+            <div className="mb-6 pb-4 border-b">
+                <h2 className="text-2xl font-bold text-gray-900">Địa chỉ giao hàng</h2>
+                <p className="text-sm text-gray-500 mt-1">Quản lý địa chỉ giao hàng của bạn</p>
+            </div>
+            <ListAddressCard locationsData={locationsData?.data} />
         </div>
     )
 }

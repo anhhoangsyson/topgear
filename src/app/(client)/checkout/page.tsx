@@ -57,13 +57,13 @@ export default function CheckoutPage() {
         setCurrentStep(1); // Quay lại bước 1
     }
     return (
-        <div className='w-[600px] min-h-screen  mx-auto mt-8 '>
+        <div className='w-full max-w-2xl mx-auto min-h-screen px-4 sm:px-6 md:px-8 mt-4 sm:mt-6 md:mt-8 pb-24 sm:pb-28 md:pb-32'>
             {/* Header     */}
-            <div className='grid grid-cols-2 gap-4 mb-6'>
+            <div className='grid grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6'>
                 <div
                     onClick={handleBackToStep1}
-                    className={`col-span-1 text-center hover:cursor-pointer transition-colors duration-200 ${currentStep === 1 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>1. Thông tin</div>
-                <div className={`col-span-1 text-center hover:cursor-pointer transition-colors duration-200 ${currentStep === 2 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>2. Thanh toán</div>
+                    className={`col-span-1 text-center hover:cursor-pointer transition-colors duration-200 text-xs sm:text-sm md:text-base py-2 ${currentStep === 1 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>1. Thông tin</div>
+                <div className={`col-span-1 text-center hover:cursor-pointer transition-colors duration-200 text-xs sm:text-sm md:text-base py-2 ${currentStep === 2 ? 'text-blue-500 border-b-4 border-b-blue-500' : 'border-b-4 border-b-gray-300'}`}>2. Thanh toán</div>
             </div>
 
             {/* form step 1 */}

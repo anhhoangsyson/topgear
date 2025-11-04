@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, Clock, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/atoms/ui/badge';
 import {
   DropdownMenu,
@@ -18,6 +18,7 @@ import { formatDate } from '@/lib/utils';
 import { LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { handleNotificationClick } from '@/lib/notification-utils';
 
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -61,32 +62,15 @@ export default function NotificationDropdown() {
     .slice(0, 5)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const handleNotificationClick = async (notification: INotification) => {
-    const notificationId = notification._id || notification.id;
-    if (!notificationId) return;
-
-    // Mark as read
-    if (!notification.isRead) {
-      try {
-        await NotificationAPI.markAsRead(notificationId);
-        markAsRead(notificationId);
-      } catch (error) {
-        console.error('Error marking notification as read:', error);
-      }
-    }
-
-    // Navigate
-    const link = notification.link || notification.data?.link;
-    if (notification.data?.orderId) {
-      router.push(`/account/orders/${notification.data.orderId}`);
-      setIsOpen(false);
-    } else if (link) {
-      router.push(link);
-      setIsOpen(false);
-    } else {
-      router.push('/account/notification');
-      setIsOpen(false);
-    }
+  const onNotificationClick = async (notification: INotification) => {
+    await handleNotificationClick(notification, {
+      markAsRead,
+      markAsReadAPI: async (id: string) => {
+        await NotificationAPI.markAsRead(id);
+      },
+      router,
+      onClose: () => setIsOpen(false),
+    });
   };
 
   // Refresh notifications khi mở dropdown
@@ -114,17 +98,14 @@ export default function NotificationDropdown() {
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <button 
-          className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="relative p-2 hover:bg-white/10 rounded transition-colors"
           aria-label={`Thông báo${unreadCount > 0 ? ` (${unreadCount} mới)` : ''}`}
         >
-          <Bell className={`w-5 h-5 text-gray-700 dark:text-gray-300 transition-transform ${unreadCount > 0 ? 'animate-pulse' : ''}`} />
+          <Bell className="w-6 h-6 text-white" />
           {unreadCount > 0 && (
-            <Badge
-              variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs font-semibold animate-bounce"
-            >
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </Badge>
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
           )}
         </button>
       </DropdownMenuTrigger>
@@ -155,22 +136,55 @@ export default function NotificationDropdown() {
             {recentNotifications.map((notification, index) => (
               <DropdownMenuItem
                 key={notification._id || notification.id || index}
-                onClick={() => handleNotificationClick(notification)}
-                className="flex flex-col items-start gap-1 p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+                onClick={() => onNotificationClick(notification)}
+                className={`relative flex flex-col items-start gap-1 p-3 cursor-pointer transition-all ${
+                  !notification.isRead 
+                    ? 'bg-blue-50 dark:bg-blue-900/10 hover:bg-blue-100 dark:hover:bg-blue-900/20 border-l-4 border-l-blue-500' 
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                } ${
+                  notification.data?.priority === 'high' 
+                    ? 'border-l-4 border-l-red-500 shadow-sm' 
+                    : ''
+                }`}
               >
-                <div className="flex items-start gap-2 w-full">
+                {/* Unread indicator */}
+                {!notification.isRead && (
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2">
+                    <div className={`h-2 w-2 rounded-full ${
+                      notification.data?.priority === 'high' ? 'bg-red-500' : 'bg-blue-500'
+                    } animate-pulse`} />
+                  </div>
+                )}
+                
+                <div className="flex items-start gap-2 w-full ml-1">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-1">
-                      {notification.title}
-                    </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mt-1">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <p className={`text-sm line-clamp-1 ${
+                        !notification.isRead 
+                          ? 'font-semibold text-gray-900 dark:text-gray-100' 
+                          : 'font-medium text-gray-700 dark:text-gray-300'
+                      }`}>
+                        {notification.title}
+                      </p>
+                      {notification.data?.priority === 'high' && (
+                        <Badge variant="destructive" className="text-xs px-1.5 py-0 h-4">
+                          <AlertCircle className="w-2.5 h-2.5 mr-0.5" />
+                          Ưu tiên
+                        </Badge>
+                      )}
+                    </div>
+                    <p className={`text-xs line-clamp-2 mt-1 ${
+                      !notification.isRead 
+                        ? 'text-gray-700 dark:text-gray-200' 
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}>
                       {notification.message}
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                      {formatDate(notification.createdAt)}
-                    </p>
+                    <div className="flex items-center gap-1.5 mt-2 text-xs text-gray-400 dark:text-gray-500">
+                      <Clock className="w-3 h-3" />
+                      <span>{formatDate(notification.createdAt)}</span>
+                    </div>
                   </div>
-                  <div className="h-2 w-2 rounded-full bg-blue-500 flex-shrink-0 mt-1" />
                 </div>
               </DropdownMenuItem>
             ))}

@@ -95,94 +95,145 @@ export default function FormAccountInfo({ userInfo }: { userInfo: UserInfoData }
     };
 
     return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="w-full max-w-lg mx-auto p-6 rounded-lg bg-white shadow"
-        >
-            <h2 className="text-xl font-bold mb-4">Thông tin tài khoản</h2>
-            {successMsg && <div className="mb-2 text-green-600">{successMsg}</div>}
-            {errorMsg && <div className="mb-2 text-red-500">{errorMsg}</div>}
-
-            {/* Họ tên */}
-            <div className="mb-4">
-                <label className="block mb-1 font-semibold">Họ tên</label>
-                <input
-                    {...register("fullname")}
-                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
-                />
-                {errors.fullname && <p className="text-red-500 text-sm">{errors.fullname.message}</p>}
+        <div className="w-full">
+            <div className="mb-6 pb-4 border-b">
+                <h2 className="text-2xl font-bold text-gray-900">Thông tin tài khoản</h2>
+                <p className="text-sm text-gray-500 mt-1">Cập nhật thông tin cá nhân của bạn</p>
             </div>
 
-            {/* Email (readonly) */}
-            <div className="mb-4">
-                <label className="block mb-1 font-semibold">Email</label>
-                <input
-                    {...register("email")}
-                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
-                    disabled
-                />
-            </div>
+            {successMsg && (
+                <div className="mb-4 p-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm">
+                    {successMsg}
+                </div>
+            )}
+            {errorMsg && (
+                <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                    {errorMsg}
+                </div>
+            )}
 
-            {/* Username */}
-            <div className="mb-4">
-                <label className="block mb-1 font-semibold">Tên đăng nhập</label>
-                <input
-                    {...register("usersname")}
-                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
-                />
-                {errors.usersname && <p className="text-red-500 text-sm">{errors.usersname.message}</p>}
-            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Họ tên */}
+                    <div className="md:col-span-2">
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Họ tên <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            {...register("fullname")}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            placeholder="Nhập họ tên"
+                        />
+                        {errors.fullname && (
+                            <p className="mt-1 text-sm text-red-500">{errors.fullname.message}</p>
+                        )}
+                    </div>
 
-            {/* Phone */}
-            <div className="mb-4">
-                <label className="block mb-1 font-semibold">Số điện thoại</label>
-                <input
-                    {...register("phone")}
-                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
-                />
-                {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
-            </div>
+                    {/* Email (readonly) */}
+                    <div className="md:col-span-2">
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Email
+                        </label>
+                        <input
+                            {...register("email")}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-500 cursor-not-allowed"
+                            disabled
+                        />
+                        <p className="mt-1 text-xs text-gray-400">Email không thể thay đổi</p>
+                    </div>
 
-            {/* Address */}
-            <div className="mb-4">
-                <label className="block mb-1 font-semibold">Địa chỉ</label>
-                <input
-                    {...register("address")}
-                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
-                />
-                {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
-            </div>
+                    {/* Username */}
+                    <div>
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Tên đăng nhập <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            {...register("usersname")}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            placeholder="Nhập tên đăng nhập"
+                        />
+                        {errors.usersname && (
+                            <p className="mt-1 text-sm text-red-500">{errors.usersname.message}</p>
+                        )}
+                    </div>
 
-            {/* Sex */}
-            <div className="mb-4">
-                <label className="block mb-1 font-semibold">Giới tính</label>
-                <select
-                    {...register("sex")}
-                    className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
-                >
-                    {Object.entries(SEX_LABELS).map(([key, label]) => (
-                        <option key={key} value={key}>{label}</option>
-                    ))}
-                </select>
-                {errors.sex && <p className="text-red-500 text-sm">{errors.sex.message}</p>}
-            </div>
+                    {/* Phone */}
+                    <div>
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Số điện thoại
+                        </label>
+                        <input
+                            {...register("phone")}
+                            type="tel"
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            placeholder="Nhập số điện thoại"
+                        />
+                        {errors.phone && (
+                            <p className="mt-1 text-sm text-red-500">{errors.phone.message}</p>
+                        )}
+                    </div>
 
-            {/* Avatar (ẩn hoặc cho phép upload nếu muốn) */}
-            {/* <div className="mb-4">
-        <label className="block mb-1 font-semibold">Avatar</label>
-        <input
-          {...register("avatar")}
-          className="w-full p-2 rounded bg-gray-100 focus:outline-blue-500"
-        />
-      </div> */}
+                    {/* Sex */}
+                    <div>
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Giới tính <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            {...register("sex")}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
+                        >
+                            {Object.entries(SEX_LABELS).map(([key, label]) => (
+                                <option key={key} value={key}>{label}</option>
+                            ))}
+                        </select>
+                        {errors.sex && (
+                            <p className="mt-1 text-sm text-red-500">{errors.sex.message}</p>
+                        )}
+                    </div>
 
-            <Button
-                type="submit"
-                className={`w-32 text-white ${isDirty ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-300"}`}
-                disabled={loading || !isDirty}
-            >
-                {loading ? "Đang lưu..." : "Cập nhật"}
-            </Button>
-        </form>
+                    {/* Address */}
+                    <div className="md:col-span-2">
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Địa chỉ
+                        </label>
+                        <input
+                            {...register("address")}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            placeholder="Nhập địa chỉ"
+                        />
+                        {errors.address && (
+                            <p className="mt-1 text-sm text-red-500">{errors.address.message}</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex items-center justify-end gap-4 pt-4 border-t">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => reset()}
+                        disabled={loading || !isDirty}
+                        className="px-6"
+                    >
+                        Hủy
+                    </Button>
+                    <Button
+                        type="submit"
+                        disabled={loading || !isDirty}
+                        className={`px-8 ${isDirty ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-300 cursor-not-allowed"}`}
+                    >
+                        {loading ? (
+                            <span className="flex items-center gap-2">
+                                <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                                Đang lưu...
+                            </span>
+                        ) : (
+                            "Cập nhật thông tin"
+                        )}
+                    </Button>
+                </div>
+            </form>
+        </div>
     );
 }

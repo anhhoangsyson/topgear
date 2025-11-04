@@ -7,6 +7,7 @@ import { useNotificationStore } from '@/store/notificationStore';
 import { NotificationAPI } from '@/services/notification-api';
 import { INotification } from '@/types/notification';
 import { toast } from '@/hooks/use-toast';
+import { showBrowserNotification } from '@/lib/push-notification';
 
 interface NotificationProviderProps {
   children: React.ReactNode;
@@ -155,6 +156,30 @@ export default function NotificationProvider({ children }: NotificationProviderP
       console.log('[NotificationProvider] ✅✅✅ Toast notification SHOWN successfully');
     } catch (error) {
       console.error('[NotificationProvider] ❌❌❌ Error showing toast:', error);
+    }
+
+    // Show browser push notification (if permission granted)
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      try {
+        await showBrowserNotification({
+          title: data.title || 'Thông báo mới',
+          body: data.message || '',
+          icon: '/favicon.svg',
+          badge: '/favicon.svg',
+          data: {
+            url: data.link || data.data?.link || '/account/notification',
+            orderId: data.data?.orderId,
+            notificationId: data._id || data.id,
+            ...data.data
+          },
+          tag: data._id || data.id || 'notification',
+          requireInteraction: data.data?.priority === 'high',
+          vibrate: data.data?.priority === 'high' ? [200, 100, 200] : [200],
+          priority: data.data?.priority || 'normal'
+        });
+      } catch (error) {
+        console.error('[NotificationProvider] Error showing browser notification:', error);
+      }
     }
   }, [addNotification, isAdmin]);
 

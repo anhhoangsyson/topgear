@@ -5,6 +5,7 @@ import { fetchAccessToken } from '@/app/(client)/(auth)/account/address/ListAddr
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/atoms/ui/Button';
 import { Badge } from '@/components/atoms/ui/badge';
+import { Package } from 'lucide-react';
 
 interface InititalOrderList {
   _id: string
@@ -83,154 +84,125 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
 
   }
   return (
-    // <div className='flex gap-x-4'>
+        <div className="w-full space-y-6">
+            {/* Header */}
+            <div className="mb-6 pb-4 border-b">
+                <h2 className="text-2xl font-bold text-gray-900">Đơn hàng của tôi</h2>
+                <p className="text-sm text-gray-500 mt-1">Theo dõi và quản lý đơn hàng của bạn</p>
+            </div>
 
-    //   {isLoading && (
-    //     <div
-    //     className='fixed inset-0 top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-75 z-[999] flex items-center justify-center'><LoaderCircle className='animate-spin'/> </div>
-    //   )}
-    //   {/* order list */}
-    //   <div className='p-4 bg-white rounded w-11/12'>
-    //     <p className='text-xl font-bold mb-4'>Đơn hàng của bạn</p>
-
-    //     <div className="text-[12px] overflow-x-auto">
-    //       <table className="text-[12px] min-w-full bg-white border border-gray-200">
-    //         <thead>
-    //           <tr className="text-[12px] bg-gray-100 text-gray-600 text-left">
-    //             <th
-    //               className="text-[12px] py-3 px-4 border-b">Mã đơn hàng</th>
-    //             <th className="text-[12px] py-3 px-4 border-b">Ngày mua</th>
-    //             <th className="text-[12px] py-3 px-4 border-b">Sản phẩm</th>
-    //             <th className="text-[12px] py-3 px-4 border-b">Tổng tiền (đ)</th>
-    //             <th className="text-[12px] py-3 px-4 border-b">Trạng thái</th>
-    //             <th className="text-[12px] py-3 px-4 border-b">Hủy đơn hàng</th>
-    //           </tr>
-    //         </thead>
-    //         <tbody>
-    //           {orderList.length > 0 && orderList.map((order, index) => (
-    //             <tr
-    //               key={index}
-    //               className="text-[12px] hover:bg-gray-50">
-    //               <td
-    //                 onClick={() => window.location.href = `/account/orders/${order._id}`}
-    //                 className="text-[12px] py-3 px-4 border-b text-blue-500 hover:cursor-pointer">{order._id}</td>
-    //               <td className="text-[12px] py-3 px-4 border-b">{formatDate(order.createAt)}</td>
-    //               <td className="text-[12px] py-3 px-4 border-b">{order.orderDetails.length} sản phẩm</td>
-    //               <td className="text-[12px] py-3 px-4 border-b">{formatPrice(order.totalAmount)}</td>
-    //               <td className="text-[12px] py-3 px-4 border-b text-red-500">{formatOrderStatus(order.orderStatus)}</td>
-    //               <td>
-    //                 <Button
-    //                   disabled={order.orderStatus == 'completed'}
-    //                   variant={'outline'}
-    //                   size={'sm'}
-    //                   className='text-xs bg-white text-red-500 hover:bg-red-500 hover:text-white'
-    //                   onClick={() => handleCancelingOrder(order._id)}
-    //                 >
-    //                   Hủy đơn hàng
-    //                 </Button>
-    //               </td>
-    //             </tr>
-    //           ))}
-
-    //         </tbody>
-    //       </table>
-    //     </div>
-    //   </div>
-
-    //   {/* sort by order status   */}
-    //   <div className='w1/5 max-w'>
-    //     {orderStatus.map((status, index) => (
-    //       <Button
-    //         variant={'outline'}
-    //         size={'sm'}
-    //         className={`block mb-4 min-w-40 max-w-[200px] text-xs bg-white ${status === filterStatus ? 'text-blue-500 font-semibold border-blue-500' : 'font-light  text-[#72767C]'}`}
-    //         onClick={() => filterOrder(status)}
-    //         key={index}>
-    //         {orderStatus[index]}
-    //       </Button>
-    //     ))}
-    //   </div>
-    // </div>
-    <div className="gap-y-4 w-full">
-      {/* sort by order status   */}
-      <div className="w-full flex min-w-[160px] gap-2 py-8">
+            {/* Filter Buttons - Mobile scrollable */}
+            <div className="w-full overflow-x-auto pb-2">
+                <div className="flex gap-2 min-w-max sm:flex-wrap">
         {orderStatus.map((status, index) => (
           <Button
+                            key={index}
             variant={status === filterStatus ? 'default' : 'outline'}
             size="sm"
-            className={`w-full text-xs transition font-medium
+                            className={`whitespace-nowrap text-xs transition font-medium
           ${status === filterStatus
-                ? 'bg-blue-500 text-white border-blue-500 shadow'
-                : 'bg-white text-[#72767C] border-gray-200 hover:bg-blue-50 hover:text-blue-600'}
+                                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                                    : 'bg-white text-gray-600 border-gray-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'}
         `}
             onClick={() => filterOrder(status)}
-            key={index}
           >
             {status}
           </Button>
         ))}
+                </div>
       </div>
 
-      {/* order list */}
-      <div className="w-full bg-white rounded-xl shadow p-6 overflow-x-auto">
-        <p className="text-2xl font-bold mb-6 text-gray-700">Đơn hàng của bạn</p>
-        <div className="overflow-x-auto">
-          <table className="min-w-[700px] w-full text-sm border-separate border-spacing-y-2">
-            <thead>
-              <tr className="bg-blue-50 text-gray-700">
-                <th className="py-3 px-4 rounded-l-lg">Mã đơn hàng</th>
-                <th className="py-3 px-4">Ngày đặt</th>
-                <th className="py-3 px-4">Sản phẩm</th>
-                <th className="py-3 px-4">Tổng tiền (đ)</th>
-                <th className="py-3 px-4">Trạng thái</th>
-                <th className="py-3 px-4 rounded-r-lg">Hủy đơn hàng</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orderList.length > 0 ? orderList.map((order, index) => (
-                <tr
+            {/* Order List */}
+            {orderList.length > 0 ? (
+                <div className="space-y-4">
+                    {orderList.map((order, index) => (
+                        <div
                   key={index}
-                  className="bg-white hover:bg-blue-50 transition rounded-lg shadow-sm"
-                >
-                  <td
+                            className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all overflow-hidden"
+                        >
+                            {/* Mobile Card View */}
+                            <div className="block sm:hidden p-4">
+                                <div className="flex items-start justify-between mb-3">
+                                    <div>
+                                        <button
+                                            onClick={() => window.location.href = `/account/orders/${order._id}`}
+                                            className="text-xs font-semibold text-blue-600 hover:underline"
+                                        >
+                                            #{order._id.slice(-8)}
+                                        </button>
+                                        <p className="text-xs text-gray-500 mt-1">{formatDate(order.createdAt)}</p>
+                                    </div>
+                                    <Badge className="text-xs">
+                                        {formatOrderStatus(order.orderStatus)}
+                                    </Badge>
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Sản phẩm:</span>
+                                        <span className="font-medium">{order.orderDetails.length} sản phẩm</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Tổng tiền:</span>
+                                        <span className="font-bold text-green-600">{formatPrice(order.totalAmount)}</span>
+                                    </div>
+                                </div>
+                                <div className="mt-4 pt-4 border-t">
+                                    <Button
+                                        disabled={order.orderStatus === 'completed' || order.orderStatus === 'cancelled'}
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-full text-xs border-red-300 text-red-600 hover:bg-red-500 hover:text-white"
+                                        onClick={() => handleCancelingOrder(order._id)}
+                                    >
+                                        Hủy đơn hàng
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {/* Desktop Table Row */}
+                            <div className="hidden sm:grid sm:grid-cols-12 gap-4 p-4 items-center">
+                                <div className="col-span-12 sm:col-span-2">
+                                    <button
                     onClick={() => window.location.href = `/account/orders/${order._id}`}
-                    className="py-3 px-4 text-blue-600 font-semibold cursor-pointer underline"
-                  >
-                    {order._id}
-                  </td>
-                  <td className="py-3 px-4">{formatDate(order.createdAt)}</td>
-                  <td className="py-3 px-4">{order.orderDetails.length} sản phẩm</td>
-                  <td className="py-3 px-4 font-bold text-green-600">{formatPrice(order.totalAmount)}</td>
-                  <td className="py-3 px-4">
-                    <span className="inline-flex items-center">
-                      <Badge>
+                                        className="text-sm font-semibold text-blue-600 hover:underline text-left"
+                                    >
+                                        #{order._id.slice(-8)}
+                                    </button>
+                                    <p className="text-xs text-gray-500 mt-1">{formatDate(order.createdAt)}</p>
+                                </div>
+                                <div className="col-span-12 sm:col-span-2">
+                                    <span className="text-sm text-gray-600">{order.orderDetails.length} sản phẩm</span>
+                                </div>
+                                <div className="col-span-12 sm:col-span-2">
+                                    <span className="text-sm font-bold text-green-600">{formatPrice(order.totalAmount)}</span>
+                                </div>
+                                <div className="col-span-12 sm:col-span-2">
+                                    <Badge className="text-xs">
                         {formatOrderStatus(order.orderStatus)}
                       </Badge>
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
+                                </div>
+                                <div className="col-span-12 sm:col-span-2">
                     <Button
                       disabled={order.orderStatus === 'completed' || order.orderStatus === 'cancelled'}
                       variant="outline"
                       size="sm"
-                      className="text-xs bg-white text-red-500 hover:bg-red-500 hover:text-white border border-red-300"
+                                        className="w-full sm:w-auto text-xs border-red-300 text-red-600 hover:bg-red-500 hover:text-white hover:border-red-500"
                       onClick={() => handleCancelingOrder(order._id)}
                     >
                       Hủy đơn hàng
                     </Button>
-                  </td>
-                </tr>
-              )) : (
-                <tr>
-                  <td colSpan={6} className="text-center py-6 text-gray-400">
-                    Không có đơn hàng nào.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
         </div>
       </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-12 bg-gray-50 rounded-xl">
+                    <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500 font-medium">Chưa có đơn hàng nào</p>
+                    <p className="text-sm text-gray-400 mt-1">Đơn hàng của bạn sẽ hiển thị ở đây</p>
+                </div>
+            )}
     </div>
   )
 }

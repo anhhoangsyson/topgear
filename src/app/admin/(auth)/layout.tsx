@@ -30,7 +30,7 @@ export default function AuthLayout({
                   />
                 </Link>
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  Free and Open-Source Tailwind CSS Admin Dashboard Template
+                  Hệ thống quản lý E-COM - Nền tảng thương mại điện tử hiện đại
                 </p>
               </div>
             </div>

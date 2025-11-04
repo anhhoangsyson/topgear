@@ -16,7 +16,7 @@ export default function LaptopPromodSection({ laptopPromods }: { laptopPromods: 
     const laptopToShow = laptopPromods.slice(startIdx, endIdx)
     return (
         <SectionWrapper>
-            <h2 className='text-2xl font-bold text-left my-4'>Laptop tại E-COM</h2>
+            <h2 className='text-xl sm:text-2xl font-bold text-left my-4 px-2 sm:px-0'>Laptop tại E-COM</h2>
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4'>
                 {/* render laptop */}
                 {laptopToShow.map((laptop) => (

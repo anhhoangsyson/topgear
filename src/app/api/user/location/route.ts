@@ -4,7 +4,29 @@ import { NextRequest, NextResponse } from "next/server";
 const API_URl = process.env.NEXT_PUBLIC_EXPRESS_API_URL;
 
 export async function GET(req: NextRequest, res: NextResponse) {
-    const accessToken = req.headers.get('Authorization')?.split(' ')[1] || ''
+    // Try to get token from Authorization header first
+    let accessToken = req.headers.get('Authorization')?.split(' ')[1] || '';
+    
+    // Fallback: try to get from cookie
+    if (!accessToken) {
+        const cookies = req.cookies;
+        accessToken = cookies.get('accessToken')?.value || '';
+    }
+    
+    // Last fallback: try to get from API route
+    if (!accessToken) {
+        try {
+            const tokenRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL_NEXT_SERVER || 'http://localhost:3000'}/api/user/get-access-token`, {
+                method: 'GET',
+            });
+            if (tokenRes.ok) {
+                const tokenData = await tokenRes.json();
+                accessToken = tokenData?.accessToken || '';
+            }
+        } catch (error) {
+            console.error('Error getting token:', error);
+        }
+    }
 
     try {
         if (!accessToken) {
@@ -15,6 +37,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
         return NextResponse.json(locationRes)
     } catch (error: unknown) {
+        console.error('Error in GET /api/user/location:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }

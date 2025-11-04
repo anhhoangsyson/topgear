@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { LocationRes } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, MapPin } from 'lucide-react';
 
 import addressData from "@/../public/data/address.json";
 
@@ -295,59 +295,100 @@ export default function ListAddressCard({ locationsData }: { locationsData: Loca
 
 
     return (
-        <div className='mt-8'>
+        <div className='w-full'>
             {isLoading && (
                 <div className='fixed inset-0 w-screen h-screen z-50 bg-gray-500 bg-opacity-75 flex items-center justify-center'>
-                    <LoaderCircle className='animate-spin' />
+                    <LoaderCircle className='animate-spin w-8 h-8 text-white' />
                 </div>
             )}
-            <div
-                className='flex justify-center items-center mt-4 w-full h-[68px] bg-white text-sm font-light border-dashed border-gray-400 border-2 rounded cursor-pointer'
-                onClick={() => setShowAddAddressModal(true)}
-            >
-                Thêm địa chỉ mới
-            </div>
-            {locationsData?.map((location, index) => (
-                <div
-                    key={index}
-                    className='flex items-center justify-between mt-4 2xl:w-full p-4 bg-white rounded'>
-                    <div className=''>
-                        {/* name address */}
-                        <div className='flex items-center gap-x-4'>
-                            {/* <p className='font-bold text-base '>Anh Hoang</p> */}
 
-                            <Button
-                                variant='outline'
-                                onClick={() => handleSetAddressDefault(location._id)}
-                                disabled={location.isDefault ? true : false}
-                                className='h-6 border-red-500 text-red-500 text-xs font-semibold hover:bg-red-500 hover:text-white'>
-                                {location.isDefault ? 'Địa chỉ mặc định' : 'Đặt làm địa chỉ mặc định'}
-                            </Button>
-                        </div>
-                        {/* <p
-                            className='font-light text-xs mt-4'>
-                            {`Địa chỉ: ${formartLocation(location.province, location.district, location.ward, location.street)}`}
-                        </p> */}
-                        <p className='font-light text-xs mt-4'>
-                            Địa chỉ: {getAddressName("province", location.province)}, {getAddressName("district", location.district)}, {getAddressName("commune", location.ward)}, {location.street}
-                        </p>
-                    </div>
-                    <div className='flex flex-col gap-y-2'>
-                        <Button
-                            variant='outline'
-                            className='text-gray-500 text-xs font-semibold hover:bg-red-500 hover:text-white'
+            {/* Add New Address Button */}
+            <button
+                onClick={() => setShowAddAddressModal(true)}
+                className='w-full flex items-center justify-center gap-2 py-4 px-6 mb-6 bg-white border-2 border-dashed border-gray-300 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer group'
+            >
+                <span className='text-gray-400 group-hover:text-blue-500'>
+                    <MapPin className='w-5 h-5' />
+                </span>
+                <span className='text-sm font-medium text-gray-600 group-hover:text-blue-600'>
+                    Thêm địa chỉ mới
+                </span>
+            </button>
+
+            {/* Address List */}
+            {locationsData && locationsData.length > 0 ? (
+                <div className='space-y-4'>
+                    {locationsData.map((location, index) => (
+                        <div
+                            key={index}
+                            className={`relative p-6 bg-white rounded-xl border-2 transition-all hover:shadow-md ${
+                                location.isDefault 
+                                    ? 'border-blue-500 bg-blue-50/30' 
+                                    : 'border-gray-200 hover:border-gray-300'
+                            }`}
                         >
-                            Chỉnh sửa
-                        </Button>
-                        <Button
-                            onClick={() => handleDeleteAddress(location._id)}
-                            variant='outline'
-                            className='border-red-500 outline-none text-red-500 text-xs font-semibold hover:bg-red-500 hover:text-white'>
-                            Xóa
-                        </Button>
-                    </div>
+                            {/* Default Badge */}
+                            {location.isDefault && (
+                                <div className='absolute top-4 right-4'>
+                                    <span className='px-3 py-1 text-xs font-semibold bg-blue-500 text-white rounded-full'>
+                                        Mặc định
+                                    </span>
+                                </div>
+                            )}
+
+                            <div className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 pr-20'>
+                                {/* Address Info */}
+                                <div className='flex-1'>
+                                    <div className='flex items-center gap-3 mb-3'>
+                                        <MapPin className={`w-5 h-5 ${location.isDefault ? 'text-blue-500' : 'text-gray-400'}`} />
+                                        <h3 className='font-semibold text-gray-900'>
+                                            Địa chỉ {index + 1}
+                                        </h3>
+                                    </div>
+                                    <p className='text-sm text-gray-600 leading-relaxed'>
+                                        {getAddressName("province", location.province)}, {getAddressName("district", location.district)}, {getAddressName("commune", location.ward)}, {location.street}
+                                    </p>
+                                </div>
+
+                                {/* Actions */}
+                                <div className='flex flex-col sm:flex-row gap-2'>
+                                    {!location.isDefault && (
+                                        <Button
+                                            variant='outline'
+                                            size='sm'
+                                            onClick={() => handleSetAddressDefault(location._id)}
+                                            className='text-xs border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white'
+                                        >
+                                            Đặt mặc định
+                                        </Button>
+                                    )}
+                                    <Button
+                                        variant='outline'
+                                        size='sm'
+                                        className='text-xs text-gray-600 hover:bg-gray-100'
+                                    >
+                                        Chỉnh sửa
+                                    </Button>
+                                    <Button
+                                        variant='outline'
+                                        size='sm'
+                                        onClick={() => handleDeleteAddress(location._id)}
+                                        className='text-xs border-red-300 text-red-600 hover:bg-red-500 hover:text-white hover:border-red-500'
+                                    >
+                                        Xóa
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-            ))}
+            ) : (
+                <div className='text-center py-12 bg-gray-50 rounded-xl'>
+                    <MapPin className='w-12 h-12 text-gray-400 mx-auto mb-4' />
+                    <p className='text-gray-500 font-medium'>Chưa có địa chỉ nào</p>
+                    <p className='text-sm text-gray-400 mt-1'>Thêm địa chỉ mới để bắt đầu</p>
+                </div>
+            )}
             <Dialog open={showAddAddressModal} onOpenChange={setShowAddAddressModal}>
                 <DialogContent>
                     <DialogHeader>

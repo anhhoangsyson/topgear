@@ -6,6 +6,7 @@ import { ILaptop } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { toast } from '@/hooks/use-toast'
 
 export default function LaptopGroupCardContent({ laptop }: { laptop: ILaptop }) {
 
@@ -49,6 +50,10 @@ export default function LaptopGroupCardContent({ laptop }: { laptop: ILaptop }) 
                         price: laptop.price,
                         discountPrice: laptop.discountPrice!,
                         image: laptop.images[0].imageUrl,
+                    })
+                    toast({
+                        description: `Đã thêm "${laptop.name}" vào giỏ hàng!`,
+                        duration: 2000,
                     })
                 }}
                 className='w-full text-xs sm:text-sm text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white py-2 px-2 sm:px-4 whitespace-nowrap mt-2'

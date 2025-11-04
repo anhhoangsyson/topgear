@@ -1,13 +1,13 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, LoaderCircle } from "lucide-react";
+import { ArrowUpDown, ChevronDown, LoaderCircle, Package, User, Calendar, DollarSign, CreditCard, Eye } from "lucide-react";
 import { useState } from "react";
 import { formatPaymentMethod, formatPrice } from "@/lib/utils";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { IOrderWithDetails } from "@/types";
 import { Button } from "@/components/atoms/ui/Button";
+import { Badge } from "@/components/atoms/ui/badge";
 
 // export type OrderRes = {
 //     _id: string;
@@ -29,11 +29,54 @@ import { Button } from "@/components/atoms/ui/Button";
 //     }
 // };
 
+const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+        case "pending":
+            return "secondary";
+        case "payment_pending":
+            return "outline";
+        case "payment_success":
+            return "default";
+        case "completed":
+            return "default";
+        case "cancelled":
+        case "payment_cancelling":
+            return "destructive";
+        default:
+            return "outline";
+    }
+};
+
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    }).format(date);
+};
+
 export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => void): ColumnDef<IOrderWithDetails>[] {
     return [
         {
             accessorKey: "_id",
-            header: "ID",
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="h-8 px-2"
+                >
+                    <span className="font-semibold">Mã đơn</span>
+                    <ArrowUpDown className="ml-2 h-3 w-3" />
+                </Button>
+            ),
+            cell: ({ row }) => (
+                <div className="font-mono text-xs font-semibold text-blue-600">
+                    #{row.getValue("_id")?.toString().slice(-8)}
+                </div>
+            ),
         },
         {
             accessorKey: "user.fullname",
@@ -41,11 +84,63 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="h-8 px-2"
                 >
-                    Tên khách hàng
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <User className="mr-2 h-4 w-4" />
+                    <span className="font-semibold">Khách hàng</span>
+                    <ArrowUpDown className="ml-2 h-3 w-3" />
                 </Button>
             ),
+            cell: ({ row }) => {
+                const order = row.original;
+                return (
+                    <div className="flex flex-col gap-1">
+                        <span className="font-medium">{order.user?.fullname || "N/A"}</span>
+                        <span className="text-xs text-gray-500">{order.user?.phone || ""}</span>
+                    </div>
+                );
+            },
+        },
+        {
+            accessorKey: "orderStatus",
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="h-8 px-2"
+                >
+                    <span className="font-semibold">Trạng thái</span>
+                    <ArrowUpDown className="ml-2 h-3 w-3" />
+                </Button>
+            ),
+            cell: ({ row }) => {
+                const status = row.getValue("orderStatus") as string;
+                return (
+                    <Badge variant={getStatusBadgeVariant(status)} className="text-xs">
+                        {status}
+                    </Badge>
+                );
+            },
+        },
+        {
+            accessorKey: "orderDetails",
+            header: () => (
+                <div className="flex items-center gap-2">
+                    <Package className="h-4 w-4" />
+                    <span className="font-semibold">Sản phẩm</span>
+                </div>
+            ),
+            cell: ({ row }) => {
+                const order = row.original;
+                const itemCount = order.orderDetails?.length || 0;
+                const totalQuantity = order.orderDetails?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+                return (
+                    <div className="flex flex-col gap-1">
+                        <span className="text-sm font-medium">{itemCount} sản phẩm</span>
+                        <span className="text-xs text-gray-500">{totalQuantity} chiếc</span>
+                    </div>
+                );
+            },
         },
         {
             accessorKey: "createdAt",
@@ -53,18 +148,53 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="h-8 px-2"
                 >
-                    Ngày đặt
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <Calendar className="mr-2 h-4 w-4" />
+                    <span className="font-semibold">Ngày đặt</span>
+                    <ArrowUpDown className="ml-2 h-3 w-3" />
                 </Button>
             ),
+            cell: ({ row }) => {
+                const date = (row.original as any).createdAt as string | undefined;
+                return (
+                    <div className="flex flex-col gap-1">
+                        <span className="text-sm">
+                            {date ? formatDate(date) : "N/A"}
+                        </span>
+                    </div>
+                );
+            },
         },
         {
             accessorKey: "totalAmount",
-            header: "Giá trị đơn hàng",
-            cell: ({ row }) => (
-                <div>{formatPrice((row.getValue("totalAmount") as string)) || "#Nan"}</div>
+            header: () => (
+                <div className="flex items-center gap-2">
+                    <DollarSign className="h-4 w-4" />
+                    <span className="font-semibold">Tổng tiền</span>
+                </div>
             ),
+            cell: ({ row }) => {
+                const amount = row.getValue("totalAmount") as number;
+                const discount = row.original.discountAmount || 0;
+                return (
+                    <div className="flex flex-col gap-1 text-right">
+                        {discount > 0 && (
+                            <span className="text-xs text-gray-500 line-through">
+                                {formatPrice((amount + discount).toString())}
+                            </span>
+                        )}
+                        <span className="text-sm font-semibold text-green-600">
+                            {formatPrice(amount.toString())}
+                        </span>
+                        {discount > 0 && (
+                            <span className="text-xs text-red-500">
+                                -{formatPrice(discount.toString())}
+                            </span>
+                        )}
+                    </div>
+                );
+            },
         },
         {
             accessorKey: "paymentMethod",
@@ -72,13 +202,19 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="h-8 px-2"
                 >
-                    Phương thức thanh toán
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    <span className="font-semibold">Thanh toán</span>
+                    <ArrowUpDown className="ml-2 h-3 w-3" />
                 </Button>
             ),
             cell: ({ row }) => (
-                <div className="text-center">{formatPaymentMethod(row.getValue("paymentMethod"))}</div>
+                <div className="text-center">
+                    <Badge variant="outline" className="text-xs">
+                        {formatPaymentMethod(row.getValue("paymentMethod"))}
+                    </Badge>
+                </div>
             ),
         },
         {
@@ -136,10 +272,13 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
 
                         <div className="flex items-center gap-x-2">
                             <Button
-                                variant={'ghost'}
+                                variant="outline"
+                                size="sm"
                                 onClick={() => onShowOrderPreview(order)}
+                                className="h-8"
                             >
-                                <MdOutlineRemoveRedEye />
+                                <Eye className="h-4 w-4 mr-1" />
+                                Chi tiết
                             </Button>
 
                             {isStatusEditable ? (

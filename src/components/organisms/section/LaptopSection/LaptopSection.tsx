@@ -6,7 +6,13 @@ import { ILaptop } from '@/types'
 import React, { useState } from 'react'
 
 const pageSize = 10; // Số lượng laptop hiển thị mỗi trang
-export default function LaptopSection({ laptops }: { laptops: ILaptop[] }) {
+
+interface LaptopSectionProps {
+    laptops: ILaptop[];
+    withFilter?: boolean; // Prop để biết có filter sidebar hay không
+}
+
+export default function LaptopSection({ laptops, withFilter = false }: LaptopSectionProps) {
 
     const [page, setPage] = useState(1);
     const totalPages = Math.ceil(laptops.length / pageSize);
@@ -20,8 +26,11 @@ export default function LaptopSection({ laptops }: { laptops: ILaptop[] }) {
 
     return (
         <SectionWrapper>
-            <h2 className='text-2xl font-bold text-left my-4'>Laptop tại E-COM</h2>
-            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4'>
+            {!withFilter && <h2 className='text-2xl font-bold text-left my-4'>Laptop tại E-COM</h2>}
+            <div className={withFilter 
+                ? 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5'
+                : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4'
+            }>
                 {/* render laptop */}
                 {laptopToShow.map((laptop) => (
                     <LaptopCard

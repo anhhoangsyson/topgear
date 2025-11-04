@@ -44,14 +44,8 @@ async function getUserInfo() {
 }
 
 export default async function UserInfoPage() {
-
   const userData = await getUserInfo();
   return (
-    <div className='flex gap-x-4'>
-      <div className='rounded w-4/6'>
-        <FormAccountInfo userInfo={userData?.userData.data} />
-      </div>
-      {/* <AddressInfo defaultAddress={userData?.defaultAddress.data} /> */}
-    </div>
+    <FormAccountInfo userInfo={userData?.userData.data} />
   );
 }
