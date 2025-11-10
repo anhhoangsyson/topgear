@@ -3,11 +3,11 @@ import { formatOrderStatus } from '../../../../lib/utils';
 import { Badge } from "@/components/atoms/ui/badge";
 
 // Define the TypeScript interface for the table rows
-interface Product {
-  id: number; // Unique identifier for each product
-  name: string; // Product name
+interface OrderRow {
+  id: number; // Unique identifier for each order
+  name: string; // Order name
   variants: string; // Number of variants (e.g., "1 Variant", "2 Variants")
-  category: string; // Category of the product
+  category: string; // Category of the order
   price: string; // Price of the product (as a string with currency symbol)
   // status: string; // Status of the product
   image: string; // URL or path to the product image

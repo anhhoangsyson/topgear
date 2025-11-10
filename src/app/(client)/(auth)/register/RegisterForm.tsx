@@ -68,9 +68,9 @@ export default function RegisterForm() {
         });
         router.push("/login");
       } else {
-        const textResponse = await response.text();
+        await response.text();
         // throw new Error("Server trả về định dạng không mong đợi");
-      }      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      }
     } catch (error: unknown) {
       // console.error("Lỗi chi tiết:", error);
       setErrorMessage(error instanceof Error ? error.message : "Đăng ký thất bại");

@@ -35,6 +35,8 @@ export interface INotification {
     paymentMethod?: string;
     priority?: 'high' | 'normal';
     link?: string;
+    action?: string; // 'customer_request_cancel', 'order_cancelled', etc.
+    status?: string; // 'canceling', 'cancelled', etc.
     [key: string]: string | number | object | undefined;
   };
   isRead: boolean;

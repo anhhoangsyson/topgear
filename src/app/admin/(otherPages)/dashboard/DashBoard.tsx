@@ -21,7 +21,7 @@ interface DashBoardProps {
     }
 }
 
-export default function DashBoard({ data }: DashBoardProps) {
+export default function DashBoard({ data: _data }: DashBoardProps) {
     return (
         <div>
 

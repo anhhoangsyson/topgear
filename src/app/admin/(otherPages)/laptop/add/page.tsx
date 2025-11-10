@@ -86,7 +86,7 @@ type FormValues = z.infer<typeof basicInfoSchema> & {
 };
 
 export default function AddLaptopPage() {
-  const router = useRouter();
+  // router is assigned but not used
   const [step, setStep] = useState(1);
   const [activeTab, setActiveTab] = useState("basic");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -175,7 +175,7 @@ export default function AddLaptopPage() {
         
         setBrands(brandsData.data);
         setCategories(categoriesData.data);
-      } catch (error) {
+      } catch {
         toast({
           variant: "destructive",
           title: "Có lỗi xảy ra",
@@ -316,8 +316,7 @@ export default function AddLaptopPage() {
         body: formData,
       })
 
-      const result = await res.json();
-
+      await res.json();
 
       toast({
         title: "Thêm laptop thành công",

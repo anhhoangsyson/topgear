@@ -5,10 +5,10 @@ import { SidebarProvider } from "@/context/admin/SidebarContext";
 import { AuthProvider } from "@/components/features/auth/providers/AuthProvider";
 import NotificationProvider from "@/components/providers/NotificationProvider";
 import AdminNotificationProvider from "@/components/providers/AdminNotificationProvider";
-import PushNotificationInitializer from "@/components/providers/PushNotificationInitializer";
 import { Toaster } from "@/components/atoms/ui/toaster";
 
-const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
+// Font Inter is imported but not used in className
+// const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 
 export const metadata: Metadata = {
   title: "E-COM - Bán laptop chính hãng",
@@ -29,7 +29,6 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`}>
         <AuthProvider>
-          <PushNotificationInitializer />
           <NotificationProvider>
             <AdminNotificationProvider>
               <SidebarProvider>{children}</SidebarProvider>

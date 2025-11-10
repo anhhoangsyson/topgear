@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/atoms/ui/dropdown-menu";
 import { Button } from "@/components/atoms/ui/Button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/atoms/ui/table";
@@ -23,7 +23,7 @@ import { Input } from "@/components/atoms/ui/input";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchBy: string;
+  searchBy?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -58,15 +58,16 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full">
       <div className="flex items-center py-4 gap-x-4">
-
-        <Input
-          placeholder={`Tìm kiếm theo ${searchBy}...`}
-          value={(table.getColumn(searchBy)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(searchBy)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        {searchBy && (
+          <Input
+            placeholder={`Tìm kiếm theo ${searchBy}...`}
+            value={(table.getColumn(searchBy)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(searchBy)?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        )}
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

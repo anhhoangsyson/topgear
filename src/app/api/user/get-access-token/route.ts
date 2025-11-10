@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
@@ -30,7 +30,9 @@ export async function GET() {
       { status: 401 }
     );
   } catch (error) {
-    console.error('[get-access-token] Error:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[get-access-token] Error:', error);
+    }
     return NextResponse.json(
       { error: 'Internal server error' }, 
       { status: 500 }

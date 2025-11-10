@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { INotification, NotificationType } from '@/types/notification';
+import { INotification } from '@/types/notification';
 
 interface NotificationState {
   notifications: INotification[];
@@ -30,19 +30,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
 
   setNotifications: (notifications) => {
     const unreadCount = notifications.filter(n => !n.isRead).length;
-    console.log('[NotificationStore] setNotifications called:', {
-      totalNotifications: notifications.length,
-      unreadCount,
-      notificationsSample: notifications.slice(0, 3).map(n => ({ id: n._id || n.id, isRead: n.isRead }))
-    });
     set({ notifications, unreadCount });
-    
-    // Verify sau khi set
-    const state = get();
-    console.log('[NotificationStore] After setNotifications, store state:', {
-      notificationsCount: state.notifications.length,
-      unreadCount: state.unreadCount
-    });
   },
 
   addNotification: (notification) => {
@@ -51,7 +39,6 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     // Normalize notification ID (backend có thể trả về _id hoặc id)
     const notifId = notification._id || notification.id;
     if (!notifId) {
-      console.warn('[NotificationStore] Notification without ID:', notification);
       return;
     }
     
@@ -60,7 +47,6 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
       (n._id || n.id) === notifId
     );
     if (exists) {
-      console.log('[NotificationStore] ⚠️ Notification already exists, skipping:', notifId);
       return;
     }
     
@@ -78,12 +64,6 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     const newUnreadCount = notification.isRead 
       ? currentUnreadCount 
       : currentUnreadCount + 1;
-    
-    console.log('[NotificationStore] 📊 Updating unread count:', {
-      current: currentUnreadCount,
-      new: newUnreadCount,
-      notificationIsRead: notification.isRead
-    });
     
     set({ notifications: newNotifications, unreadCount: newUnreadCount });
   },
@@ -132,18 +112,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
 
   setUnreadCount: (count) => {
     const finalCount = typeof count === 'number' ? Math.max(0, count) : 0;
-    console.log('[NotificationStore] setUnreadCount called:', {
-      input: count,
-      finalCount,
-      type: typeof count
-    });
     set({ unreadCount: finalCount });
-    
-    // Verify sau khi set
-    const state = get();
-    console.log('[NotificationStore] After setUnreadCount, store state:', {
-      unreadCount: state.unreadCount
-    });
   },
   
   incrementUnreadCount: () => set((state) => ({ unreadCount: state.unreadCount + 1 })),

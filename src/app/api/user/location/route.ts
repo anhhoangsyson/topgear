@@ -1,9 +1,7 @@
 import { callApi } from "@/app/api/user/route";
 import { NextRequest, NextResponse } from "next/server";
 
-const API_URl = process.env.NEXT_PUBLIC_EXPRESS_API_URL;
-
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
     // Try to get token from Authorization header first
     let accessToken = req.headers.get('Authorization')?.split(' ')[1] || '';
     
@@ -23,8 +21,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
                 const tokenData = await tokenRes.json();
                 accessToken = tokenData?.accessToken || '';
             }
-        } catch (error) {
-            console.error('Error getting token:', error);
+        } catch {
+            // Ignore token fetch errors
         }
     }
 
@@ -36,21 +34,16 @@ export async function GET(req: NextRequest, res: NextResponse) {
         const locationRes = await callApi('/location', 'GET', accessToken)
 
         return NextResponse.json(locationRes)
-    } catch (error: unknown) {
-        console.error('Error in GET /api/user/location:', error);
+    } catch {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }
 
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
     try {
-        const body = await res.json();
-        console.log("Request body:", body);
-        const token = req.headers.get('Authorization')?.split(' ')[1] || '';
-        console.log('accsstoken cc', token);
-
-        // call be exresss api
+        const body = await req.json();
+        // call be express api
         const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/location`, {
             method: "POST",
             headers: {
@@ -61,7 +54,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         });
         const data = await response.json();
         return NextResponse.json(data)
-    } catch (error) {
+    } catch {
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 }

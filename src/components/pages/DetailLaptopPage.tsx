@@ -3,6 +3,7 @@ import Wraper from "../core/Wraper";
 import CardDetailLaptop from "@/components/molecules/cards/CardDetailProduct";
 import LeftSideDetailLaptop from "@/components/molecules/cards/LeftSideDetailProduct";
 import { ListRelatedLaptop } from "@/components/molecules/cards/ListRelatedLaptop";
+import LaptopRatingSection from "@/components/molecules/rating/LaptopRatingSection";
 
 const DetailLaptopPage = ({ data }: { data: ILaptop }) => {
   return (
@@ -13,6 +14,9 @@ const DetailLaptopPage = ({ data }: { data: ILaptop }) => {
           <CardDetailLaptop data={data} />
           <LeftSideDetailLaptop data={data.specifications} />
         </div>
+
+        {/* Rating Section */}
+        <LaptopRatingSection laptopId={data._id} />
 
         {/* Related Products Section */}
         <ListRelatedLaptop

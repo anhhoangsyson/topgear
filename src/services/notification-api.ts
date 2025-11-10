@@ -1,5 +1,5 @@
 import { TokenManager } from "@/lib/token-manager";
-import { INotification, NotificationResponse, UnreadCountResponse } from "@/types/notification";
+import { NotificationResponse, UnreadCountResponse } from "@/types/notification";
 
 export class NotificationAPI {
   /**

@@ -5,6 +5,7 @@ import BlogBreadcrumb from '@/app/(client)/blogs/[slug]/BlogBreadCrumb';
 import Image from 'next/image';
 import { Calendar, User, Tag } from 'lucide-react';
 import Link from 'next/link';
+import BlogCommentsSection from '@/components/molecules/comment/BlogCommentsSection';
 
 export default async function page({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -114,6 +115,9 @@ export default async function page({ params }: { params: Promise<{ slug: string 
                         </Link>
                     </div>
                 </article>
+
+                {/* Comments Section */}
+                <BlogCommentsSection blogId={blogDetai._id} />
             </div>
         </div>
     )

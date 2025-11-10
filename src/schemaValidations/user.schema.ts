@@ -1,7 +1,6 @@
 import z from 'zod'
 
 import { ROLEENUM, SEXENUM } from "@/schemaValidations/auth.schema";
-import exp from 'constants';
 
 export const UserValidationSchema = z.object({
     _id: z.string(),

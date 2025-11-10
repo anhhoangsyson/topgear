@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function AddressInfo({ defaultAddress }: {
+export default function AddressInfo({ defaultAddress: _defaultAddress }: {
   defaultAddress: {
     _id: string;
     province: string;

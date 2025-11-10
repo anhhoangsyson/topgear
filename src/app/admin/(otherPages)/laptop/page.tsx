@@ -14,6 +14,7 @@ import { Separator } from "@/components/atoms/ui/separator";
 
 export default function LaptopsPage() {
   const router = useRouter();
+  // setIsLoading is assigned but not used
   const [isLoading, setIsLoading] = useState(false);
   const [laptops, setLaptops] = useState<ILaptop[]>([]);
   const [showModalLaptopDetail, setShowModalLaptopDetail] = useState(false);
@@ -32,7 +33,7 @@ export default function LaptopsPage() {
         const data = await res.json();
         setLaptops(data.data)
 
-      } catch (error) {
+      } catch {
         toast({
           variant: "destructive",
           title: "Có lỗi xảy ra",

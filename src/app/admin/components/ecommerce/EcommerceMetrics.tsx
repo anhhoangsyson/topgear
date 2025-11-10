@@ -1,5 +1,5 @@
 "use client";
-import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon } from "@/app/admin/icons";
+import { ArrowUpIcon, BoxIconLine, GroupIcon } from "@/app/admin/icons";
 import { Badge } from "@/components/atoms/ui/badge";
 import { ChartAreaIcon } from "lucide-react";
 import React from "react";

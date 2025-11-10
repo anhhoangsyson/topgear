@@ -7,6 +7,7 @@ import { toast } from '@/hooks/use-toast';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { ReactQuillRef } from '@/types/react-quill';
 import { Label } from '@/components/atoms/ui/label';
 import { Input } from '@/components/atoms/ui/input';
 import { Button } from '@/components/atoms/ui/Button';
@@ -23,7 +24,7 @@ type BlogForm = z.infer<typeof blogSchema>;
 export default function ReactQuillEditor() {
     const { data: session } = useSession();
     const accessToken = session?.accessToken;
-    const quillRef = useRef<any>(null);
+    const quillRef = useRef<ReactQuillRef | null>(null);
 
     const {
         control,
@@ -167,6 +168,7 @@ export default function ReactQuillEditor() {
                     render={({ field }) => (
                         <div className="rounded bg-white">
                             <ReactQuill
+                                // @ts-expect-error - react-quill-new doesn't have proper types
                                 ref={quillRef}
                                 modules={modules}
                                 value={field.value}

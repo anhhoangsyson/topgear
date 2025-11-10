@@ -27,7 +27,7 @@ interface Step2Props {
   onBack: () => void; // Callback function to go back to Step 1
 }
 
-export default function Step2({ customerInfo, selectedItems, onBack }: Step2Props) {
+export default function Step2({ customerInfo, selectedItems }: Step2Props) {
 
   const router = useRouter()
   const { data: session } = useSession();
@@ -83,7 +83,11 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
     }
 
     if (selectedItems.length === 0) {
-      alert('Giỏ hàng trống!');
+      toast({
+        title: 'Lỗi',
+        description: 'Giỏ hàng trống! Vui lòng thêm sản phẩm vào giỏ hàng.',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -161,7 +165,9 @@ export default function Step2({ customerInfo, selectedItems, onBack }: Step2Prop
         })
       }
     } catch (error) {
-      console.error('Error submitting order:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error submitting order:', error);
+      }
     }
     finally {
       setIsLoading(false)

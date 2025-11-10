@@ -36,11 +36,6 @@ export default function NotificationDropdown() {
     }
     // Fallback: tính từ notifications
     const calculated = notifications.filter(n => !n.isRead).length;
-    console.log('[NotificationDropdown] ⚠️ unreadCount từ store không hợp lệ, using calculated:', {
-      storeValue: unreadCountFromStore,
-      calculated,
-      totalNotifications: notifications.length
-    });
     return calculated;
   }, [unreadCountFromStore, notifications]);
   
@@ -49,12 +44,6 @@ export default function NotificationDropdown() {
   const setNotifications = useNotificationStore((state) => state.setNotifications);
   const setUnreadCount = useNotificationStore((state) => state.setUnreadCount);
 
-  // Debug: Log unread count changes
-  useEffect(() => {
-    console.log('[NotificationDropdown] 📊 Unread count changed:', unreadCount);
-    console.log('[NotificationDropdown] 📦 Total notifications:', notifications.length);
-    console.log('[NotificationDropdown] 📋 Unread notifications:', notifications.filter(n => !n.isRead).length);
-  }, [unreadCount, notifications]);
 
   // Get recent unread notifications
   const recentNotifications = notifications
@@ -87,7 +76,9 @@ export default function NotificationDropdown() {
             setUnreadCount(response.data.pagination.unreadCount);
           }
         } catch (error) {
-          console.error('Error fetching notifications:', error);
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Error fetching notifications:', error);
+          }
         }
       };
       fetchNotifications();

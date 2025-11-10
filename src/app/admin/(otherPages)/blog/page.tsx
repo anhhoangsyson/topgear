@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 import { DataTable } from "@/components/common/data-table";
-import { LaptopGroupColumns } from "@/app/admin/(otherPages)/laptop-group/laptop-group-columns";
+// LaptopGroupColumns is imported but not used
 import BlogPreview from "@/app/admin/(otherPages)/blog/BlogPreview";
 import { BlogColumns } from "@/app/admin/(otherPages)/blog/BlogColumns";
 import { IBlog } from "@/types";
@@ -16,9 +16,9 @@ import { Separator } from "@/components/atoms/ui/separator";
 
 export default function BlogsPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [blogs, setBlogs] = useState<IBlog[]>([]);
 
+  const [isLoading, ] = useState(false);
   const [showBlogPreview, setShowBlogPreview] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<IBlog | null>(null);
   const [showModalEdit, setShowModalEdit] = useState(false);
@@ -44,7 +44,7 @@ export default function BlogsPage() {
         const data = await res.json();
         setBlogs(data.data)
 
-      } catch (error) {
+      } catch {
         toast({
           variant: "destructive",
           title: "Có lỗi xảy ra",

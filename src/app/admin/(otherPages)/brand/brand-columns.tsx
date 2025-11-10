@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, LoaderCircle } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { useState } from "react";
 import WrapModal from "@/components/common/WrapModal";
 import { GoPencil } from "react-icons/go";
@@ -10,7 +10,7 @@ import { IBrand } from "@/types";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import UpdateBrandForm from "@/app/admin/(otherPages)/brand/UpdateBrandForm";
-import { useRouter } from "next/navigation";
+// useRouter is imported but not used - hooks used in cell functions with eslint-disable
 import { Button } from "@/components/atoms/ui/Button";
 import { Switch } from "@/components/atoms/ui/switch";
 import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
@@ -89,8 +89,11 @@ export const brandColumns: ColumnDef<Partial<IBrand>>[] = [
         cell: ({ row }) => {
             const brand = row.original;
 
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             const [isModalOpen, setIsModalOpen] = useState(false);
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             const [isActive, setIsActive] = useState(brand.isActive);
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             const [isLoading, setIsLoading] = useState(false);
 
             const handleEditClick = () => {

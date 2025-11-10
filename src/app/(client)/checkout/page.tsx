@@ -1,10 +1,9 @@
 'use client'
-// import { useRouter } from 'next/router'
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from 'react'
-import { useRouter } from "next/navigation"
 import Step1 from '@/app/(client)/checkout/FormStep1'
 import Step2 from '@/app/(client)/checkout/FormStep2'
+import { CartItem } from '@/store/cartStore'
 
 export default function CheckoutPage() {
     const searchParams = useSearchParams();
@@ -18,7 +17,7 @@ export default function CheckoutPage() {
         note: "",
     })
 
-    const [selectedItems, setSelectedItems] = useState<any[]>([]);
+    const [selectedItems, setSelectedItems] = useState<CartItem[]>([]);
     useEffect(() => {
         const items = searchParams.get("cartItems");
         if (items) {
@@ -51,7 +50,9 @@ export default function CheckoutPage() {
             address: formattedAddress,
             note: data.note || "",
         });
-        currentStep === 1 && setCurrentStep(2); // Chuyển sang bước 2 nếu đang ở bước 1
+        if (currentStep === 1) {
+            setCurrentStep(2); // Chuyển sang bước 2 nếu đang ở bước 1
+        }
     };
     const handleBackToStep1 = () => {
         setCurrentStep(1); // Quay lại bước 1

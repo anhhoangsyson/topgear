@@ -18,13 +18,19 @@ export class ApiException extends Error {
   }
 }
 
+interface ApiErrorResponse {
+  message?: string;
+  error?: string;
+  code?: string;
+}
+
 export async function handleApiResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let errorMessage = 'Có lỗi xảy ra';
-    let errorData: any = null;
+    let errorData: ApiErrorResponse | null = null;
 
     try {
-      errorData = await response.json();
+      errorData = await response.json() as ApiErrorResponse;
       errorMessage = errorData.message || errorData.error || errorMessage;
     } catch {
       errorMessage = response.statusText || errorMessage;
@@ -41,7 +47,9 @@ export async function handleApiResponse<T>(response: Response): Promise<T> {
 }
 
 export function handleApiError(error: unknown, fallbackMessage = 'Có lỗi xảy ra') {
-  console.error('API Error:', error);
+  if (process.env.NODE_ENV === 'development') {
+    console.error('API Error:', error);
+  }
 
   let message = fallbackMessage;
   let shouldRedirectToLogin = false;
@@ -94,10 +102,10 @@ export async function apiCall<T>(
   }
 }
 
-export function withLoading<T extends any[], R>(
-  fn: (...args: T) => Promise<R>
+export function withLoading<TArgs extends unknown[], TResult>(
+  fn: (...args: TArgs) => Promise<TResult>
 ) {
-  return async (...args: T): Promise<R> => {
+  return async (...args: TArgs): Promise<TResult> => {
     try {
       return await fn(...args);
     } catch (error) {

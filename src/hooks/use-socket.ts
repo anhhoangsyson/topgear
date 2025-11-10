@@ -43,7 +43,6 @@ export function useSocket(
 
         // Lắng nghe sự kiện connection
         socket.on("connect", () => {
-          console.log("[Socket] ✅ Connected");
           socket.emit("authenticate", token);
         });
 
@@ -51,8 +50,10 @@ export function useSocket(
           // Silent disconnect
         });
 
-        socket.on("connect_error", (error) => {
-          console.error("[Socket] ❌ Connection error:", error.message || error);
+        socket.on("connect_error", (error: Error) => {
+          if (process.env.NODE_ENV === 'development') {
+            console.error("[Socket] Connection error:", error?.message || String(error));
+          }
         });
 
         socket.on("authenticated", () => {
@@ -60,7 +61,9 @@ export function useSocket(
         });
 
         socket.on("authentication_error", (error: { message: string }) => {
-          console.error("[Socket] ❌ Authentication error:", error.message);
+          if (process.env.NODE_ENV === 'development') {
+            console.error("[Socket] Authentication error:", error.message);
+          }
         });
 
         socket.on("new_notification", (data: INotification) => {
@@ -68,7 +71,9 @@ export function useSocket(
             try {
               onNotification(data);
             } catch (error) {
-              console.error("[Socket] Error handling notification:", error);
+              if (process.env.NODE_ENV === 'development') {
+                console.error("[Socket] Error handling notification:", error);
+              }
             }
           }
         });
@@ -94,7 +99,9 @@ export function useSocket(
         }
 
       } catch (error) {
-        console.error("[Socket] Error connecting:", error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("[Socket] Error connecting:", error);
+        }
       }
     };
 

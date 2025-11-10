@@ -8,15 +8,15 @@ import { NotificationAPI } from '@/services/notification-api';
 import { INotification, NotificationType } from '@/types/notification';
 import { formatDate, formatPrice } from '@/lib/utils';
 import { Badge } from '@/components/atoms/ui/badge';
-import { LoaderCircle, AlertCircle, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { LoaderCircle, AlertCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { getNotificationLink } from '@/lib/notification-utils';
 
 export default function AdminNotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { 
     notifications, 
-    unreadCount, 
     isLoading,
     markAsRead,
     setNotifications,
@@ -35,12 +35,8 @@ export default function AdminNotificationDropdown() {
            (n.data?.orderId && type !== NotificationType.SYSTEM_ANNOUNCEMENT);
   });
 
-  // Sort theo priority và thời gian
+  // Sort chỉ theo thời gian (mới nhất trước)
   const sortedNotifications = [...orderNotifications].sort((a, b) => {
-    // High priority trước
-    if (a.data?.priority === 'high' && b.data?.priority !== 'high') return -1;
-    if (a.data?.priority !== 'high' && b.data?.priority === 'high') return 1;
-    // Mới nhất trước
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
@@ -62,22 +58,25 @@ export default function AdminNotificationDropdown() {
         await NotificationAPI.markAsRead(notificationId);
         markAsRead(notificationId);
       } catch (error) {
-        console.error('Error marking notification as read:', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error marking notification as read:', error);
+        }
       }
     }
 
     // Close dropdown
     setIsOpen(false);
 
-    // Navigate to order detail page
-    const link = notification.link || notification.data?.link;
-    if (notification.data?.orderId) {
-      // Navigate to order detail page with orderId
-      router.push(`/admin/orders?orderId=${notification.data.orderId}`);
-    } else if (link) {
+    // Navigate to order detail page - sử dụng getNotificationLink để có URL đúng
+    const link = getNotificationLink(notification);
+    
+    if (link) {
       router.push(link);
+    } else if (notification.data?.orderId) {
+      // Fallback: Navigate to order detail page with orderId
+      router.push(`/admin/orders?orderId=${notification.data.orderId}`);
     } else {
-      // Fallback to orders page
+      // Final fallback to orders page
       router.push('/admin/orders');
     }
   };
@@ -105,15 +104,28 @@ export default function AdminNotificationDropdown() {
             setUnreadCount(response.data.pagination.unreadCount);
           }
         } catch (error) {
-          console.error('Error fetching notifications:', error);
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Error fetching notifications:', error);
+          }
         }
       };
       fetchNotifications();
     }
   }, [isOpen, setNotifications, setUnreadCount]);
 
-  const getNotificationIcon = (type: NotificationType | string) => {
-    const typeStr = typeof type === 'string' ? type.toLowerCase() : type;
+  const getNotificationIcon = (notification: INotification) => {
+    const typeStr = typeof notification.type === 'string' ? notification.type.toLowerCase() : notification.type;
+    const action = notification.data?.action;
+    
+    // Check action first để xác định icon chính xác hơn
+    if (action === 'customer_request_cancel') {
+      return '⚠️'; // Yêu cầu hủy đơn
+    }
+    if (action === 'order_cancelled') {
+      return '❌'; // Đơn đã hủy
+    }
+    
+    // Fallback to type-based icons
     if (typeStr === 'order' || typeStr === NotificationType.ORDER_CREATED) {
       return '📦';
     }
@@ -131,6 +143,19 @@ export default function AdminNotificationDropdown() {
 
   const getNotificationColor = (priority?: 'high' | 'normal') => {
     return priority === 'high' ? 'bg-red-500' : 'bg-blue-500';
+  };
+
+  const getPriorityBadge = (priority?: 'high' | 'normal') => {
+    if (!priority || priority === 'normal') return null;
+    return (
+      <Badge 
+        variant="destructive" 
+        className="text-xs px-2 py-0.5 font-semibold"
+      >
+        <AlertCircle className="w-3 h-3 mr-1" />
+        Ưu tiên cao
+      </Badge>
+    );
   };
 
   return (
@@ -237,7 +262,7 @@ export default function AdminNotificationDropdown() {
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <span className="text-2xl flex-shrink-0">{getNotificationIcon(notification.type)}</span>
+                        <span className="text-2xl flex-shrink-0">{getNotificationIcon(notification)}</span>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-semibold text-gray-900 dark:text-white text-sm truncate">
@@ -280,6 +305,20 @@ export default function AdminNotificationDropdown() {
                             )}
                           </span>
                         </div>
+                      )}
+
+                      {/* Highlight cancel requests */}
+                      {notification.data?.action === 'customer_request_cancel' && (
+                        <Badge variant="destructive" className="text-xs px-2 py-0.5">
+                          <AlertCircle className="w-3 h-3 mr-1" />
+                          Cần xử lý
+                        </Badge>
+                      )}
+
+                      {notification.data?.status === 'canceling' && (
+                        <Badge variant="outline" className="text-xs px-2 py-0.5 border-orange-500 text-orange-600">
+                          Đang hủy
+                        </Badge>
                       )}
                     </div>
 

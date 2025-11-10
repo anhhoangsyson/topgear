@@ -1,15 +1,15 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Eye, MoreHorizontal, Pencil, Trash, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Eye, Trash2 } from 'lucide-react';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
 import { GoPencil } from "react-icons/go";
 import { IBlog } from '../../../../types/index';
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/atoms/ui/Button";
 import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
 
@@ -78,8 +78,10 @@ export function BlogColumns(onShowBlogPreview: (blog: IBlog) => void,
             header: "Trạng thái | Hành động",
             enableHiding: false,
             cell: ({ row }) => {
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 const router = useRouter();
                 const blog = row.original as IBlog;
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 const [isLoading, setIsLoading] = useState(false);
 
                 const handleDeleteClick = async () => {
@@ -98,9 +100,8 @@ export function BlogColumns(onShowBlogPreview: (blog: IBlog) => void,
                                 description: "Blog đã được xóa thành công.",
                             });
                         }
-                    } catch (error) {
+                    } catch {
                         setIsLoading(false);
-                        console.error("Error deleting blog:", error);
                         toast({
                             title: "Lỗi",
                             description: "Không thể xóa blog này.",

@@ -9,11 +9,20 @@ import BasicInfoForm from "@/app/admin/(otherPages)/laptop/add/BasicInfoForm";
 import SpecificationsForm from "@/app/admin/(otherPages)/laptop/add/SpecificationsForm";
 import ImagesAndSeoForm from "@/app/admin/(otherPages)/laptop/add/ImagesAndSeoForn";
 import PreviewForm from "@/app/admin/(otherPages)/laptop/add/PreviewForm";
-import { ILaptop, ISeoMetadata } from "@/types";
+import { ILaptop } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/atoms/ui/tabs";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/atoms/ui/card";
 import { Button } from "@/components/atoms/ui/Button";
 import OverlayLoader from "@/components/atoms/feedback/OverlayLoader";
+
+type SuggestedMetadata = {
+    seoMetadata?: {
+        metaTitle?: string;
+        metaDescription?: string;
+        keywords?: string[];
+    };
+    tags?: string[];
+};
 
 // Định nghĩa schema cho từng bước
 const basicInfoSchema = z.object({
@@ -93,8 +102,9 @@ export default function EditLaptopForm({ laptop }: { laptop: ILaptop }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [brands, setBrands] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [suggestedMetadata, setSuggestedMetadata] = useState<ISeoMetadata>({
-        ...laptop.seoMetadata
+    const [suggestedMetadata, setSuggestedMetadata] = useState<SuggestedMetadata | null>({
+        seoMetadata: laptop.seoMetadata,
+        tags: laptop.tags
     });
 
     const methods = useForm<FormValues>({
@@ -237,7 +247,7 @@ export default function EditLaptopForm({ laptop }: { laptop: ILaptop }) {
 
                 setBrands(brandsData.data);
                 setCategories(categoriesData.data);
-            } catch (error) {
+            } catch {
                 toast({
                     variant: "destructive",
                     title: "Có lỗi xảy ra",
@@ -296,12 +306,16 @@ export default function EditLaptopForm({ laptop }: { laptop: ILaptop }) {
                     setSuggestedMetadata(suggestMetadata.data);
 
                     // Cập nhật form với metadata được gợi ý
-                    methods.setValue("seoMetadata.metaTitle", suggestedMetadata.metaTitle!);
-                    methods.setValue("seoMetadata.metaDescription", suggestedMetadata.metaDescription!);
-                    methods.setValue("seoMetadata.keywords", suggestedMetadata.keywords!);
-                    methods.setValue("tags", suggestMetadata.tags);
-                } catch (error) {
-                    console.error("Error fetching suggested metadata:", error);
+                    if (suggestMetadata.data?.seoMetadata) {
+                        methods.setValue("seoMetadata.metaTitle", suggestMetadata.data.seoMetadata.metaTitle || "");
+                        methods.setValue("seoMetadata.metaDescription", suggestMetadata.data.seoMetadata.metaDescription || "");
+                        methods.setValue("seoMetadata.keywords", suggestMetadata.data.seoMetadata.keywords || []);
+                    }
+                    if (suggestMetadata.data?.tags) {
+                        methods.setValue("tags", suggestMetadata.data.tags);
+                    }
+                } catch {
+                    // Error fetching suggested metadata - continue without it
                 }
 
                 setStep(3);
@@ -385,7 +399,7 @@ export default function EditLaptopForm({ laptop }: { laptop: ILaptop }) {
                 body: formData,
             })
 
-            const result = await res.json();
+            await res.json();
 
             if (res.ok) {
                 toast({
@@ -395,8 +409,7 @@ export default function EditLaptopForm({ laptop }: { laptop: ILaptop }) {
             }
 
             router.push("/admin/laptop");
-        } catch (error) {
-            console.error("Error submitting form:", error);
+        } catch {
             toast({
                 variant: "destructive",
                 title: "Có lỗi xảy ra",

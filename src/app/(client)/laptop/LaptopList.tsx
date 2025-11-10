@@ -48,7 +48,9 @@ export default function LaptopList() {
                 const data = await res.json();
                 setLaptops(data.data || []);
             } catch (error) {
-                console.error('Error fetching laptops:', error);
+                if (process.env.NODE_ENV === 'development') {
+                  console.error('Error fetching laptops:', error);
+                }
                 setLaptops([]);
             } finally {
                 setIsLoading(false);

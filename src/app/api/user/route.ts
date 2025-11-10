@@ -31,7 +31,7 @@ export async function callApi(endpoint: string, method: string, accessToken?: st
     return response.json()
 }
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET() {
     // const accessToken = req.headers.get('Authorization')?.split(' ')[1] || ''
     // const accessToken = req.cookies.get('accessToken')?.value || ''
     const accessTokenResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL_NEXT_SERVER}/api/user/get-access-token`, {
@@ -48,9 +48,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
         const userData = await callApi('/auth/me',
             "GET", accessToken
         );        return NextResponse.json(userData);
-    } catch (error: unknown) {
+    } catch {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-
     }
 }
 
@@ -67,7 +66,7 @@ export async function PUT(req: NextRequest) {
                 const updateUserData = await callApi('/user', "PUT", accessToken, body)
 
         return NextResponse.json(updateUserData)
-    } catch (error: unknown) {
+    } catch {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }

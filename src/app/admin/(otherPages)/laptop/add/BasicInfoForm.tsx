@@ -9,9 +9,11 @@ import { useFormContext } from "react-hook-form";
 
 
 
+import { IBrand, ICategory } from '@/types';
+
 interface BasicInfoFormProps {
-  brands: any[];
-  categories: any[];
+  brands: IBrand[];
+  categories: ICategory[];
   data?:{
     name: string,
     modelName: string,
@@ -19,7 +21,7 @@ interface BasicInfoFormProps {
 }
 
 
-export default function BasicInfoForm({ brands, categories, data }: BasicInfoFormProps) {
+export default function BasicInfoForm({ brands, categories, data: _data }: BasicInfoFormProps) {
   const { control } = useFormContext();
 
   return (

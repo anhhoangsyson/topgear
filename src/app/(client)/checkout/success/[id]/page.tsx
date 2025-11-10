@@ -99,7 +99,7 @@ export default async function OrderSuccess({ params }: { params: Promise<{ id: s
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-blue-600 mt-1">•</span>
-                                <span>Bạn có thể theo dõi đơn hàng trong phần "Đơn hàng của tôi"</span>
+                                <span>Bạn có thể theo dõi đơn hàng trong phần &quot;Đơn hàng của tôi&quot;</span>
                             </li>
                         </ul>
                     </div>

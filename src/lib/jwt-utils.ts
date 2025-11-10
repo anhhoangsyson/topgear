@@ -10,7 +10,16 @@ export interface JWTPayload {
   sub?: string; // Standard JWT subject field
   email?: string;
   role?: string;
-  [key: string]: any;
+  user?: {
+    id?: string;
+    _id?: string;
+  };
+  data?: {
+    userId?: string;
+    id?: string;
+    _id?: string;
+  };
+  [key: string]: unknown;
 }
 
 /**
@@ -23,7 +32,9 @@ export function decodeJWT(token: string): JWTPayload | null {
     // JWT format: header.payload.signature
     const parts = token.split('.');
     if (parts.length !== 3) {
-      console.error('[JWT] Invalid token format');
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[JWT] Invalid token format');
+      }
       return null;
     }
 
@@ -45,7 +56,9 @@ export function decodeJWT(token: string): JWTPayload | null {
 
     return decoded;
   } catch (error) {
-    console.error('[JWT] Error decoding token:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[JWT] Error decoding token:', error);
+    }
     return null;
   }
 }
@@ -57,13 +70,8 @@ export function decodeJWT(token: string): JWTPayload | null {
 export function getUserIdFromToken(token: string): string | null {
   const payload = decodeJWT(token);
   if (!payload) {
-    console.warn('[JWT] Failed to decode token payload');
     return null;
   }
-
-  // Debug: Log toàn bộ payload để xem có gì
-  console.log('[JWT] Full payload:', payload);
-  console.log('[JWT] Payload keys:', Object.keys(payload));
 
   // Thử các field names phổ biến
   const userId = 
@@ -78,12 +86,6 @@ export function getUserIdFromToken(token: string): string | null {
     payload.data?._id ||
     null;
 
-  if (userId) {
-    console.log('[JWT] ✅ Found userId:', userId);
-  } else {
-    console.warn('[JWT] ⚠️ userId not found in payload. Available fields:', Object.keys(payload));
-  }
-
   return userId;
 }
 
@@ -92,50 +94,33 @@ export function getUserIdFromToken(token: string): string | null {
  */
 export async function getUserIdFromSession(): Promise<string | null> {
   try {
-    console.log('[JWT] Fetching session from NextAuth...');
-    
     // Fetch session từ NextAuth
     const response = await fetch('/api/auth/session');
     if (!response.ok) {
-      console.error('[JWT] Failed to fetch session:', response.status);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[JWT] Failed to fetch session:', response.status);
+      }
       return null;
     }
 
     const session = await response.json();
-    console.log('[JWT] Session data:', {
-      hasAccessToken: !!session?.accessToken,
-      hasUser: !!session?.user,
-      userKeys: session?.user ? Object.keys(session.user) : [],
-      sessionKeys: Object.keys(session || {})
-    });
-
     const accessToken = session?.accessToken;
 
     if (!accessToken) {
-      console.warn('[JWT] ⚠️ No access token in session');
       // Check if user.id exists in session directly
       if (session?.user?.id) {
-        console.log('[JWT] ✅ Found userId in session.user.id:', session.user.id);
         return session.user.id;
       }
       return null;
     }
 
-    console.log('[JWT] Access token exists, length:', accessToken.length);
-    console.log('[JWT] Token preview (first 50 chars):', accessToken.substring(0, 50) + '...');
-
     // Decode JWT để lấy userId
     const userId = getUserIdFromToken(accessToken);
-    
-    if (userId) {
-      console.log('[JWT] ✅ Extracted userId from JWT:', userId);
-    } else {
-      console.warn('[JWT] ⚠️ userId not found in JWT payload');
-    }
-
     return userId;
   } catch (error) {
-    console.error('[JWT] ❌ Error getting userId from session:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[JWT] Error getting userId from session:', error);
+    }
     return null;
   }
 }

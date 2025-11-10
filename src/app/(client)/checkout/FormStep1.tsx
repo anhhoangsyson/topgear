@@ -91,7 +91,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
   }) {
   const session = useSession()
 
-  const [customerInfo, setCustomerInfo] = useState<Omit<IUser, '_id' | 'role' | 'password'>>({} as any);
+  const [customerInfo, setCustomerInfo] = useState<Partial<Omit<IUser, '_id' | 'role' | 'password'>>>({});
   const [locations, setLocations] = useState<ILocation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [addressData, setAddressData] = useState<IAddressData>({
@@ -113,7 +113,6 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
     }
   }
   const finalTotal = totalPrice - discount;
-  const discountFormatted = discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
   const finalTotalFormatted = finalTotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -177,13 +176,17 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
         setValue('phone', String(userData.data.phone));
         setValue('email', userData.data.email);
       } else {
-        console.error('Lỗi lấy thông tin user:', userData);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Lỗi lấy thông tin user:', userData);
+        }
       }
 
       if (locationsRes.status === 200) {
         setLocations(locationsData.data || []);
       } else {
-        console.error('Lỗi lấy danh sách location:', locationsData);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Lỗi lấy danh sách location:', locationsData);
+        }
       }
 
       setLoading(false);
@@ -195,7 +198,11 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
     fetch('/data/address.json')
       .then((res) => res.json())
       .then((data: IAddressData) => setAddressData(data))
-      .catch((err) => console.error('Lỗi tải dữ liệu:', err));
+      .catch((err) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Lỗi tải dữ liệu:', err);
+        }
+      });
   }, []);
 
   // Auto-select default address in dropdown when both addressData and locations are loaded
@@ -327,7 +334,7 @@ export default function Step1({ selectedItems, onSubmitStep1, initialCustomerInf
           duration: 2000,
         });
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Lỗi",
         description: "Đã xảy ra lỗi khi thêm địa chỉ. Vui lòng thử lại.",

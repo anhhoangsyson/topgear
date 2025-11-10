@@ -1,8 +1,6 @@
 import { EcommerceMetrics } from "@/app/admin/components/ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "@/app/admin/components/ecommerce/MonthlySalesChart";
-import MonthlyTarget from "@/app/admin/components/ecommerce/MonthlyTarget";
 import RecentOrders from "@/app/admin/components/ecommerce/RecentOrders";
-import StatisticsChart from "@/app/admin/components/ecommerce/StatisticsChart";
 import type { Metadata } from "next";
 import React from "react";
 

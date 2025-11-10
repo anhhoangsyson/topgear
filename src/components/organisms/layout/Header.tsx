@@ -47,7 +47,7 @@ export default function Header() {
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [isHidden, setIsHidden] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products] = useState<Product[]>([]);
   const [filtered, setFiltered] = useState<Product[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartStore = useCartStore((state) => state.cartItems);

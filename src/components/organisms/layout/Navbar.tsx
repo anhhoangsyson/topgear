@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { use, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import banner from '@/../public/banner.png'
 
 export default function Navbar() {
@@ -31,7 +31,7 @@ export default function Navbar() {
             {categoriesMenu.length > 0 && (
                 <nav className='hidden lg:flex flex-col rounded pb-4 w-60 bg-white'>
                     <ul className="">
-                        {categoriesMenu.map((item, index) => (
+                        {categoriesMenu.map((item: Category, index: number) => (
                             <li
                                 key={index}
                                 className='relative group px-4 py-3 hover:bg-gray-100 hover:text-blue-500 '
@@ -44,14 +44,14 @@ export default function Navbar() {
                                 {/* dropdown menu */}
                                 <div
                                     className={`grid grid-cols-5 absolute -top- ${topPosition[index]} left-full min-w-[800px] w-full rounded bg-white opacity-0 invisible shadow-lg group-hover:opacity-100 group-hover:visible group-hover:shadow-lg group-hover:z-10 transition-all duration-300 ease-in-out`}>
-                                    {item.children.map((child, index) => (
+                                    {item.children.map((child: Category, index: number) => (
                                         <div
                                             key={index}
                                             className='block py-3 px-4 text-[#0e1746] font-semibold text-base h-full'>
                                             {child.categoryName}
                                             <div
                                                 className='grid grid-cols-1 gap-2 mt-2'>
-                                                {child.children.map((subChild, index) => (
+                                                {child.children.map((subChild: Category, index: number) => (
                                                     <div
                                                         key={index}
                                                         className='text-gray-500 hover:text-blue-500 text-xs font-normal text-nowrap rounded'>

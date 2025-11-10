@@ -2,7 +2,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import productsale1 from '../../../public/productsale1.png'
-export default function FlashSaleProductCard({ data }: { data: any }) {
+interface FlashSaleProduct {
+    slug: string;
+    name?: string;
+    price?: number;
+    discountPrice?: number;
+    image?: string;
+}
+
+export default function FlashSaleProductCard({ data }: { data: FlashSaleProduct }) {
     return (
         <div className='w-[194px] h-72'>
             <Link

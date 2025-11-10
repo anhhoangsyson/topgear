@@ -1,6 +1,6 @@
 'use client'
 import LaptopCard from '@/components/molecules/cards/LaptopCard';
-import { ILaptop, ILaptopGroup } from '@/types';
+import { ILaptopGroup } from '@/types';
 import React, { useRef, useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 

@@ -24,26 +24,14 @@ export class TokenManager {
         
         if (sessionResponse.ok) {
           const session = await sessionResponse.json();
-          console.log('[TokenManager] 🔍 Session data:', {
-            hasAccessToken: !!session?.accessToken,
-            hasUser: !!session?.user,
-            provider: session?.provider,
-            userKeys: session?.user ? Object.keys(session.user) : [],
-            sessionKeys: Object.keys(session || {})
-          });
           
           if (session?.accessToken) {
-            console.log('[TokenManager] ✅ Got token from NextAuth session, length:', session.accessToken.length);
             this.accessToken = session.accessToken;
             return this.accessToken;
-          } else {
-            console.warn('[TokenManager] ⚠️ No accessToken in session. Provider:', session?.provider);
           }
-        } else {
-          console.warn('[TokenManager] ⚠️ Session response not OK:', sessionResponse.status);
         }
-      } catch (error) {
-        console.warn('[TokenManager] Failed to get token from session:', error);
+      } catch {
+        // Ignore session fetch errors
       }
     }
 
@@ -51,12 +39,10 @@ export class TokenManager {
     try {
       const response = await ApiClient.callNextApi<{ accessToken: string }>('/user/get-access-token');
       if (response?.accessToken) {
-        console.log('[TokenManager] ✅ Got token from API route');
         this.accessToken = response.accessToken;
         return this.accessToken;
       }
-    } catch (error) {
-      console.warn('[TokenManager] ⚠️ Failed to get token from API route:', error);
+    } catch {
       // Clear cache on error để retry next time
       this.accessToken = null;
     }
@@ -77,8 +63,6 @@ export class TokenManager {
     if (!token) {
       throw new Error('Access token is not available');
     }
-    // call apoi express be locahost:3000/api/v1
-    console.log('Calling Express API with auth:', endpoint, options);
     
     return ApiClient.callExpressApi<T>(endpoint, {
       ...options,

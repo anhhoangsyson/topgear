@@ -5,40 +5,57 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getServerSession } from 'next-auth';
 
 async function getUserInfo() {
-
   const session = await getServerSession(authOptions);
-  const accessToken = session?.accessToken;
+  let accessToken = session?.accessToken;
 
-  const userRes = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/auth/me`, {
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET',
-    cache: 'no-store',
-    // credentials: 'same-origin',
-  });
+  // Fallback: Nếu session không có accessToken, thử lấy từ cookie
+  if (!accessToken) {
+    const cookieStore = await cookies();
+    accessToken = cookieStore.get('accessToken')?.value;
+  }
 
-
-  if (!userRes.ok) {
-    console.error(`Error fetching user info: ${userRes.status} ${userRes.statusText}`);
+  // Kiểm tra token trước khi fetch
+  if (!accessToken) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching user info: No access token in session or cookie');
+    }
     return null;
   }
 
-  const contentType = userRes.headers.get('Content-Type');
+  try {
+    const userRes = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/auth/me`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      cache: 'no-store',
+    });
 
-  if (contentType && contentType.includes('application/json')) {
-    const userData = await userRes.json();
-    // const defaultAddressData = await defaulrAddressRes.json()
-    // return {
-    //   userData: userData,
-    //   defaultAddress: defaultAddressData
-    // }
-    return {
-      userData: userData,
-      // defaultAddress: defaultAddressData
+    if (!userRes.ok) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`Error fetching user info: ${userRes.status} ${userRes.statusText}`);
+      }
+      return null;
     }
-  } else {
-    console.error('Unexpected response type:', contentType);
+
+    const contentType = userRes.headers.get('Content-Type');
+
+    if (contentType && contentType.includes('application/json')) {
+      const userData = await userRes.json();
+      return {
+        userData: userData,
+      }
+    } else {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Unexpected response type:', contentType);
+      }
+      return null;
+    }
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching user info:', error);
+    }
     return null;
   }
 }

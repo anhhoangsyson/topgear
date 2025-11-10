@@ -18,7 +18,7 @@ export const LoginValidationSchema = z.object({
 })
 
 export const RegisterValidationSchema = z.object({
-    fullname: z.string().min(9,{message: 'Họ tên phải lớn hơn 9 ký tự'}),
+    fullname: z.string().min(2, { message: 'Họ tên phải có ít nhất 2 ký tự' }),
 
     username: z.string().min(6, { message: 'Tên đăng nhập phải lớn hơn 6 ký tự' }),
 
@@ -26,9 +26,15 @@ export const RegisterValidationSchema = z.object({
         .string()
         .email({ 'message': 'Email không hợp lệ' }),
 
-    phone: z.string().min(10).regex(/^(0[3|5|7|8|9])+([0-9]{8})\b$/, { message: "Số điện thoại không hợp lệ." }),
+    phone: z.union([
+        z.string().min(10).regex(/^(0[3|5|7|8|9])+([0-9]{8})\b$/, { message: "Số điện thoại không hợp lệ." }),
+        z.literal(''),
+    ]).optional(),
 
-    address: z.string().min(10, { message: 'Địa chỉ phải lớn hơn 10 ký tự' }),
+    address: z.union([
+        z.string().min(10, { message: 'Địa chỉ phải lớn hơn 10 ký tự' }),
+        z.literal(''),
+    ]).optional(),
 
     sex: SEXENUM,
 

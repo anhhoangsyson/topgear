@@ -24,8 +24,8 @@ export default function FilterColum({
 
   const router = useRouter();
 
-  // Sử dụng useSearchParams để lấy các tham số tìm kiếm từ URL
-  const searchParams = useSearchParams()
+  // searchParams is assigned but not used - may be used in future
+  // const searchParams = useSearchParams()
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedBrands, setSelectedBrands] = useState<string[]>([])

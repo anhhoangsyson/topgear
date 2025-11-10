@@ -28,7 +28,9 @@ export const ListRelatedLaptop = ({ brandId, categoryId, excludeId }: {
           setRelatedLaptops(filtered);
         }
       } catch (error) {
-        console.error("Failed to fetch related laptops:", error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Failed to fetch related laptops:", error);
+        }
       } finally {
         setLoading(false);
       }

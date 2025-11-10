@@ -13,13 +13,22 @@ import { Separator } from "@/components/atoms/ui/separator";
 import { Badge } from "@/components/atoms/ui/badge";
 import { Textarea } from "@/components/atoms/ui/textarea";
 
+interface SuggestedMetadata {
+  seoMetadata?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+  };
+  tags?: string[];
+}
+
 interface ImagesAndSeoFormProps {
-  suggestedMetadata: any;
+  suggestedMetadata: SuggestedMetadata | null;
   oldImages?: IImage[]
   isEditMode?: boolean;
 }
 
-export default function ImagesAndSeoForm({ suggestedMetadata, oldImages, isEditMode }: ImagesAndSeoFormProps) {
+export default function ImagesAndSeoForm({ suggestedMetadata, oldImages }: ImagesAndSeoFormProps) {
 
   const { control, setValue, watch } = useFormContext();
   const [newTag, setNewTag] = useState("");
@@ -32,9 +41,9 @@ export default function ImagesAndSeoForm({ suggestedMetadata, oldImages, isEditM
 
   useEffect(() => {
     if (suggestedMetadata) {
-      setValue("seoMetadata.metaTitle", suggestedMetadata.seoMetadata.metaTitle || "");
-      setValue("seoMetadata.metaDescription", suggestedMetadata.seoMetadata.metaDescription || "");
-      setValue("seoMetadata.keywords", suggestedMetadata.seoMetadata.keywords || []);
+      setValue("seoMetadata.metaTitle", suggestedMetadata.seoMetadata?.metaTitle || "");
+      setValue("seoMetadata.metaDescription", suggestedMetadata.seoMetadata?.metaDescription || "");
+      setValue("seoMetadata.keywords", suggestedMetadata.seoMetadata?.keywords || []);
       setValue("tags", suggestedMetadata.tags || []);
     }
   }, [suggestedMetadata, setValue]);
@@ -155,7 +164,7 @@ export default function ImagesAndSeoForm({ suggestedMetadata, oldImages, isEditM
 
         {images.length > 0 && (
           <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Array.from(images).map((file: any, index: number) => (
+            {(images as File[]).map((file: File, index: number) => (
               <div key={index} className="relative border rounded-md p-2">
                 <div className="relative h-32 w-full">
                   <Image
@@ -223,7 +232,7 @@ export default function ImagesAndSeoForm({ suggestedMetadata, oldImages, isEditM
             Thêm
           </Button>
         </div>
-        {suggestedMetadata && (
+        {suggestedMetadata && suggestedMetadata.tags && suggestedMetadata.tags.length > 0 && (
           <div className="mt-2">
             <p className="text-sm text-muted-foreground mb-1">Tags được gợi ý:</p>
             <div className="flex flex-wrap gap-2">
@@ -316,7 +325,7 @@ export default function ImagesAndSeoForm({ suggestedMetadata, oldImages, isEditM
                 Thêm
               </Button>
             </div>
-            {suggestedMetadata && (
+            {suggestedMetadata && suggestedMetadata.seoMetadata?.keywords && suggestedMetadata.seoMetadata.keywords.length > 0 && (
               <div className="mt-2">
                 <p className="text-sm text-muted-foreground mb-1">Keywords được gợi ý:</p>
                 <div className="flex flex-wrap gap-2">

@@ -6,9 +6,10 @@ import { NotificationAPI } from '@/services/notification-api';
 import  NotificationList  from '@/components/organisms/notification/NotificationList';
 import { Button } from '@/components/atoms/ui/Button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/atoms/ui/tabs';
-import { Check, Trash2, Bell, BellOff } from 'lucide-react';
+import { Check, Trash2, Bell, BellOff, Filter } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { INotification, NotificationType } from '@/types/notification';
+import NotificationSettings from '@/components/molecules/notification/NotificationSettings';
 
 export default function NotificationPage() {
   const {
@@ -22,6 +23,7 @@ export default function NotificationPage() {
   } = useNotificationStore();
 
   const [activeTab, setActiveTab] = useState<'all' | 'unread' | 'read'>('all');
+  const [selectedType, setSelectedType] = useState<string>('all');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isMarkingAll, setIsMarkingAll] = useState(false);
@@ -34,22 +36,32 @@ export default function NotificationPage() {
 
   const limit = 20;
 
-  // Filter notifications based on active tab - use notifications from store (already filtered by API)
+  // Filter notifications based on active tab and type
   const filteredNotifications = React.useMemo(() => {
-    // Since we're fetching filtered data from API, notifications in store are already filtered
-    return notifications;
-  }, [notifications]);
+    let filtered = notifications;
+    
+    // Filter by type if selected
+    if (selectedType !== 'all') {
+      filtered = filtered.filter(n => {
+        const type = typeof n.type === 'string' ? n.type.toLowerCase() : n.type;
+        return type === selectedType.toLowerCase();
+      });
+    }
+    
+    return filtered;
+  }, [notifications, selectedType]);
 
   // Load more notifications
   const loadMore = async () => {
     if (isLoading || !hasMore) return;
 
     try {
-      const response = await NotificationAPI.getNotifications({
-        page: page + 1,
-        limit,
-        isRead: activeTab === 'read' ? true : activeTab === 'unread' ? false : undefined,
-      });
+        const response = await NotificationAPI.getNotifications({
+          page: page + 1,
+          limit,
+          isRead: activeTab === 'read' ? true : activeTab === 'unread' ? false : undefined,
+          type: selectedType !== 'all' ? selectedType : undefined,
+        });
 
       if (response.success) {
         const newNotifications = response.data.notifications;
@@ -61,7 +73,9 @@ export default function NotificationPage() {
         }
       }
     } catch (error) {
-      console.error('Error loading more notifications:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error loading more notifications:', error);
+      }
     }
   };
 
@@ -71,15 +85,16 @@ export default function NotificationPage() {
     try {
       const response = await NotificationAPI.markAllAsRead();
       if (response.success) {
+        const updatedCount = response.data?.count || unreadCount;
         markAllAsRead();
         setUnreadCount(0);
         toast({
           title: 'Thành công',
-          description: `Đã đánh dấu ${response.data.updatedCount} thông báo là đã đọc`,
+          description: `Đã đánh dấu ${updatedCount} thông báo là đã đọc`,
           duration: 3000,
         });
       }
-    } catch (error) {
+    } catch {
       toast({
         title: 'Lỗi',
         description: 'Không thể đánh dấu tất cả là đã đọc',
@@ -103,7 +118,7 @@ export default function NotificationPage() {
           duration: 3000,
         });
       }
-    } catch (error) {
+    } catch {
       toast({
         title: 'Lỗi',
         description: 'Không thể xóa thông báo đã đọc',
@@ -118,10 +133,15 @@ export default function NotificationPage() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
+        // Reset pagination when tab or filter changes
+        setPage(1);
+        setHasMore(true);
+        
         const response = await NotificationAPI.getNotifications({
           page: 1,
           limit,
           isRead: activeTab === 'read' ? true : activeTab === 'unread' ? false : undefined,
+          type: selectedType !== 'all' ? selectedType : undefined,
         });
 
         if (response.success) {
@@ -130,7 +150,6 @@ export default function NotificationPage() {
           const total = response.data.pagination?.total || 0;
           setUnreadCount(unreadCount);
           setHasMore(response.data.pagination?.totalPages > 1);
-          setPage(1);
           
           // Update counts based on current tab
           if (activeTab === 'all') {
@@ -153,12 +172,14 @@ export default function NotificationPage() {
           }
         }
       } catch (error) {
-        console.error('Error fetching notifications:', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error fetching notifications:', error);
+        }
       }
     };
 
     fetchNotifications();
-  }, [activeTab, setNotifications, setUnreadCount]);
+  }, [activeTab, selectedType, setNotifications, setUnreadCount]);
 
   return (
     <div className="w-full space-y-6">
@@ -176,6 +197,7 @@ export default function NotificationPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <NotificationSettings />
             {unreadCount > 0 && (
               <Button
                 variant="outline"
@@ -204,6 +226,27 @@ export default function NotificationPage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Filter by type */}
+      <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-gray-500" />
+          <span className="text-sm font-medium text-gray-700">Lọc theo loại:</span>
+        </div>
+        <Select value={selectedType} onValueChange={setSelectedType}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Tất cả loại" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tất cả loại</SelectItem>
+            <SelectItem value="order">Đơn hàng</SelectItem>
+            <SelectItem value="payment">Thanh toán</SelectItem>
+            <SelectItem value="voucher">Voucher</SelectItem>
+            <SelectItem value="product">Sản phẩm</SelectItem>
+            <SelectItem value="system">Hệ thống</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Tabs */}

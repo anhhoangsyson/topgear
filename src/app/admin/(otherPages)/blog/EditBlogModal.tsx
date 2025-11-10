@@ -12,6 +12,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import { Button } from '@/components/atoms/ui/Button';
 import { Label } from '@/components/atoms/ui/label';
 import { Input } from '@/components/atoms/ui/input';
+import type { ReactQuillRef } from '@/types/react-quill';
 interface EditBlogModalProps {
     open: boolean;
     onClose: () => void;
@@ -31,7 +32,7 @@ export default function EditBlogModal({ open, onClose, blog }: EditBlogModalProp
 
     const { data: session } = useSession();
     const accessToken = session?.accessToken;
-    const quillRef = useRef<any>(null);
+    const quillRef = useRef<ReactQuillRef | null>(null);
 
     const {
         control,
@@ -217,7 +218,8 @@ export default function EditBlogModal({ open, onClose, blog }: EditBlogModalProp
                                     <div className="">
                                         <ReactQuill
                                             key={`${open ? blog?._id : 'new'}-${open}`}
-                                            ref={quillRef || null}
+                                            // @ts-expect-error - react-quill-new doesn't have proper types
+                                            ref={quillRef}
                                             modules={modules}
                                             value={field.value || ''}
                                             onChange={field.onChange}

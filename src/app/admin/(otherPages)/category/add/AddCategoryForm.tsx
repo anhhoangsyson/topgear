@@ -63,7 +63,7 @@ export const AddCategoryForm = () => {
 
         const data = await res.json();
         setCategories(data.data);
-      } catch (error) {
+      } catch {
         toast({
           variant: "destructive",
           title: "Có lỗi xảy ra",
@@ -79,7 +79,7 @@ export const AddCategoryForm = () => {
     try {
       setLoading(true);
 
-      let imageUrl = null;
+      const imageUrl = null;
 
       // Nếu có file ảnh, upload lên Cloudinary
 

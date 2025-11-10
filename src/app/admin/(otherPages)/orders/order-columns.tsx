@@ -156,7 +156,7 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
                 </Button>
             ),
             cell: ({ row }) => {
-                const date = (row.original as any).createdAt as string | undefined;
+                const date = row.original.createdAt as string | undefined;
                 return (
                     <div className="flex flex-col gap-1">
                         <span className="text-sm">
@@ -232,7 +232,9 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
                     "completed",
                     "cancelled",
                 ];
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 const [currentStatus, setCurrentStatus] = useState(order.orderStatus);
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 const [isLoading, setIsLoading] = useState(false);
                 const isStatusEditable = !["completed", "cancelled"].includes(currentStatus);
 
@@ -256,7 +258,9 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
 
                         setCurrentStatus(newStatus); // Cập nhật trạng thái mới
                     } catch (error) {
-                        console.error("Lỗi khi cập nhật trạng thái:", error);
+                        if (process.env.NODE_ENV === 'development') {
+                          console.error("Lỗi khi cập nhật trạng thái:", error);
+                        }
                     } finally {
                         setIsLoading(false);
                     }

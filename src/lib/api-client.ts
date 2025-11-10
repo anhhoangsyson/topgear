@@ -7,7 +7,6 @@ export class ApiClient {
     options: RequestInit = {}
   ): Promise<T> {
     const url = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`;
-    console.log(options);
 
     return apiCall<T>(url, {
       credentials: 'include', // Để gửi cookies

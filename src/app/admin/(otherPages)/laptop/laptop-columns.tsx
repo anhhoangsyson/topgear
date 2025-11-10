@@ -50,7 +50,7 @@ export function LaptopColumns(onShowDetail: (laptop: ILaptop) => void): ColumnDe
             accessorKey: "images",
             header: "Thumbnails",
             cell: ({ row }) => {
-                const rows = row.original;
+                // rows is assigned but not used
                 const images: IImage[] = row.getValue("images");
 
                 return (
@@ -127,7 +127,9 @@ export function LaptopColumns(onShowDetail: (laptop: ILaptop) => void): ColumnDe
             enableHiding: false,
             cell: ({ row }) => {
                 const laptop = row.original as ILaptop
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 const [isActive, setIsActive] = useState(laptop.isActive);
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 const [isLoading, setIsLoading] = useState(false);
 
 

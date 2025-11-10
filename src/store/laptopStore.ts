@@ -1,8 +1,9 @@
 import { create } from "zustand";
+import { ICreateLaptop } from "@/types";
 
 interface LaptopFormState {
-  formData: any; // Dữ liệu của form
-  setFormData: (data: any) => void;
+  formData: Partial<ICreateLaptop>; // Dữ liệu của form
+  setFormData: (data: Partial<ICreateLaptop>) => void;
   resetForm: () => void;
 }
 

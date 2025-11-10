@@ -25,13 +25,16 @@ export default function VoucherModal({
   onSelectVoucher,
   onInputVoucher,
   onClear,
-  onConfirm,
 }: VoucherModalProps) {
 
   const handleCheckVoucher = async () => {
 
     if (!voucherCode.trim()) {
-      alert("Vui lòng nhập mã voucher");
+      toast({
+        title: 'Lỗi',
+        description: 'Vui lòng nhập mã voucher',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -66,7 +69,9 @@ export default function VoucherModal({
 
       onSelectVoucher(voucher);
     } catch (error) {
-      console.error("Lỗi khi kiểm tra voucher:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Lỗi khi kiểm tra voucher:", error);
+      }
       toast({
         title: "Lỗi",
         description: "Không thể kiểm tra voucher. Vui lòng thử lại sau.",

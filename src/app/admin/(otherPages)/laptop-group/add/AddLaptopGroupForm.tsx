@@ -37,7 +37,7 @@ export default function AddLaptopGroupForm({ laptops }: { laptops: ILaptop[] }) 
             description: "",
             laptops: [],
             sortOrder: "",
-            backgroundImage: null as any, // Khởi tạo là null, sẽ được cập nhật khi người dùng chọn file
+            backgroundImage: null as File | null, // Khởi tạo là null, sẽ được cập nhật khi người dùng chọn file
         }
     })
 
@@ -79,7 +79,7 @@ export default function AddLaptopGroupForm({ laptops }: { laptops: ILaptop[] }) 
 
             // setIsDialogOpen(true)
 
-        } catch (error) {
+        } catch {
             toast({
                 title: "Có lỗi xảy ra khi tạo laptop group",
                 description: "Vui lòng thử lại sau",

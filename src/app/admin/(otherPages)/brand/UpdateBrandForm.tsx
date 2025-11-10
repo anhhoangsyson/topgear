@@ -21,7 +21,7 @@ type UpdateBrandFormProps = {
 }
 export default function UpdateBrandForm({ brand, onClose }: UpdateBrandFormProps) {
 
-    const router = useRouter()
+    // router is assigned but not used
     const [loading, setLoading] = useState(false)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -53,7 +53,7 @@ export default function UpdateBrandForm({ brand, onClose }: UpdateBrandFormProps
                 throw new Error("Lỗi cập nhật thuong hiệu")
             }
 
-            const data = await res.json()
+            await res.json();
 
             toast({
                 title: "Cập nhật thương hiệu thành công",
@@ -63,7 +63,7 @@ export default function UpdateBrandForm({ brand, onClose }: UpdateBrandFormProps
 
             onClose()
             window.location.reload()
-        } catch (error) {
+        } catch {
             toast({
                 title: "Cập nhật danh mục thất bại",
                 variant: "destructive",

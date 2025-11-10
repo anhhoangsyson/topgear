@@ -13,7 +13,7 @@ import { MoreVertical, Trash2, Check } from 'lucide-react';
 import { useNotificationStore } from '@/store/notificationStore';
 import { NotificationAPI } from '@/services/notification-api';
 import { toast } from '@/hooks/use-toast';
-import Link from 'next/link';
+// Link is imported but not used - navigation handled via onClick
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { getNotificationLink, handleNotificationClick } from '@/lib/notification-utils';
@@ -23,10 +23,20 @@ interface NotificationItemProps {
   notification: INotification;
 }
 
-const getNotificationIcon = (type: NotificationType | string) => {
+const getNotificationIcon = (notification: INotification) => {
   // Backend trả về lowercase types: 'order', 'comment', etc.
-  const typeStr = typeof type === 'string' ? type.toLowerCase() : type;
+  const typeStr = typeof notification.type === 'string' ? notification.type.toLowerCase() : notification.type;
+  const action = notification.data?.action;
   
+  // Check action first để xác định icon chính xác hơn
+  if (action === 'customer_request_cancel') {
+    return '⚠️'; // Yêu cầu hủy đơn
+  }
+  if (action === 'order_cancelled') {
+    return '❌'; // Đơn đã hủy
+  }
+  
+  // Fallback to type-based icons
   if (typeStr === 'order' || typeStr === NotificationType.ORDER_CREATED || typeStr === NotificationType.ORDER_STATUS_CHANGED || typeStr === NotificationType.ORDER_COMPLETED) {
     return '📦';
   }
@@ -62,7 +72,12 @@ export default function NotificationItem({ notification }: NotificationItemProps
   // Get notification ID (backend có thể trả về _id hoặc id)
   const notificationId = notification._id || notification.id || '';
   
-  const handleMarkAsRead = async () => {
+  const handleMarkAsRead = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Ngăn event bubble lên parent
+      e.preventDefault();
+    }
+    
     if (notification.isRead || !notificationId) return;
 
     try {
@@ -72,7 +87,7 @@ export default function NotificationItem({ notification }: NotificationItemProps
         title: 'Đã đánh dấu đã đọc',
         duration: 2000,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Lỗi',
         description: 'Không thể đánh dấu đã đọc',
@@ -82,6 +97,12 @@ export default function NotificationItem({ notification }: NotificationItemProps
   };
 
   const handleClick = async (e: React.MouseEvent) => {
+    // Chỉ redirect nếu click vào content, không phải vào dropdown menu
+    const target = e.target as HTMLElement;
+    if (target.closest('[role="menu"]') || target.closest('[role="menuitem"]')) {
+      return; // Không redirect nếu click vào dropdown menu
+    }
+    
     e.preventDefault();
     await handleNotificationClick(notification, {
       markAsRead,
@@ -103,7 +124,7 @@ export default function NotificationItem({ notification }: NotificationItemProps
         title: 'Đã xóa thông báo',
         duration: 2000,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Lỗi',
         description: 'Không thể xóa thông báo',
@@ -115,7 +136,7 @@ export default function NotificationItem({ notification }: NotificationItemProps
   };
 
   const link = getNotificationLink(notification);
-  const icon = getNotificationIcon(notification.type);
+  const icon = getNotificationIcon(notification);
 
   const content = (
     <div
@@ -145,19 +166,33 @@ export default function NotificationItem({ notification }: NotificationItemProps
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                 {!notification.isRead && (
-                  <DropdownMenuItem onClick={handleMarkAsRead}>
+                  <DropdownMenuItem 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMarkAsRead(e);
+                    }}
+                  >
                     <Check className="mr-2 h-4 w-4" />
                     Đánh dấu đã đọc
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={handleDelete} disabled={isDeleting}>
+                <DropdownMenuItem 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete();
+                  }} 
+                  disabled={isDeleting}
+                >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Xóa
                 </DropdownMenuItem>

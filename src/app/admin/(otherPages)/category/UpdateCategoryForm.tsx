@@ -40,15 +40,14 @@ interface UpdateCategoryFormProps {
 export const UpdateCategoryForm: React.FC<UpdateCategoryFormProps> = ({
   category,
   onClose,
-  onUpdate,
 }) => {
   const fetchCategories = useCategoryStore((state) => state.fetchCategories);
 
   const router = useRouter();
   const { toast } = useToast();
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  // categories is set but not used - may be used in future
+  const [, setCategories] = useState<ICategory[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
     category.image || null
@@ -77,7 +76,7 @@ export const UpdateCategoryForm: React.FC<UpdateCategoryFormProps> = ({
         //   (category: Category) => category._id !== category._id
         // );
         setCategories(data.data);
-      } catch (error) {
+      } catch {
         toast({
           variant: "destructive",
           title: "Có lỗi xảy ra",
@@ -124,8 +123,7 @@ export const UpdateCategoryForm: React.FC<UpdateCategoryFormProps> = ({
       });
       fetchCategories();
       onClose();
-    } catch (error) {
-
+    } catch {
       toast({
         variant: "destructive",
         title: "Có lỗi xảy ra",

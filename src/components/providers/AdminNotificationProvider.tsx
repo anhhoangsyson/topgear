@@ -7,7 +7,6 @@ import { useNotificationStore } from '@/store/notificationStore';
 import { NotificationAPI } from '@/services/notification-api';
 import { INotification, NotificationType } from '@/types/notification';
 import { toast } from '@/hooks/use-toast';
-import { showBrowserNotification } from '@/lib/push-notification';
 
 interface AdminNotificationProviderProps {
   children: React.ReactNode;
@@ -24,7 +23,7 @@ const playNotificationSound = (priority?: 'high' | 'normal') => {
   try {
     // Tạo audio element với fallback sound
     // Note: Có thể thay bằng file audio thật trong public folder
-    const audio = new Audio();
+    // const audio = new Audio(); // Not used - using programmatic audio instead
     
     // Simple beep sound - có thể thay bằng file thật
     // audio.src = priority === 'high' 
@@ -32,7 +31,8 @@ const playNotificationSound = (priority?: 'high' | 'normal') => {
     //   : '/admin-notification.mp3';
     
     // Fallback: Tạo simple beep sound programmatically
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const audioContext = new AudioContextClass();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -47,9 +47,8 @@ const playNotificationSound = (priority?: 'high' | 'normal') => {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
-  } catch (error) {
+  } catch {
     // Ignore audio errors (user might have blocked autoplay)
-    console.log('Audio play error:', error);
   }
 };
 
@@ -59,29 +58,12 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
   
   // Lấy userId từ session - nếu không có thì decode từ JWT token
   const [userIdState, setUserIdState] = React.useState<string | undefined>(
-    session?.user?.id || (session?.user as any)?._id || (session as any)?.userId
+    session?.user?.id || session?.user?._id || (session as { userId?: string })?.userId
   );
-
-  // Debug logging với full session data
-  useEffect(() => {
-    if (status === 'authenticated' && isAdmin) {
-      console.log('[AdminNotificationProvider] 🔍 Session debug:', {
-        userId: userIdState,
-        sessionUserId: session?.user?.id,
-        sessionUserKeys: session?.user ? Object.keys(session.user) : [],
-        sessionKeys: session ? Object.keys(session) : [],
-        hasAccessToken: !!session?.accessToken,
-        isAdmin,
-        role: session?.user?.role,
-        status
-      });
-    }
-  }, [status, userIdState, isAdmin, session]);
 
   // Fetch userId từ JWT nếu không có trong session
   useEffect(() => {
     if (status === 'authenticated' && isAdmin && !userIdState && session?.accessToken) {
-      console.log('[AdminNotificationProvider] 🔍 Attempting to decode userId from JWT...');
       try {
         // Decode JWT để lấy userId
         const parts = session.accessToken.split('.');
@@ -93,19 +75,18 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
           
           const jwtUserId = payload.userId || payload.id || payload._id || payload.sub;
           if (jwtUserId) {
-            console.log('[AdminNotificationProvider] ✅ Got userId from JWT decode:', jwtUserId);
             setUserIdState(jwtUserId);
-          } else {
-            console.warn('[AdminNotificationProvider] ⚠️ No userId in JWT payload. Available keys:', Object.keys(payload));
           }
         }
       } catch (error) {
-        console.error('[AdminNotificationProvider] ❌ Error decoding JWT:', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[AdminNotificationProvider] Error decoding JWT:', error);
+        }
       }
     }
   }, [status, isAdmin, userIdState, session?.accessToken]);
 
-  const userId = userIdState || session?.user?.id || (session?.user as any)?._id || (session as any)?.userId;
+  const userId = userIdState || session?.user?.id || session?.user?._id || (session as { userId?: string })?.userId;
   
   const {
     addNotification,
@@ -136,8 +117,60 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
     if (isOrderNotification) {
       addNotification(data);
       
-      // Play sound notification
-      playNotificationSound(data.data?.priority);
+      // Play sound notification (check localStorage setting)
+      const soundEnabled = typeof window !== 'undefined' 
+        ? localStorage.getItem('adminSoundEnabled') !== 'false'
+        : true;
+      if (soundEnabled) {
+        playNotificationSound(data.data?.priority);
+      }
+      
+      // Show desktop notification (check permission and setting)
+      if (typeof window !== 'undefined') {
+        const desktopEnabled = localStorage.getItem('desktopNotificationsEnabled') === 'true';
+        if (desktopEnabled && 'Notification' in window && Notification.permission === 'granted') {
+          try {
+            const notification = new Notification(data.title || 'Thông báo đơn hàng', {
+              body: data.message || '',
+              icon: '/favicon.svg',
+              badge: '/favicon.svg',
+              tag: data._id || data.id || 'admin-notification',
+              requireInteraction: data.data?.priority === 'high',
+            });
+            
+            // Add click handler to navigate to notification link
+            notification.onclick = () => {
+              window.focus();
+              const link = data.link || (data.data?.orderId ? `/admin/orders?orderId=${data.data.orderId}` : '/admin/orders');
+              if (typeof window !== 'undefined') {
+                window.location.href = link;
+              }
+              notification.close();
+            };
+          } catch {
+            // Ignore desktop notification errors
+          }
+        }
+      }
+      
+      // Auto-mark as read if enabled (for admin)
+      const autoMarkRead = localStorage.getItem('autoMarkReadEnabled') === 'true';
+      if (autoMarkRead && !data.isRead) {
+        const notificationId = data._id || data.id;
+        if (notificationId) {
+          // Mark as read after a short delay (to allow user to see the notification)
+          setTimeout(async () => {
+            try {
+              await NotificationAPI.markAsRead(notificationId);
+              useNotificationStore.getState().markAsRead(notificationId);
+            } catch (error) {
+              if (process.env.NODE_ENV === 'development') {
+                console.error('[AdminNotificationProvider] Error auto-marking as read:', error);
+              }
+            }
+          }, 3000); // 3 seconds delay
+        }
+      }
       
       // Show toast notification với custom style
       toast({
@@ -146,30 +179,6 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
         duration: data.data?.priority === 'high' ? 10000 : 5000,
         variant: data.data?.priority === 'high' ? 'destructive' : 'default',
       });
-
-      // Show browser push notification (if permission granted)
-      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
-        try {
-          await showBrowserNotification({
-            title: data.title,
-            body: data.message,
-            icon: '/favicon.svg',
-            badge: '/favicon.svg',
-            data: {
-              url: data.link || data.data?.link || `/admin/orders?orderId=${data.data?.orderId || ''}`,
-              orderId: data.data?.orderId,
-              notificationId: data._id || data.id,
-              ...data.data
-            },
-            tag: data._id || data.id || 'notification',
-            requireInteraction: data.data?.priority === 'high',
-            vibrate: data.data?.priority === 'high' ? [200, 100, 200] : [200],
-            priority: data.data?.priority || 'normal'
-          });
-        } catch (error) {
-          console.error('[AdminNotificationProvider] Error showing browser notification:', error);
-        }
-      }
     }
   }, [addNotification]);
 
@@ -195,7 +204,6 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
     if (status === 'authenticated' && isAdmin && userId) {
       const fetchNotifications = async () => {
         try {
-          console.log('[AdminNotificationProvider] Fetching admin notifications...');
           setLoading(true);
           setError(null);
 
@@ -209,9 +217,6 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
             NotificationAPI.getUnreadCount(),
           ]);
 
-          console.log('[AdminNotificationProvider] Notifications response:', notificationsRes);
-          console.log('[AdminNotificationProvider] Unread count response:', unreadCountRes);
-
           if (notificationsRes.success) {
             // Filter lấy TẤT CẢ order notifications (không filter theo priority hay totalAmount)
             const orderNotifications = notificationsRes.data.notifications.filter(n => {
@@ -223,16 +228,16 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
                      type === NotificationType.ORDER_COMPLETED ||
                      (n.data?.orderId && type !== NotificationType.SYSTEM_ANNOUNCEMENT);
             });
-            console.log('[AdminNotificationProvider] Setting order notifications:', orderNotifications.length);
             setNotifications(orderNotifications);
           }
 
           if (unreadCountRes.success) {
-            console.log('[AdminNotificationProvider] Setting unread count:', unreadCountRes.data.count);
             setUnreadCount(unreadCountRes.data.count);
           }
         } catch (error) {
-          console.error('[AdminNotificationProvider] ❌ Error fetching admin notifications:', error);
+          if (process.env.NODE_ENV === 'development') {
+            console.error('[AdminNotificationProvider] Error fetching admin notifications:', error);
+          }
           setError('Không thể tải thông báo');
         } finally {
           setLoading(false);
@@ -240,11 +245,7 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
       };
 
       fetchNotifications();
-    } else if (status === 'authenticated' && isAdmin && !userId) {
-      console.warn('[AdminNotificationProvider] ⚠️ Authenticated admin but no userId. Fetching userId...');
-      // Đã có logic fetch userId ở useEffect trên
     }
-    // Không log nếu status là loading hoặc unauthenticated (normal states)
   }, [status, userId, isAdmin, setNotifications, setUnreadCount, setLoading, setError]);
 
   return <>{children}</>;

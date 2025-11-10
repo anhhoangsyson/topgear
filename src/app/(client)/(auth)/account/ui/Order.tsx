@@ -76,7 +76,7 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
         duration: 1000,
       })
       window.location.reload()
-    } catch (error) {
+    } catch {
     }
     finally {
       setIsLoading(false)
@@ -143,7 +143,7 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Tổng tiền:</span>
-                                        <span className="font-bold text-green-600">{formatPrice(order.totalAmount)}</span>
+                                        <span className="font-bold text-green-600">{formatPrice(order.totalAmount.toString())}</span>
                                     </div>
                                 </div>
                                 <div className="mt-4 pt-4 border-t">
@@ -174,7 +174,7 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
                                     <span className="text-sm text-gray-600">{order.orderDetails.length} sản phẩm</span>
                                 </div>
                                 <div className="col-span-12 sm:col-span-2">
-                                    <span className="text-sm font-bold text-green-600">{formatPrice(order.totalAmount)}</span>
+                                    <span className="text-sm font-bold text-green-600">{formatPrice(order.totalAmount.toString())}</span>
                                 </div>
                                 <div className="col-span-12 sm:col-span-2">
                                     <Badge className="text-xs">

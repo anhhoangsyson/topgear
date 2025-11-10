@@ -3,7 +3,8 @@ import { ThemeToggleButton } from "@/app/admin/components/common/ThemeToggleButt
 import UserDropdown from "@/app/admin/components/header/UserDropDown";
 import AdminNotificationDropdown from "@/app/admin/components/header/AdminNotificationDropdown";
 import { useSidebar } from "@/context/admin/SidebarContext";
-import { defaultAvatar } from "@/lib/utils";
+// defaultAvatar is imported but not used
+// import { defaultAvatar } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";

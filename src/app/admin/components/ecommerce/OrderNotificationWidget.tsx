@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNotificationStore } from '@/store/notificationStore';
-import { NotificationAPI } from '@/services/notification-api';
 import { NotificationType } from '@/types/notification';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/atoms/ui/card';
 import { Badge } from '@/components/atoms/ui/badge';
@@ -11,7 +10,7 @@ import { formatPrice } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function OrderNotificationWidget() {
-  const { notifications, unreadCount } = useNotificationStore();
+  const { notifications } = useNotificationStore();
 
   // Filter lấy TẤT CẢ order notifications (không filter theo priority hay totalAmount)
   const orderNotifications = notifications.filter(n => {

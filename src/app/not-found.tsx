@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Home, Search, ArrowLeft } from 'lucide-react';
+import { Home, Search } from 'lucide-react';
 import { Button } from '@/components/atoms/ui/Button';
 
 export default function NotFound() {

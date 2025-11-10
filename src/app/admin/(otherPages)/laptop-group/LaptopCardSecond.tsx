@@ -1,7 +1,7 @@
 'use client'
 import { Card, CardContent, CardTitle } from '@/components/atoms/ui/card'
 import { formatLaptopName } from '@/lib/utils'
-import useCartStore from '@/store/cartStore'
+// useCartStore is imported but not used
 import { ILaptop } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'

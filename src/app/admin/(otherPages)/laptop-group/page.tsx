@@ -14,12 +14,13 @@ import { Separator } from "@/components/atoms/ui/separator";
 
 export default function LaptopGroupPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  // setIsLoading is assigned but not used
   const [laptopGroups, setLaptopGroups] = useState<ILaptopGroup[]>([]);
 
   const [showLaptopGroupDetail, setShowLaptopGroupDetail] = useState(false);
   const [selectedLaptopGroup, setSelectedLaptopGroup] = useState<ILaptopGroup | null>(null);
 
+  const [isLoading, ] = useState(false);
   const handleShowLaptopGroupDetail = (laptopGroup: ILaptopGroup) => {
     setSelectedLaptopGroup(laptopGroup);
     setShowLaptopGroupDetail(true);
@@ -38,7 +39,7 @@ export default function LaptopGroupPage() {
         const data = await res.json();
         setLaptopGroups(data.data)
 
-      } catch (error) {
+      } catch {
         toast({
           variant: "destructive",
           title: "Có lỗi xảy ra",

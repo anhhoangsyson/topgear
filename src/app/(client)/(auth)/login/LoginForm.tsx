@@ -72,16 +72,12 @@ export default function LoginForm() {
         
         // Retry nếu chưa có accessToken (session có thể chưa update)
         while (!session?.accessToken && retries < maxRetries) {
-          console.log(`[LoginForm] ⏳ Waiting for session to update... (attempt ${retries + 1}/${maxRetries})`);
           await new Promise(resolve => setTimeout(resolve, 200)); // Đợi 200ms
           session = await getSession();
           retries++;
         }
         
         if (session?.accessToken) {
-          console.log('[LoginForm] ✅ Got accessToken from session, saving to cookie...');
-          console.log('[LoginForm] 📝 Token length:', session.accessToken.length);
-          
           // ✅ Lưu token vào cookie (giống Facebook login)
           try {
             const cookieRes = await fetch("/api/auth", {
@@ -94,23 +90,21 @@ export default function LoginForm() {
               }),
             });
             
-            if (cookieRes.ok) {
-              console.log('[LoginForm] ✅ Token saved to cookie successfully');
-            } else {
-              const errorText = await cookieRes.text();
-              console.warn('[LoginForm] ⚠️ Failed to save token to cookie:', errorText);
+            if (!cookieRes.ok) {
+              if (process.env.NODE_ENV === 'development') {
+                const errorText = await cookieRes.text();
+                console.warn('[LoginForm] Failed to save token to cookie:', errorText);
+              }
             }
           } catch (error) {
-            console.error('[LoginForm] ❌ Error saving token to cookie:', error);
+            if (process.env.NODE_ENV === 'development') {
+              console.error('[LoginForm] Error saving token to cookie:', error);
+            }
           }
         } else {
-          console.error('[LoginForm] ❌ No accessToken in session after login (tried', maxRetries, 'times)');
-          console.error('[LoginForm] Session data:', {
-            hasSession: !!session,
-            hasAccessToken: !!session?.accessToken,
-            sessionKeys: session ? Object.keys(session) : [],
-            userKeys: session?.user ? Object.keys(session.user) : []
-          });
+          if (process.env.NODE_ENV === 'development') {
+            console.error('[LoginForm] No accessToken in session after login (tried', maxRetries, 'times)');
+          }
         }
 
         toast({

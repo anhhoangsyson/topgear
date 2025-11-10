@@ -2,19 +2,23 @@ import { Badge } from '@/components/atoms/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/atoms/ui/dialog';
 import { ScrollArea } from '@/components/atoms/ui/scroll-area';
 import { Separator } from '@/components/atoms/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/ui/select';
 import { IOrderWithDetails } from '@/types';
-import React from 'react';
+import React, { useState } from 'react';
 import { 
     User, Mail, Phone, MapPin, Calendar, Package, CreditCard, 
-    FileText, Tag, DollarSign, Receipt, ShoppingCart, Image as ImageIcon 
+    FileText, Tag, Receipt, ShoppingCart, Image as ImageIcon, 
+    LoaderCircle
 } from 'lucide-react';
 import { formatPrice, formatPaymentMethod } from '@/lib/utils';
 import Image from 'next/image';
+import { toast } from '@/hooks/use-toast';
 
 interface OrderPreviewModalProps {
     order: IOrderWithDetails | null;
     open: boolean;
     onClose: () => void;
+    onOrderUpdate?: (updatedOrder: IOrderWithDetails) => void;
 }
 const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -45,23 +49,100 @@ const formatDate = (dateString: string) => {
     }).format(date);
 };
 
-export default function OrderPreviewModal({ order, open, onClose }: OrderPreviewModalProps) {
+export default function OrderPreviewModal({ order, open, onClose, onOrderUpdate }: OrderPreviewModalProps) {
+    const [currentStatus, setCurrentStatus] = useState(order?.orderStatus || '');
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    // Update currentStatus when order changes
+    React.useEffect(() => {
+        if (order?.orderStatus) {
+            setCurrentStatus(order.orderStatus);
+        }
+    }, [order?.orderStatus]);
+
     if (!order) return null;
 
     const subtotal = order.orderDetails.reduce((sum, item) => sum + item.subTotal, 0);
     const discount = order.discountAmount || 0;
     const total = order.totalAmount;
 
+    const visibleStatuses = [
+        { value: "pending", label: "Chờ xử lý" },
+        { value: "payment_pending", label: "Chờ thanh toán" },
+        { value: "payment_cancelling", label: "Đang hủy thanh toán" },
+        { value: "payment_success", label: "Thanh toán thành công" },
+        { value: "completed", label: "Hoàn thành" },
+        { value: "cancelled", label: "Đã hủy" },
+    ];
+
+    const isStatusEditable = !["completed", "cancelled"].includes(currentStatus);
+
+    const handleStatusChange = async (newStatus: string) => {
+        if (!isStatusEditable || newStatus === currentStatus) return;
+        
+        // Validate status
+        const validStatuses = visibleStatuses.map(s => s.value);
+        if (!validStatuses.includes(newStatus)) {
+            toast({
+                title: "Lỗi",
+                description: "Trạng thái không hợp lệ",
+                variant: "destructive",
+            });
+            return;
+        }
+        
+        setIsUpdating(true);
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/order/change-order-status/${order._id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || "Cập nhật trạng thái thất bại");
+            }
+
+            const responseData = await response.json().catch(() => ({}));
+            const updatedOrder = responseData.data || { ...order, orderStatus: newStatus };
+            setCurrentStatus(newStatus);
+            
+            // Call callback to update parent
+            if (onOrderUpdate) {
+                onOrderUpdate(updatedOrder);
+            }
+
+            toast({
+                title: "Thành công",
+                description: `Đã cập nhật trạng thái đơn hàng thành "${visibleStatuses.find(s => s.value === newStatus)?.label || newStatus}"`,
+            });
+        } catch (error) {
+            if (process.env.NODE_ENV === 'development') {
+              console.error("Lỗi khi cập nhật trạng thái:", error);
+            }
+            toast({
+                title: "Lỗi",
+                description: error instanceof Error ? error.message : "Không thể cập nhật trạng thái đơn hàng",
+                variant: "destructive",
+            });
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+            <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-4xl max-h-[90vh] p-0">
                 <DialogHeader className='p-6 border-b bg-gradient-to-r from-blue-50 to-white'>
                     <DialogTitle className="text-2xl font-bold flex items-center gap-2">
                         <Receipt className="w-6 h-6 text-blue-600" />
                         Chi tiết đơn hàng
                         <span className="font-mono text-blue-600">#{order._id.slice(-8)}</span>
-                    </DialogTitle>
-                </DialogHeader>
+                        </DialogTitle>
+                    </DialogHeader>
                 
                 <ScrollArea className="max-h-[calc(90vh-200px)]">
                     <div className="p-6 space-y-6">
@@ -117,14 +198,43 @@ export default function OrderPreviewModal({ order, open, onClose }: OrderPreview
                                         <div>
                                             <span className="text-sm text-gray-500">Ngày đặt</span>
                                             <p className="font-medium">
-                                                {(order as any).createdAt ? formatDate((order as any).createdAt) : "N/A"}
+                                                {order.createdAt ? formatDate(order.createdAt as string) : "N/A"}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <Badge variant={getStatusBadgeVariant(order.orderStatus)} className="text-sm">
-                                            {order.orderStatus}
-                                        </Badge>
+                                        {isStatusEditable ? (
+                            <div className="flex items-center gap-2">
+                                                <Select
+                                                    value={currentStatus}
+                                                    onValueChange={handleStatusChange}
+                                                    disabled={isUpdating}
+                                                >
+                                                    <SelectTrigger className="w-[200px]">
+                                                        <SelectValue placeholder="Chọn trạng thái" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {visibleStatuses
+                                                            .filter(status => status.value !== "completed" && status.value !== "cancelled")
+                                                            .map((status) => (
+                                                                <SelectItem 
+                                                                    key={status.value} 
+                                                                    value={status.value}
+                                                                >
+                                                                    {status.label}
+                                                                </SelectItem>
+                                                            ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                {isUpdating && (
+                                                    <LoaderCircle className="w-4 h-4 animate-spin text-gray-400" />
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <Badge variant={getStatusBadgeVariant(currentStatus)} className="text-sm">
+                                                {visibleStatuses.find(s => s.value === currentStatus)?.label || currentStatus}
+                                            </Badge>
+                                        )}
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <CreditCard className="w-4 h-4 text-gray-400" />
@@ -132,8 +242,8 @@ export default function OrderPreviewModal({ order, open, onClose }: OrderPreview
                                             <span className="text-sm text-gray-500">Phương thức thanh toán</span>
                                             <p className="font-medium">{formatPaymentMethod(order.paymentMethod)}</p>
                                         </div>
-                                    </div>
-                                    {order.paymentTransactionId && (
+                            </div>
+                            {order.paymentTransactionId && (
                                         <div className="flex items-center gap-3">
                                             <Receipt className="w-4 h-4 text-gray-400" />
                                             <div>
@@ -141,8 +251,8 @@ export default function OrderPreviewModal({ order, open, onClose }: OrderPreview
                                                 <p className="font-mono text-sm font-medium">{order.paymentTransactionId}</p>
                                             </div>
                                         </div>
-                                    )}
-                                    {order.voucherId && (
+                            )}
+                            {order.voucherId && (
                                         <div className="flex items-center gap-3">
                                             <Tag className="w-4 h-4 text-gray-400" />
                                             <div>
@@ -156,13 +266,13 @@ export default function OrderPreviewModal({ order, open, onClose }: OrderPreview
                         </div>
 
                         {/* Note */}
-                        {(order as any).note && (
+                        {order.note && (
                             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                                 <div className="flex items-start gap-3">
                                     <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
-                                    <div>
+                        <div>
                                         <span className="text-sm font-semibold text-blue-900">Ghi chú đơn hàng</span>
-                                        <p className="text-blue-800 mt-1">{(order as any).note}</p>
+                                        <p className="text-blue-800 mt-1">{order.note}</p>
                                     </div>
                                 </div>
                             </div>
@@ -188,7 +298,7 @@ export default function OrderPreviewModal({ order, open, onClose }: OrderPreview
                                     </thead>
                                     <tbody>
                                         {order.orderDetails.map((item, index) => (
-                                            <tr key={item._id} className="border-b hover:bg-gray-50 transition-colors">
+                                            <tr key={item._id || index} className="border-b hover:bg-gray-50 transition-colors">
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
@@ -211,7 +321,7 @@ export default function OrderPreviewModal({ order, open, onClose }: OrderPreview
                                                                 Laptop ID: {item.laptopId}
                                                             </p>
                                                             <p className="text-sm text-gray-500 mt-1">
-                                                                Mã sản phẩm: {item._id.slice(-8)}
+                                                                Mã sản phẩm: {item._id ? item._id.slice(-8) : 'N/A'}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -220,10 +330,10 @@ export default function OrderPreviewModal({ order, open, onClose }: OrderPreview
                                                     <span className="font-semibold">{item.quantity}</span>
                                                 </td>
                                                 <td className="p-4 text-right">
-                                                    <span className="font-medium">{formatPrice(item.price.toString())}</span>
+                                                    <span className="font-medium">{formatPrice((item.price || 0).toString())}</span>
                                                 </td>
                                                 <td className="p-4 text-right">
-                                                    <span className="font-semibold text-gray-900">{formatPrice(item.subTotal.toString())}</span>
+                                                    <span className="font-semibold text-gray-900">{formatPrice((item.subTotal || 0).toString())}</span>
                                                 </td>
                                             </tr>
                                         ))}
@@ -252,11 +362,11 @@ export default function OrderPreviewModal({ order, open, onClose }: OrderPreview
                                         <span className="text-green-600 text-xl">{formatPrice(total.toString())}</span>
                                     </div>
                                 </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </ScrollArea>
-            </DialogContent>
-        </Dialog>
+                    </ScrollArea>
+                </DialogContent>
+            </Dialog>
     );
 }

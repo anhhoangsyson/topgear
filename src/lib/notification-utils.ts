@@ -4,12 +4,6 @@ import { INotification, NotificationType } from '@/types/notification';
  * Xác định link để redirect dựa trên type và data của notification
  */
 export function getNotificationLink(notification: INotification): string | null {
-  // Ưu tiên link ở top level (theo API docs)
-  if (notification.link) {
-    return notification.link;
-  }
-
-  // Fallback: generate link từ data
   const type = typeof notification.type === 'string' 
     ? notification.type.toLowerCase() 
     : notification.type;
@@ -31,12 +25,43 @@ export function getNotificationLink(notification: INotification): string | null 
     NotificationType.PAYMENT_FAILED,
   ];
 
-  if (orderRelatedTypes.includes(type as any) && notification.data?.orderId) {
-    return `/account/orders/${notification.data.orderId}`;
+  // Helper function để check xem có phải admin notification không
+  const isAdminNotification = (notif: INotification) => {
+    // Admin notifications thường có action như 'customer_request_cancel', 'order_cancelled'
+    // hoặc link có chứa '/admin'
+    return notif.data?.action === 'customer_request_cancel' || 
+           notif.data?.action === 'order_cancelled' ||
+           notif.link?.includes('/admin') ||
+           (notif.type === 'order' && notif.data?.action); // Các order notifications có action thường là admin
+  };
+
+  // Ưu tiên: Nếu có link từ backend (đặc biệt cho admin), dùng link đó
+  if (notification.link) {
+    // Fix URL nếu backend trả về /order/[id] thay vì /admin/orders/[id] hoặc /account/orders/[id]
+    const orderIdMatch = notification.link.match(/\/order[s]?\/([^\/\?]+)/);
+    if (orderIdMatch) {
+      const orderId = orderIdMatch[1];
+      // Nếu là admin link (có /admin trong path hoặc là admin notification)
+      if (notification.link.includes('/admin') || isAdminNotification(notification)) {
+        // Admin dùng query parameter format: /admin/orders?orderId=...
+        return `/admin/orders?orderId=${orderId}`;
+      }
+      // Nếu là customer link
+      return `/account/orders/${orderId}`;
+    }
+    return notification.link;
   }
 
-  // Xử lý các notification khác
-  if (notification.data?.orderId) {
+  // Fallback: Nếu có orderId và là order notification, tạo URL đúng
+  const isOrderType = orderRelatedTypes.some(ot => ot === type);
+  if ((isOrderType || notification.data?.orderId) && notification.data?.orderId) {
+    // Kiểm tra nếu có action để xác định context (admin hay customer)
+    // Admin notifications thường có action như 'customer_request_cancel'
+    if (isAdminNotification(notification)) {
+      // Admin dùng query parameter format: /admin/orders?orderId=...
+      return `/admin/orders?orderId=${notification.data.orderId}`;
+    }
+    // Default cho customer
     return `/account/orders/${notification.data.orderId}`;
   }
   
@@ -48,8 +73,22 @@ export function getNotificationLink(notification: INotification): string | null 
     return '/cart';
   }
 
-  // Fallback: link từ data
+  // Fallback: Sửa link từ backend nếu nó sai format
+  if (notification.link) {
+    // Fix URL nếu backend trả về /order/[id] thay vì /account/orders/[id]
+    const orderIdMatch = notification.link.match(/\/order\/([^\/]+)/);
+    if (orderIdMatch) {
+      return `/account/orders/${orderIdMatch[1]}`;
+    }
+    return notification.link;
+  }
+
+  // Fallback: link từ data (cũng sửa nếu sai)
   if (notification.data?.link) {
+    const orderIdMatch = notification.data.link.match(/\/order\/([^\/]+)/);
+    if (orderIdMatch) {
+      return `/account/orders/${orderIdMatch[1]}`;
+    }
     return notification.data.link;
   }
 
@@ -80,7 +119,8 @@ export function isOrderNotification(notification: INotification): boolean {
     NotificationType.PAYMENT_FAILED,
   ];
 
-  return orderRelatedTypes.includes(type as any) || !!notification.data?.orderId;
+  const isOrderType = orderRelatedTypes.some(ot => ot === type);
+  return isOrderType || !!notification.data?.orderId;
 }
 
 /**
@@ -97,7 +137,6 @@ export async function handleNotificationClick(
 ): Promise<void> {
   const notificationId = notification._id || notification.id;
   if (!notificationId) {
-    console.warn('[handleNotificationClick] No notification ID found');
     return;
   }
 
@@ -107,7 +146,9 @@ export async function handleNotificationClick(
       await options.markAsReadAPI(notificationId);
       options.markAsRead(notificationId);
     } catch (error) {
-      console.error('[handleNotificationClick] Error marking as read:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[handleNotificationClick] Error marking as read:', error);
+      }
       // Tiếp tục redirect ngay cả khi mark as read fail
     }
   }

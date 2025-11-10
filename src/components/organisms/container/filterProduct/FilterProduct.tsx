@@ -58,7 +58,7 @@ export default function FilterProduct({ id, onFilter }: FilterProductProps) {
     const applyFilters = () => {
         // Filter out unchecked items
         const activeFilters = Object.entries(selectedFilters)
-            .filter(([_, isSelected]) => isSelected)
+            .filter(([, isSelected]) => isSelected)
             .reduce(
                 (acc, [key, value]) => {
                     acc[key] = value

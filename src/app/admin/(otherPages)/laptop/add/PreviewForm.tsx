@@ -5,9 +5,11 @@ import Image from "next/image";
 import { Badge } from "@/components/atoms/ui/badge";
 import { Separator } from "@/components/atoms/ui/separator";
 
+import { IBrand, ICategory } from '@/types';
+
 interface PreviewFormProps {
-  brands: any[];
-  categories: any[];
+  brands: IBrand[];
+  categories: ICategory[];
 }
 
 export default function PreviewForm({ brands, categories }: PreviewFormProps) {
@@ -42,7 +44,7 @@ export default function PreviewForm({ brands, categories }: PreviewFormProps) {
         
         {formData.images && formData.images.length > 0 && (
           <div className="grid grid-cols-5 gap-2 mb-4">
-            {Array.from(formData.images).map((file: any, index: number) => (
+            {Array.from(formData.images).map((file: File, index: number) => (
               <div key={index} className="relative h-24 w-full">
                 <Image
                   src={URL.createObjectURL(file) || "/placeholder.svg"}

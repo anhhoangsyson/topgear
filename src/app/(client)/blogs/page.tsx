@@ -5,6 +5,7 @@ import img1 from "../../../../public/1607431213-guide-to-finding-out-phone-name.
 import Wraper from "@/components/core/Wraper";
 import { formatDate } from "@/lib/utils";
 import { Calendar, ArrowRight } from "lucide-react";
+import { IBlog } from "@/types";
 
 const fetchBlogs = async () => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/blog`, {
@@ -37,7 +38,7 @@ export default async function BlogPage() {
         {/* Blogs Grid */}
         {blogs && blogs.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 pb-12">
-            {blogs.map((blog: any) => (
+            {blogs.map((blog: IBlog) => (
               <article
                 key={blog._id}
                 className="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"

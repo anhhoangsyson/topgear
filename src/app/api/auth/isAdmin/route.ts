@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     
     nextResponse.cookies.set('accessToken', data.data.token, {
       httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production',
       path: '/',
       maxAge: 36000, // 10 hours
       sameSite: 'lax'
@@ -51,7 +51,9 @@ export async function POST(request: Request) {
     return nextResponse;
   } catch (error) {
     
-    console.error('Admin login error:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Admin login error:', error);
+    }
     return NextResponse.json(
       { error: 'Lỗi server' }, 
       { status: 500 }

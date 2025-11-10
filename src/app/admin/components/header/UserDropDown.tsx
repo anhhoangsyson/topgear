@@ -23,11 +23,28 @@ export default function UserDropdown() {
     setIsOpen(false);
   }
   const handleSignOut = async () => {
+    // Xóa cookies NextAuth trên client-side (để đảm bảo xóa hết)
+    const cookiesToDelete = [
+      'next-auth.callback-url',
+      'next-auth.csrf-token',
+      'next-auth.session-token',
+      'accessToken'
+    ];
+    
+    cookiesToDelete.forEach(cookieName => {
+      // Xóa với các path khác nhau
+      document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
+      document.cookie = `${cookieName}=; path=/; domain=${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
+    });
+    
+    // Gọi API logout để xóa trên server
     await fetch(`${process.env.NEXT_PUBLIC_API_URL_NEXT_SERVER}/api/auth/logout`, {
       method: "POST"
-    })
+    });
+    
+    // NextAuth signOut sẽ tự xóa session cookie
     signOut({ callbackUrl: "/admin/login" });
-}
+  }
 return (
   <div className="relative z-20">
     <button

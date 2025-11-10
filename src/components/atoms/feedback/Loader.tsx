@@ -19,11 +19,7 @@ export const Loader: React.FC<LoaderProps> = ({
     xl: 'w-16 h-16',
   };
 
-  const variantClasses = {
-    default: 'text-gray-600',
-    blue: 'text-blue-600',
-    white: 'text-white',
-  };
+  // variantClasses is defined but not used - variants are applied inline
 
   return (
     <div className={cn('flex items-center justify-center', className)}>

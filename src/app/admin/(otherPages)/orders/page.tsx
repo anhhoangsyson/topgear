@@ -45,9 +45,18 @@ export default function OrdersPage() {
   const [showModalPreview, setShowModalPreview] = useState(false);
   const [orders, setOrders] = useState<IOrderWithDetails[]>([]);
 
-  const handleShowOrderPreview = (order: any) => {
+  const handleShowOrderPreview = (order: IOrderWithDetails) => {
     setSelectedOrder(order);
     setShowModalPreview(true);
+  }
+
+  const handleOrderUpdate = (updatedOrder: IOrderWithDetails) => {
+    // Update order in list
+    setOrders(prev => prev.map(o => o._id === updatedOrder._id ? updatedOrder : o));
+    // Update selected order if it's the same
+    if (selectedOrder?._id === updatedOrder._id) {
+      setSelectedOrder(updatedOrder);
+    }
   }
 
   return (
@@ -56,9 +65,23 @@ export default function OrdersPage() {
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
           Quản lý đơn hàng
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 mb-4">
           Xem và quản lý tất cả đơn hàng của khách hàng
         </p>
+        <div className="flex gap-3">
+          <a 
+            href="/admin/orders/pending" 
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          >
+            Đơn hàng chưa xử lý
+          </a>
+          <a 
+            href="/admin/orders/processed" 
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+          >
+            Đơn hàng đã xử lý
+          </a>
+        </div>
       </div>
       
       <div className="bg-white rounded-lg shadow-sm border">
@@ -73,6 +96,7 @@ export default function OrdersPage() {
         order={selectedOrder || null}
         open={showModalPreview}
         onClose={() => { setShowModalPreview(false); setSelectedOrder(null) }}
+        onOrderUpdate={handleOrderUpdate}
       />
     </div>
   );

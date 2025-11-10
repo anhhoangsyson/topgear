@@ -73,9 +73,9 @@ export function formartLocation(
   const location = `${str}, ${ward}, ${dis}, ${pro}`;
   return location;
 }
-export function formatLaptopName(name: string, specifications: any) {
-  const { processor, ram, storage, graphicsCard } = specifications
-  return `${name} ( ${processor} / ${ram} / ${storage} / ${graphicsCard})`
+export function formatLaptopName(name: string, specifications: { processor?: string; ram?: number | string; storage?: number | string; graphicsCard?: string }) {
+  const { processor, ram, storage, graphicsCard } = specifications;
+  return `${name} ( ${processor || 'N/A'} / ${ram || 'N/A'} / ${storage || 'N/A'} / ${graphicsCard || 'N/A'})`;
 }
 
 export const defaultAvatar= 'https://res.cloudinary.com/drsm6hdbe/image/upload/v1748352718/cxazajxw119cyay0ghhs.jpg'

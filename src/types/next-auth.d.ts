@@ -9,6 +9,8 @@ declare module "next-auth" {
         accessToken?: string;
         user: {
             id: string;
+            _id?: string;
+            userId?: string;
             name?: string | null;
             email?: string | null;
             image?: string | null;
@@ -20,6 +22,8 @@ declare module "next-auth" {
 
     interface User extends DefaultUser {
         id: string;
+        _id?: string;
+        userId?: string;
         BEAccessToken?: string;
         provider?: string;
         profileCompleted?: boolean;

@@ -34,37 +34,21 @@ export const authOptions: NextAuthOptions = {
         });
         const data = await res.json();
         
-        console.log('[NextAuth Credentials] Login response:', {
-          ok: res.ok,
-          hasToken: !!data.token,
-          hasData: !!data.data,
-          dataKeys: data.data ? Object.keys(data.data) : [],
-          fullResponse: data
-        });
-        
         if (res.ok && data) {
           // Backend có thể trả về token ở data.token hoặc data.data.token
           const token = data.token || data.data?.token || data.accessToken;
           
           if (!token) {
-            console.error('[NextAuth Credentials] ❌ No token in response!', data);
+            if (process.env.NODE_ENV === 'development') {
+              console.error('[NextAuth Credentials] No token in response!', data);
+            }
             return null;
           }
-          
-          console.log('[NextAuth Credentials] ✅ Got token, length:', token.length);
           
           // Backend có thể trả về structure:
           // { data: { user: { profileCompleted, role, ... }, token } } 
           // hoặc { data: { profileCompleted, role, ..., token } }
           const userData = data.data?.user || data.data || data.user || {};
-          
-          console.log('[NextAuth Credentials] 📊 User data structure:', {
-            hasData: !!data.data,
-            hasUser: !!data.data?.user,
-            hasProfileCompleted: !!(userData.profileCompleted),
-            userDataKeys: Object.keys(userData),
-            fullData: data
-          });
           
           return {
             ...userData,
@@ -114,32 +98,30 @@ export const authOptions: NextAuthOptions = {
             return false
           }
         } catch (error) {
-          console.error("Error during Facebook login:", error)
+          if (process.env.NODE_ENV === 'development') {
+            console.error("Error during Facebook login:", error);
+          }
           return false
         }
       }
       return true
     },
     async jwt({ token, account, user }) {
-      console.log('[NextAuth JWT] JWT callback called:', {
-        hasUser: !!user,
-        hasAccount: !!account,
-        provider: account?.provider,
-        hasBEAccessToken: !!user?.BEAccessToken,
-        userKeys: user ? Object.keys(user) : []
-      });
+      // QUAN TRỌNG: Giữ lại accessToken từ token cũ khi refresh session
+      // Nếu không có user mới (không phải lúc login), giữ lại token.accessToken hiện tại
       
-      // Nếu đang đăng nhập, thêm thông tin access token vào token
+      // Nếu đang đăng nhập (có user mới), cập nhật thông tin
       if (user) {
         // Lưu BEAccessToken vào token.accessToken
         if (user.BEAccessToken) {
           token.accessToken = user.BEAccessToken;
-          console.log('[NextAuth JWT] ✅ Saved BEAccessToken to token.accessToken');
         } else {
-          console.error('[NextAuth JWT] ❌ No BEAccessToken in user object!', {
-            userKeys: Object.keys(user),
-            user: user
-          });
+          if (process.env.NODE_ENV === 'development') {
+            console.error('[NextAuth JWT] No BEAccessToken in user object!', {
+              userKeys: Object.keys(user),
+              user: user
+            });
+          }
         }
         
         token.role = user?.role;
@@ -152,40 +134,28 @@ export const authOptions: NextAuthOptions = {
         // Ưu tiên 1: Decode từ BEAccessToken (luôn đúng vì là token từ backend)
         if (user.BEAccessToken) {
           try {
-            console.log('[NextAuth JWT] 🔍 Decoding BEAccessToken to get userId from backend...');
             const parts = user.BEAccessToken.split('.');
             if (parts.length === 3) {
               const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-              console.log('[NextAuth JWT] 📊 JWT payload keys:', Object.keys(payload));
-              console.log('[NextAuth JWT] 📊 JWT payload sample:', {
-                _id: payload._id,
-                userId: payload.userId,
-                id: payload.id,
-                sub: payload.sub
-              });
               
               // Ưu tiên _id (theo flow backend: decoded._id)
               const jwtUserId = payload._id || payload.userId || payload.id || payload.sub;
               if (jwtUserId) {
                 tokenId = jwtUserId;
-                console.log('[NextAuth JWT] ✅✅✅ UserId from JWT decode (_id):', jwtUserId);
-              } else {
-                console.warn('[NextAuth JWT] ⚠️ No userId in JWT payload. Full payload:', payload);
               }
             }
           } catch (error) {
-            console.warn('[NextAuth JWT] ⚠️ Failed to decode JWT:', error);
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('[NextAuth JWT] Failed to decode JWT:', error);
+            }
           }
         }
         
         // Fallback: Thử từ user object (nhưng có thể là provider ID, không phải MongoDB _id)
         if (!tokenId) {
-          const userIdFromUser = (user as any)?.id || (user as any)?._id || (user as any)?.userId;
+          const userIdFromUser = user?.id || user?._id || user?.userId;
           if (userIdFromUser) {
             tokenId = userIdFromUser;
-            console.log('[NextAuth JWT] ⚠️ Using userId from user object (may be provider ID):', userIdFromUser);
-          } else {
-            console.warn('[NextAuth JWT] ⚠️ No userId found anywhere. User keys:', Object.keys(user || {}));
           }
         }
         
@@ -193,29 +163,21 @@ export const authOptions: NextAuthOptions = {
           token.id = tokenId;
         }
       }
-      else if (account?.access_token) {
-        // Facebook login fallback
-        token.accessToken = account.access_token
-        console.log('[NextAuth JWT] ✅ Using account.access_token (Facebook)');
+      // Nếu có account (Facebook login) và chưa có accessToken
+      else if (account?.access_token && !token.accessToken) {
+        // Facebook login fallback - chỉ set nếu chưa có accessToken
+        token.accessToken = account.access_token;
       }
-      token.provider = account?.provider as string;
+      
+      // Cập nhật provider nếu có account mới
+      if (account?.provider) {
+        token.provider = account.provider as string;
+      }
 
-      console.log('[NextAuth JWT] Final token:', {
-        hasAccessToken: !!token.accessToken,
-        hasId: !!token.id,
-        provider: token.provider
-      });
-
+      // QUAN TRỌNG: Đảm bảo luôn return token với accessToken (giữ lại từ lần trước nếu không có user mới)
       return token
     },
     async session({ session, token }) {
-      console.log('[NextAuth Session] Session callback called:', {
-        hasAccessToken: !!token.accessToken,
-        hasId: !!token.id,
-        provider: token.provider,
-        sessionUserKeys: session.user ? Object.keys(session.user) : []
-      });
-
       // Thêm thông tin từ token vào session
       session.accessToken = token.accessToken as string
       session.provider = token.provider as string
@@ -224,16 +186,12 @@ export const authOptions: NextAuthOptions = {
       // Thêm userId vào session
       session.user.id = (token.id as string) || session.user.id || '';
 
-      if (!session.accessToken) {
-        console.error('[NextAuth Session] ❌ No accessToken in session! Token keys:', Object.keys(token));
-      } else {
-        console.log('[NextAuth Session] ✅ Session has accessToken, length:', session.accessToken.length);
+      if (!session.accessToken && process.env.NODE_ENV === 'development') {
+        console.error('[NextAuth Session] No accessToken in session! Token keys:', Object.keys(token));
       }
 
-      if (!session.user.id) {
-        console.warn('[NextAuth Session] ⚠️ No userId in session. Token.id:', token.id);
-      } else {
-        console.log('[NextAuth Session] ✅ Session has userId:', session.user.id);
+      if (!session.user.id && process.env.NODE_ENV === 'development') {
+        console.warn('[NextAuth Session] No userId in session. Token.id:', token.id);
       }
 
       return session

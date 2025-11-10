@@ -1,10 +1,11 @@
 import { cookies } from 'next/headers';
 import React from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Package, Calendar, CreditCard, User, Phone, MapPin, FileText } from 'lucide-react'
+import { ArrowLeft, Package, Calendar, CreditCard } from 'lucide-react'
 import { Badge } from '@/components/atoms/ui/badge'
 import CustomerInfoOrder from '@/app/(client)/(auth)/account/orders/[id]/CustomerInfoOrder';
 import ListOrderDetails from '@/app/(client)/(auth)/account/orders/[id]/ListOrderDetails';
+import OrderRatingSection from '@/app/(client)/(auth)/account/orders/[id]/OrderRatingSection';
 import { formatDate, formatOrderStatus, formatPrice } from '../../../../../../lib/utils';
 
 export async function getMyOrder(id: string) {
@@ -165,6 +166,18 @@ export default async function page({ params }: { params: Promise<{ id: string }>
                         />
                     </div>
                 </div>
+
+                {/* Rating Section */}
+                {order.orderStatus === 'completed' && (
+                    <OrderRatingSection
+                        orderId={order._id}
+                        orderStatus={order.orderStatus}
+                        orderDetails={order.orderDetails.map(item => ({
+                            laptopId: item.laptopId,
+                            images: item.images || []
+                        }))}
+                    />
+                )}
             </div>
         </div>
     )

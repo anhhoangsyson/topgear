@@ -33,7 +33,7 @@ export default function CategorySection({ categories, }: { categories: ICategory
         <SectionWrapper>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                 {/* Menu Categories - Ẩn trên mobile, hiển thị trên desktop */}
-                <div className="hidden lg:block lg:col-span-2 flex flex-col items-start relative">
+                <div className="lg:block lg:col-span-2 flex flex-col items-start relative">
                     <ul className="w-full">
                         {categories.map((cat: ICategory) => (
                             <li

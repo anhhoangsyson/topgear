@@ -336,6 +336,9 @@ export interface IOrderWithDetails {
   paymentMethod: string;
   paymentTransactionId: string | null;
   paymentUrl: string | null;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+  note?: string;
   orderDetails: {
     _id: string; 
     laptopId: string;

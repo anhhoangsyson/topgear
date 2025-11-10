@@ -2,17 +2,24 @@
 import { Button } from "@/components/atoms/ui/Button";
 import Wraper from "@/components/core/Wraper";
 import React, { useState, useEffect } from "react";
-import { Mail, MapPin, Phone, Clock, MessageCircle, Send, CheckCircle2 } from "lucide-react";
+import { Mail, MapPin, Phone, Clock, MessageCircle, Send } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { LocationRes } from "@/types";
 import addressData from "@/../public/data/address.json";
 
 // Helper function to get address name from ID
+interface AddressItem {
+  idProvince?: string;
+  idDistrict?: string;
+  idCommune?: string;
+  name: string;
+}
+
 function getAddressName(type: "province" | "district" | "commune", id: string) {
-  const provinceMap = Object.fromEntries(addressData.province.map((item: any) => [item.idProvince, item.name]));
-  const districtMap = Object.fromEntries(addressData.district.map((item: any) => [item.idDistrict, item.name]));
-  const communeMap = Object.fromEntries(addressData.commune.map((item: any) => [item.idCommune, item.name]));
+  const provinceMap = Object.fromEntries(addressData.province.map((item: AddressItem) => [item.idProvince, item.name]));
+  const districtMap = Object.fromEntries(addressData.district.map((item: AddressItem) => [item.idDistrict, item.name]));
+  const communeMap = Object.fromEntries(addressData.commune.map((item: AddressItem) => [item.idCommune, item.name]));
   
   if (type === "province") return provinceMap[id] || "Không xác định";
   if (type === "district") return districtMap[id] || "Không xác định";
