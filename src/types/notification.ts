@@ -37,6 +37,19 @@ export interface INotification {
     link?: string;
     action?: string; // 'customer_request_cancel', 'order_cancelled', etc.
     status?: string; // 'canceling', 'cancelled', etc.
+    // Comment notification data
+    blogId?: string;
+    commentId?: string;
+    commenterName?: string;
+    parentCommentId?: string;
+    blogTitle?: string;
+    // Rating notification data
+    ratingId?: string;
+    laptopId?: string;
+    rating?: number;
+    userName?: string;
+    laptopName?: string;
+    isNegative?: boolean;
     [key: string]: string | number | object | undefined;
   };
   isRead: boolean;

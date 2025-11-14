@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { User, Package, MapPin, Bell, ChevronRight, Menu, X } from 'lucide-react'
+import { User, Package, MapPin, Bell, Heart, ChevronRight, Menu, X } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/atoms/ui/avatar'
 import { Button } from '@/components/atoms/ui/Button'
 
@@ -44,6 +44,12 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             subTitle: 'Thông báo',
             label: 'notification',
             href: '/account/notification'
+        },
+        {
+            icon: Heart,
+            subTitle: 'Yêu thích',
+            label: 'wishlist',
+            href: '/account/wishlist'
         }
     ];
 

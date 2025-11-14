@@ -63,7 +63,7 @@ export default function CommentItem({ comment, blogId, onUpdate, depth = 0, pare
       });
     }
   }, [session, comment._id, userId, commentUserId, isMyComment, comment.name, comment.user_id]);
-  const maxDepth = 3; // Giới hạn độ sâu reply
+  const maxDepth = 1; // Only 2 levels: parent (0) and replies (1)
 
   // Get blog_id from comment (can be object or string)
   const commentBlogId = typeof comment.blog_id === 'object' 
@@ -282,8 +282,8 @@ export default function CommentItem({ comment, blogId, onUpdate, depth = 0, pare
           );
         })()}
 
-        {/* Nested Replies */}
-        {comment.replies && comment.replies.length > 0 && (
+        {/* Replies - Only show if this is a top-level comment (depth 0) */}
+        {depth === 0 && comment.replies && comment.replies.length > 0 && (
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="text-xs text-gray-500 mb-3 font-medium flex items-center gap-1.5">
               <Reply className="w-3.5 h-3.5 text-blue-600" />
@@ -296,7 +296,7 @@ export default function CommentItem({ comment, blogId, onUpdate, depth = 0, pare
                   comment={reply}
                   blogId={commentBlogId}
                   onUpdate={onUpdate}
-                  depth={depth + 1}
+                  depth={1}
                   parentName={comment.name}
                 />
               ))}

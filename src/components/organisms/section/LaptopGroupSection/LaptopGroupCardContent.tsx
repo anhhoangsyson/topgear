@@ -33,11 +33,11 @@ export default function LaptopGroupCardContent({ laptop }: { laptop: ILaptop }) 
 
                 <div className='flex flex-col items-start gap-1 mt-auto'>
                     <p className='text-blue-500 font-bold text-sm sm:text-base break-words'>
-                        {formatPrice(laptop.discountPrice)}
+                        {formatPrice(String(laptop.discountPrice))}
                     </p>
-                    {laptop.price && laptop.price > laptop.discountPrice && (
+                    {laptop.price && laptop.discountPrice && laptop.price > laptop.discountPrice && (
                         <p className='text-gray-500 line-through text-xs sm:text-sm'>
-                            {formatPrice(laptop.price)}
+                            {formatPrice(String(laptop.price))}
                         </p>
                     )}
                 </div>

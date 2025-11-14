@@ -303,14 +303,41 @@ export interface ILaptopGroup extends CustomDocument {
   isPromoted?: boolean;
 }
 
-export interface IVoucher {
-  _id?: string;
+export interface IVoucher extends CustomDocument {
   code?: string;
   type: 'code' | 'auto';
   expiredDate: Date;
+  pricePercent: number; // % giảm giá (0-100), dùng 1 trong 2: pricePercent hoặc priceOrigin
+  priceOrigin: number; // Số tiền giảm cố định, dùng 1 trong 2: pricePercent hoặc priceOrigin
+  minPrice: number; // Giá trị đơn hàng tối thiểu (orderAmount phải > minPrice)
+  maxUsage: number; // Số lần sử dụng tối đa
+  currentUsage: number; // Số lần đã sử dụng
+  maxDiscountAmount: number; // Số tiền giảm tối đa (chỉ áp dụng khi dùng pricePercent)
+  status: 'active' | 'inactive';
+}
+
+export interface ICreateVoucher {
+  code?: string;
+  type: 'code' | 'auto';
+  expiredDate: Date | string;
   pricePercent: number;
   priceOrigin: number;
-  status: 'active' | 'inactive';
+  minPrice: number;
+  maxUsage: number;
+  maxDiscountAmount?: number;
+  status?: 'active' | 'inactive';
+}
+
+export interface IUpdateVoucher {
+  code?: string;
+  type?: 'code' | 'auto';
+  expiredDate?: Date | string;
+  pricePercent?: number;
+  priceOrigin?: number;
+  minPrice?: number;
+  maxUsage?: number;
+  maxDiscountAmount?: number;
+  status?: 'active' | 'inactive';
 }
 
 export interface IBlog extends CustomDocument {

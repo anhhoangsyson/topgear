@@ -43,13 +43,23 @@ export default function NotificationDropdown() {
   const markAsRead = useNotificationStore((state) => state.markAsRead);
   const setNotifications = useNotificationStore((state) => state.setNotifications);
   const setUnreadCount = useNotificationStore((state) => state.setUnreadCount);
+  const setLoading = useNotificationStore((state) => state.setLoading);
 
 
-  // Get recent unread notifications
-  const recentNotifications = notifications
-    .filter(n => !n.isRead)
-    .slice(0, 5)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  // Get recent notifications (both read and unread, but prioritize unread)
+  const recentNotifications = useMemo(() => {
+    // Sort by: unread first, then by date (newest first)
+    const sorted = [...notifications].sort((a, b) => {
+      // Unread notifications first
+      if (!a.isRead && b.isRead) return -1;
+      if (a.isRead && !b.isRead) return 1;
+      // Then sort by date (newest first)
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+    
+    // Return up to 10 most recent notifications
+    return sorted.slice(0, 10);
+  }, [notifications]);
 
   const onNotificationClick = async (notification: INotification) => {
     await handleNotificationClick(notification, {
@@ -67,23 +77,79 @@ export default function NotificationDropdown() {
     if (isOpen) {
       const fetchNotifications = async () => {
         try {
-          const response = await NotificationAPI.getNotifications({ 
-            page: 1, 
-            limit: 10 
-          });
-          if (response.success) {
-            setNotifications(response.data.notifications);
-            setUnreadCount(response.data.pagination.unreadCount);
+          setLoading(true);
+          
+          // Fetch both notifications and unread count
+          const [notificationsRes, unreadCountRes] = await Promise.all([
+            NotificationAPI.getNotifications({ 
+              page: 1, 
+              limit: 20  // Fetch more notifications
+            }),
+            NotificationAPI.getUnreadCount(),
+          ]);
+          
+          if (notificationsRes.success) {
+            const fetchedNotifications = notificationsRes.data.notifications || [];
+            
+            if (process.env.NODE_ENV === 'development') {
+              console.log('[NotificationDropdown] Fetched notifications:', {
+                count: fetchedNotifications.length,
+                notifications: fetchedNotifications.map(n => ({
+                  id: n._id || n.id,
+                  type: n.type,
+                  title: n.title,
+                  isRead: n.isRead,
+                })),
+              });
+            }
+            
+            setNotifications(fetchedNotifications);
+            
+            // Use unread count from API if available
+            if (unreadCountRes.success) {
+              const apiUnreadCount = unreadCountRes.data.count || 0;
+              setUnreadCount(apiUnreadCount);
+              
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[NotificationDropdown] Unread count from API:', apiUnreadCount);
+              }
+            } else if (notificationsRes.data.pagination?.unreadCount !== undefined) {
+              // Fallback to pagination unreadCount
+              const paginationUnreadCount = notificationsRes.data.pagination.unreadCount;
+              setUnreadCount(paginationUnreadCount);
+              
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[NotificationDropdown] Unread count from pagination:', paginationUnreadCount);
+              }
+            } else {
+              // Calculate from notifications
+              const calculatedCount = fetchedNotifications.filter(n => !n.isRead).length;
+              setUnreadCount(calculatedCount);
+              
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[NotificationDropdown] Calculated unread count:', calculatedCount);
+              }
+            }
+          } else {
+            if (process.env.NODE_ENV === 'development') {
+              console.error('[NotificationDropdown] API response not successful:', notificationsRes);
+            }
           }
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
-            console.error('Error fetching notifications:', error);
+            console.error('[NotificationDropdown] Error fetching notifications:', error);
+            if (error instanceof Error) {
+              console.error('[NotificationDropdown] Error message:', error.message);
+              console.error('[NotificationDropdown] Error stack:', error.stack);
+            }
           }
+        } finally {
+          setLoading(false);
         }
       };
       fetchNotifications();
     }
-  }, [isOpen, setNotifications, setUnreadCount]);
+  }, [isOpen, setNotifications, setUnreadCount, setLoading]);
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -115,12 +181,29 @@ export default function NotificationDropdown() {
           <div className="flex items-center justify-center py-8">
             <LoaderCircle className="h-6 w-6 animate-spin text-gray-400" />
           </div>
-        ) : recentNotifications.length === 0 ? (
+        ) : notifications.length === 0 && recentNotifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <Bell className="h-12 w-12 text-gray-300 dark:text-gray-600 mb-2" />
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Không có thông báo mới
+              Không có thông báo nào
             </p>
+            <p className="text-xs text-gray-400 mt-1">
+              Chúng tôi sẽ thông báo cho bạn khi có cập nhật mới
+            </p>
+          </div>
+        ) : recentNotifications.length === 0 && notifications.length > 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <Bell className="h-12 w-12 text-gray-300 dark:text-gray-600 mb-2" />
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {unreadCount === 0 
+                ? 'Không có thông báo mới' 
+                : 'Đang tải thông báo...'}
+            </p>
+            {unreadCount === 0 && (
+              <p className="text-xs text-gray-400 mt-1">
+                Tất cả thông báo đã được đọc
+              </p>
+            )}
           </div>
         ) : (
           <div className="max-h-96 overflow-y-auto">

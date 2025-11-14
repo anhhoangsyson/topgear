@@ -5,18 +5,10 @@ import React, { useEffect, useState } from "react";
 import useCartStore from "@/store/cartStore";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { CartIcon, SearchIcon, MenuIcon, CloseIcon } from "@/components/atoms/icon/icons";
+import { CartIcon, MenuIcon, CloseIcon } from "@/components/atoms/icon/icons";
 import AccountDropdown from "@/components/molecules/auth/AccountDropdown";
 import LoginButton from "@/components/molecules/auth/LoginButton";
-
-export interface Product {
-  name: string;
-  slug: string;
-  // thêm các trường khác nếu cần
-  variantName: string;
-  _id: string;
-  categoriesId: string;
-}
+import SearchAutocomplete from "@/components/molecules/search/SearchAutocomplete";
 
 export interface menuNavData {
   name: string;
@@ -46,16 +38,12 @@ export default function Header() {
   const [cartQuantity, setCartQuantity] = useState(0);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [isHidden, setIsHidden] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [products] = useState<Product[]>([]);
-  const [filtered, setFiltered] = useState<Product[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartStore = useCartStore((state) => state.cartItems);
   const pathName = usePathname();
 
   const { data: session, status } = useSession()
   const user = session?.user;
-
 
   // Get cart quantity
   useEffect(() => {
@@ -76,33 +64,6 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollTop]);
-
-  // Fetch all products
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     const res = await fetch(
-  //       "https://top-gear-be.vercel.app/api/v1/pvariants"
-  //     );
-  //     const data = await res.json();
-  //     setProducts(data.data); // Giả định `data.data` là mảng sản phẩm
-  //   };
-  //   fetchProducts();
-  // }, []);
-
-
-  // Filter products
-  // Filter products
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      const filteredData = products.filter((product) => {
-        const name = product?.variantName ?? "";
-        return name.toLowerCase().includes(searchQuery.toLowerCase());
-      });
-      setFiltered(filteredData);
-    } else {
-      setFiltered([]);
-    }
-  }, [searchQuery, products]);
 
   return (
     <>
@@ -154,43 +115,13 @@ export default function Header() {
 
       {/* Search + Cart + User */}
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Search Input - Hidden on mobile, show icon only */}
-          <div className="relative hidden md:block">
-          <input
-            type="text"
-            placeholder="Tìm sản phẩm..."
-              className="px-3 py-2 rounded bg-white text-black text-sm w-48 lg:w-64"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <div className="absolute top-0 right-0 flex items-center h-full pr-2">
-            <SearchIcon />
+          {/* Desktop Search - Hidden on mobile */}
+          <div className="hidden md:block">
+            <SearchAutocomplete
+              placeholder="Tìm kiếm sản phẩm..."
+              className="w-48 lg:w-64"
+            />
           </div>
-          {/* Dropdown search results */}
-          {filtered.length > 0 && (
-            <ul className="absolute top-full mt-1 w-full bg-white text-black rounded shadow-md z-50 max-h-60 overflow-y-auto">
-              {filtered.map((product, index) => (
-                <li key={index} className="hover:bg-gray-100">
-                  <Link
-                      href={`/products/${product._id}`}
-                    className="block px-3 py-2 text-sm"
-                    onClick={() => setSearchQuery("")}
-                  >
-                    {product.variantName}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-          {/* Mobile Search Icon */}
-          <button
-            className="md:hidden p-2 hover:bg-white/10 rounded"
-            aria-label="Search"
-          >
-            <SearchIcon />
-          </button>
 
         {/* Cart Icon */}
           <Link href={"/cart"} className="relative p-2 hover:bg-white/10 rounded">
@@ -256,37 +187,11 @@ export default function Header() {
 
           {/* Mobile Search */}
           <div className="mt-4 px-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Tìm sản phẩm..."
-                className="w-full px-3 py-2 rounded bg-white text-black text-sm"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <div className="absolute top-0 right-0 flex items-center h-full pr-2 text-black">
-                <SearchIcon />
-              </div>
-              {/* Dropdown search results */}
-              {filtered.length > 0 && (
-                <ul className="absolute top-full mt-1 w-full bg-white text-black rounded shadow-md z-50 max-h-60 overflow-y-auto">
-                  {filtered.map((product, index) => (
-                    <li key={index} className="hover:bg-gray-100">
-                      <Link
-                        href={`/products/${product._id}`}
-                        className="block px-3 py-2 text-sm"
-                        onClick={() => {
-                          setSearchQuery("");
-                          setIsMobileMenuOpen(false);
-                        }}
-                      >
-                        {product.variantName}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <SearchAutocomplete
+              placeholder="Tìm kiếm sản phẩm..."
+              onSelect={() => setIsMobileMenuOpen(false)}
+              onSearch={() => setIsMobileMenuOpen(false)}
+            />
           </div>
 
           {/* Mobile User Section */}

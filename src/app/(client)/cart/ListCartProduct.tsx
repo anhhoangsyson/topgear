@@ -261,6 +261,7 @@ const Cart = ({ vouchers }: { vouchers: IVoucher[] }) => {
                 vouchers={vouchers}
                 selectedVoucher={selectedVoucher}
                 voucherCode={voucherCode}
+                orderAmount={total} // Tổng giá trị giỏ hàng đã chọn
                 onSelectVoucher={(voucher) => {
                     setSelectedVoucher(voucher);
                     // setVoucher

@@ -114,7 +114,11 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
       notificationType === NotificationType.ORDER_COMPLETED ||
       (data.data?.orderId && notificationType !== NotificationType.SYSTEM_ANNOUNCEMENT);
     
-    if (isOrderNotification) {
+    // Xử lý comment và rating notifications cho admin
+    const isCommentNotification = notificationType === 'comment';
+    const isRatingNotification = notificationType === 'rating';
+    
+    if (isOrderNotification || isCommentNotification || isRatingNotification) {
       addNotification(data);
       
       // Play sound notification (check localStorage setting)
@@ -173,11 +177,15 @@ export default function AdminNotificationProvider({ children }: AdminNotificatio
       }
       
       // Show toast notification với custom style
+      // Priority cho negative ratings
+      const isNegativeRating = isRatingNotification && data.data?.isNegative;
+      const priority = data.data?.priority === 'high' || isNegativeRating ? 'high' : 'normal';
+      
       toast({
         title: data.title,
         description: data.message,
-        duration: data.data?.priority === 'high' ? 10000 : 5000,
-        variant: data.data?.priority === 'high' ? 'destructive' : 'default',
+        duration: priority === 'high' ? 10000 : 5000,
+        variant: priority === 'high' ? 'destructive' : 'default',
       });
     }
   }, [addNotification]);

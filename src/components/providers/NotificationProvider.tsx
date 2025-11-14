@@ -99,8 +99,12 @@ export default function NotificationProvider({ children }: NotificationProviderP
       notificationType === NotificationType.PAYMENT_FAILED ||
       (data.data?.orderId && notificationType !== NotificationType.SYSTEM_ANNOUNCEMENT);
     
-    // Chỉ xử lý order-related notifications hoặc các notification khác (voucher, product, etc.)
-    if (!isOrderNotification && !data.data?.voucherId && !data.data?.productId) {
+    // Xử lý comment và rating notifications cho customer
+    const isCommentNotification = notificationType === 'comment';
+    const isRatingNotification = notificationType === 'rating';
+    
+    // Chỉ xử lý order-related, comment, rating notifications hoặc các notification khác (voucher, product, etc.)
+    if (!isOrderNotification && !isCommentNotification && !isRatingNotification && !data.data?.voucherId && !data.data?.productId) {
       return;
     }
     

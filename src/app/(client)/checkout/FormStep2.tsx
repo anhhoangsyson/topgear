@@ -124,7 +124,9 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
 
 
     try {
-      const accessToken = session?.accessToken || ''; // Lấy accessToken từ session
+      const accessToken = session?.accessToken || '';
+      
+      // Handle stock error messages from backend // Lấy accessToken từ session
       const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/order`, {
         method: 'POST',
         headers: {
@@ -157,12 +159,25 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
       }
       else {
         const errorData = await response.json();
+        const errorMessage = errorData.message || 'Có lỗi xảy ra trong quá trình đặt hàng';
+        
+        // Check if error is related to stock
+        const isStockError = errorMessage.includes('không đủ hàng') || 
+                            errorMessage.includes('hết hàng') ||
+                            errorMessage.includes('stock');
+        
         toast({
-          title: 'Đặt hàng thất bại',
-          description: errorData.message || 'Có lỗi xảy ra trong quá trình đặt hàng',
-          duration: 3000,
+          title: isStockError ? 'Không đủ hàng' : 'Đặt hàng thất bại',
+          description: errorMessage,
+          duration: isStockError ? 5000 : 3000,
           variant: 'destructive',
-        })
+        });
+        
+        // If stock error, suggest refreshing cart
+        if (isStockError) {
+          // Optionally refresh product data or update cart
+          // You can add logic here to refresh cart items
+        }
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -327,6 +342,7 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
           vouchers={vouchers} // truyền list voucher lấy từ BE
           selectedVoucher={selectedVoucher}
           voucherCode={selectedVoucher?.code || ""}
+          orderAmount={totalPrice} // Tổng giá trị đơn hàng để kiểm tra voucher
           onSelectVoucher={(voucher) => setVoucher(voucher)}
           onInputVoucher={(code) =>
             setVoucher({

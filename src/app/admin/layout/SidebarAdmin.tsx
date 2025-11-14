@@ -109,6 +109,14 @@ const othersItems: NavItem[] = [
       { name: "Quản lý bình luận", path: "/admin/comments", pro: false },
     ],
   },
+  {
+    icon: <HorizontaLDots />,
+    name: "Voucher",
+    subItems: [
+      { name: "Danh sách voucher", path: "/admin/voucher", pro: false },
+      { name: "Thêm voucher mới", path: "/admin/voucher/add", pro: false },
+    ],
+  },
 ];
 
 const SidebarAdmin: React.FC = () => {
