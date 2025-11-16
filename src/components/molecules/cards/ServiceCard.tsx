@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { StaticImageData } from "next/image";
 
 interface ServiceCardProps {
-  icon: StaticImageData;
+  icon: StaticImageData | string;
   title: string;
   description: string;
 }
