@@ -1,4 +1,4 @@
-import OrdersList from '@/app/(client)/(auth)/account/ui/Order'
+import OrdersList from '@/app/(cli)/(auth)/account/ui/Order'
 import React from 'react'
 import { getMyOrders } from '@/services/order-api'
 

@@ -41,7 +41,7 @@ Website bán laptop và phụ kiện công nghệ, được xây dựng với Ne
 ```
 src/
 ├── app/                          # Next.js App Router (Pages & API Routes)
-│   ├── (client)/                 # Trang dành cho khách hàng
+│   ├── (cli)/                 # Trang dành cho khách hàng
 │   │   ├── (auth)/               # Trang cần đăng nhập
 │   │   │   ├── account/          # Quản lý tài khoản, đơn hàng, địa chỉ
 │   │   │   ├── login/            # Đăng nhập

@@ -1,5 +1,5 @@
 'use client';
-import Cart from '@/app/(client)/cart/ListCartProduct';
+import Cart from '@/app/(cli)/cart/ListCartProduct';
 import React, { useEffect } from 'react';
 
 

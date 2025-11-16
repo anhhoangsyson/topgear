@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { formatPrice, formatDate, formatOrderStatus } from '../../../../../lib/utils';
-import { fetchAccessToken } from '@/app/(client)/(auth)/account/address/ListAddressCard';
+import { fetchAccessToken } from '@/app/(cli)/(auth)/account/address/ListAddressCard';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/atoms/ui/Button';
 import { Badge } from '@/components/atoms/ui/badge';

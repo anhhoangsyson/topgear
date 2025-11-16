@@ -1,6 +1,6 @@
 import React from 'react'
 import { cookies } from 'next/headers';
-import FormAccountInfo from '@/app/(client)/(auth)/account/ui/FormAccountInfo';
+import FormAccountInfo from '@/app/(cli)/(auth)/account/ui/FormAccountInfo';
 import { authOptions } from '@/lib/auth-options';
 import { getServerSession } from 'next-auth';
 

@@ -2,9 +2,9 @@ import React from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Package, Calendar, CreditCard } from 'lucide-react'
 import { Badge } from '@/components/atoms/ui/badge'
-import CustomerInfoOrder from '@/app/(client)/(auth)/account/orders/[id]/CustomerInfoOrder';
-import ListOrderDetails from '@/app/(client)/(auth)/account/orders/[id]/ListOrderDetails';
-import OrderRatingSection from '@/app/(client)/(auth)/account/orders/[id]/OrderRatingSection';
+import CustomerInfoOrder from '@/app/(cli)/(auth)/account/orders/[id]/CustomerInfoOrder';
+import ListOrderDetails from '@/app/(cli)/(auth)/account/orders/[id]/ListOrderDetails';
+import OrderRatingSection from '@/app/(cli)/(auth)/account/orders/[id]/OrderRatingSection';
 import { formatDate, formatOrderStatus, formatPrice } from '../../../../../../lib/utils';
 import { getMyOrder } from '@/services/order-api'
 

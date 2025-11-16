@@ -1,8 +1,8 @@
 'use client'
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-import Step1 from '@/app/(client)/checkout/FormStep1'
-import Step2 from '@/app/(client)/checkout/FormStep2'
+import Step1 from '@/app/(cli)/checkout/FormStep1'
+import Step2 from '@/app/(cli)/checkout/FormStep2'
 import { CartItem } from '@/store/cartStore'
 
 export default function CheckoutClient() {

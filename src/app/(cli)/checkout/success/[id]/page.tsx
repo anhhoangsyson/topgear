@@ -1,4 +1,4 @@
-import Navigation from '@/app/(client)/checkout/success/[id]/Navigation';
+import Navigation from '@/app/(cli)/checkout/success/[id]/Navigation';
 import { cookies } from 'next/headers'
 import React from 'react'
 import { CheckCircle2, Sparkles } from 'lucide-react'

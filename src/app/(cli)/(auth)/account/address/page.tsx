@@ -1,4 +1,4 @@
-import ListAddressCard from '@/app/(client)/(auth)/account/address/ListAddressCard'
+import ListAddressCard from '@/app/(cli)/(auth)/account/address/ListAddressCard'
 import { cookies } from 'next/headers'
 import React from 'react'
 

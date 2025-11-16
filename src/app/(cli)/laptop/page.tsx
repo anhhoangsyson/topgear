@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 import { IBrand, ICategory } from '@/types'
 import UnifiedFilterColumn from '@/components/common/FilterColum/UnifiedFilterColumn'
 import MobileFilterDrawer from '@/components/common/FilterColum/MobileFilterDrawer'
-import LaptopList from '@/app/(client)/laptop/LaptopList'
+import LaptopList from '@/app/(cli)/laptop/LaptopList'
 import { Loader } from '@/components/atoms/feedback/Loader'
 
 async function getBrandList() {

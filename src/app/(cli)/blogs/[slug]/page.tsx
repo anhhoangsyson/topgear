@@ -1,7 +1,7 @@
 import NotFound from '@/app/not-found';
 import React from 'react'
 import { formatDate } from '../../../../lib/utils';
-import BlogBreadcrumb from '@/app/(client)/blogs/[slug]/BlogBreadCrumb';
+import BlogBreadcrumb from '@/app/(cli)/blogs/[slug]/BlogBreadCrumb';
 import Image from 'next/image';
 import { Calendar, User, Tag } from 'lucide-react';
 import Link from 'next/link';

@@ -1,4 +1,4 @@
-import LoginForm from '@/app/(client)/(auth)/login/LoginForm'
+import LoginForm from '@/app/(cli)/(auth)/login/LoginForm'
 import React, { Suspense } from 'react'
 
 export default function page() {

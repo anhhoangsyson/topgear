@@ -1,4 +1,4 @@
-import RegisterForm from '@/app/(client)/(auth)/register/RegisterForm'
+import RegisterForm from '@/app/(cli)/(auth)/register/RegisterForm'
 import React from 'react'
 
 export default function page() {
