@@ -3,7 +3,14 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Edit, Eye, Trash2 } from "lucide-react"
-import { IProduct } from "@/types"
+// Local display type for the product list (sample/demo data)
+type ProductRow = {
+  id: string;
+  productName: string;
+  category: string;
+  variants: number;
+  createdAt: string;
+}
 import { Badge } from "@/components/atoms/ui/badge"
 import { Button } from "@/components/atoms/ui/Button"
 import { Table, TableHead } from "@/components/atoms/ui/table"
@@ -28,13 +35,13 @@ const sampleProducts = [
 ]
 
 export default function ProductList() {
-  const [products, setProducts] = useState<IProduct[]>([])
+  const [products, setProducts] = useState<ProductRow[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     // Giả lập tải dữ liệu
     setTimeout(() => {
-      setProducts(sampleProducts)
+      setProducts(sampleProducts as ProductRow[])
       setIsLoading(false)
     }, 500)
   }, [])

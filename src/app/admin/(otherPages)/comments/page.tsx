@@ -273,7 +273,7 @@ export default function CommentsPage() {
                 <Panigation
                   totalPages={pagination.totalPages}
                   page={pagination.page}
-                  onPageChange={handlePageChange}
+                  // onPageChange={handlePageChange}
                 />
               </div>
             )}

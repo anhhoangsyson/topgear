@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import React from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Package, Calendar, CreditCard } from 'lucide-react'
@@ -7,35 +6,7 @@ import CustomerInfoOrder from '@/app/(client)/(auth)/account/orders/[id]/Custome
 import ListOrderDetails from '@/app/(client)/(auth)/account/orders/[id]/ListOrderDetails';
 import OrderRatingSection from '@/app/(client)/(auth)/account/orders/[id]/OrderRatingSection';
 import { formatDate, formatOrderStatus, formatPrice } from '../../../../../../lib/utils';
-
-export async function getMyOrder(id: string) {
-    const cookieStore = await cookies()
-    const accessToken = cookieStore.get('accessToken')?.value
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/order/${id}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-        },
-        cache: 'no-store',
-    })
-
-    if (!res.ok) {
-        if (res.status === 401) {
-            return {
-                error: "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
-                status: 401
-            };
-        }
-        return {
-            error: "Không thể tải danh sách đơn hàng.",
-            status: res.status
-        };
-    }
-    return res.json()
-}
+import { getMyOrder } from '@/services/order-api'
 
 export default async function page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
@@ -172,7 +143,7 @@ export default async function page({ params }: { params: Promise<{ id: string }>
                     <OrderRatingSection
                         orderId={order._id}
                         orderStatus={order.orderStatus}
-                        orderDetails={order.orderDetails.map(item => ({
+                        orderDetails={order.orderDetails.map((item: { laptopId: string; images?: string[] }) => ({
                             laptopId: item.laptopId,
                             images: item.images || []
                         }))}

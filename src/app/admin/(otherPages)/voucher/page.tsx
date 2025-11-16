@@ -1,10 +1,12 @@
 import Link from "next/link";
+export const dynamic = 'force-dynamic';
 import { IVoucher } from "@/types";
 import { voucherColumns } from "./voucher-columns";
 import { DataTable } from "@/components/common/data-table";
 import { Button } from "@/components/atoms/ui/Button";
 
 async function fetchVouchers(): Promise<IVoucher[]> {
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/voucher`, {
     method: "GET",
     cache: "no-store",

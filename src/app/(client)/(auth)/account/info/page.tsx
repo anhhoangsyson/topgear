@@ -1,7 +1,7 @@
 import React from 'react'
 import { cookies } from 'next/headers';
 import FormAccountInfo from '@/app/(client)/(auth)/account/ui/FormAccountInfo';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth-options';
 import { getServerSession } from 'next-auth';
 
 async function getUserInfo() {

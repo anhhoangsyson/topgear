@@ -7,6 +7,8 @@ import img5 from "/public/chuyenphatnhanh.jpg";
 import bookingOnl from "/public/bookingonline.png";
 import cardGift from "/public/cardgift.png";
 import CategorySection from "@/components/organisms/section/CategorySection/CategorySection";
+export const dynamic = 'force-dynamic';
+
 import BrandSection from "@/components/organisms/section/BrandSection/BrandSection";
 import LaptopGroupSection from "@/components/organisms/section/LaptopGroupSection/LaptopGroupSection";
 import LaptopPromodSection from "@/components/organisms/section/LaptopPromodSection/LaptopPromodSection";
@@ -77,46 +79,70 @@ const contactInfo = [
 ];
 
 async function fetchBrands() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/brand/active`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/brand/active`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
 
-  const data = await res.json();
-  return data.data
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data?.data || [];
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') console.warn('[fetchBrands] fetch failed', err);
+    return [];
+  }
 }
 
 async function fetchCategories() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/category`, {
-    method: "GET",
-  })
-  const data = await res.json();
-  return data.data
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/category`, {
+      method: "GET",
+    })
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data?.data || [];
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') console.warn('[fetchCategories] fetch failed', err);
+    return [];
+  }
 }
 
 async function fetchLaptopGroups() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop-group`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop-group`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
 
-  const data = await res.json();
-  return data.data
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data?.data || [];
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') console.warn('[fetchLaptopGroups] fetch failed', err);
+    return [];
+  }
 }
 
 async function fetctLaptopPromods() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  const data = await res.json();
-  return data.data
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data?.data || [];
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') console.warn('[fetctLaptopPromods] fetch failed', err);
+    return [];
+  }
 }
 
 export default async function Home() {

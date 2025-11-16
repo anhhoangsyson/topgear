@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_EXPRESS_API_URL || 'http://localhos
 
 // Ensure base URL ends with /api/v1 or add it, but avoid duplication
 const getBaseUrl = () => {
-  let base = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+  const base = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
   
   // Check if it already contains /api/v1
   if (base.includes('/api/v1')) {

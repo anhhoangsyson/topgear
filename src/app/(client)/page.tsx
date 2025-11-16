@@ -7,6 +7,8 @@ import img5 from "/public/chuyenphatnhanh.jpg";
 import bookingOnl from "/public/bookingonline.png";
 import cardGift from "/public/cardgift.png";
 import CategorySection from "@/components/organisms/section/CategorySection/CategorySection";
+export const dynamic = 'force-dynamic';
+
 import BrandSection from "@/components/organisms/section/BrandSection/BrandSection";
 import LaptopGroupSection from "@/components/organisms/section/LaptopGroupSection/LaptopGroupSection";
 import LaptopPromodSection from "@/components/organisms/section/LaptopPromodSection/LaptopPromodSection";

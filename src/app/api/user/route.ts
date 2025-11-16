@@ -1,35 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// export const API_URL = 'https://top-gear-be.vercel.app/api/v1';
-const API_URL = process.env.NEXT_PUBLIC_EXPRESS_API_URL || 'https://top-gear-be.vercel.app/api/v1'; 
-export async function callApi(endpoint: string, method: string, accessToken?: string, body?: unknown) {
-    const headers: HeadersInit = {
-        Accept: 'application/json',
-    }
-
-    if (accessToken) {
-        headers['Authorization'] = `Bearer ${accessToken}`
-    }
-
-    // Ensure endpoint starts with a '/'
-    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    const fullUrl = `${API_URL}${normalizedEndpoint}`;
-
-    const response = await fetch(`${fullUrl}`, {
-        method,
-        headers,
-        body: JSON.stringify(body) || undefined
-    })
-
-    if (!response.ok) {
-        const text = await response.text();
-        if (response.status === 401) {
-            return { error: 'Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', status: 401 };
-        }
-        throw new Error(`Backend error: ${response.status} - ${text.slice(0, 100)}`);
-    }
-    return response.json()
-}
+import { callApi } from '@/services/api-client'
 
 export async function GET() {
     // const accessToken = req.headers.get('Authorization')?.split(' ')[1] || ''
@@ -45,9 +15,8 @@ export async function GET() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const userData = await callApi('/auth/me',
-            "GET", accessToken
-        );        return NextResponse.json(userData);
+        const userData = await callApi('/auth/me', "GET", accessToken);
+        return NextResponse.json(userData);
     } catch {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
@@ -63,9 +32,8 @@ export async function PUT(req: NextRequest) {
 
         const body = await req.json()
 
-                const updateUserData = await callApi('/user', "PUT", accessToken, body)
-
-        return NextResponse.json(updateUserData)
+            const updateUserData = await callApi('/user', "PUT", accessToken, body)
+            return NextResponse.json(updateUserData)
     } catch {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import BestSellersAndTopRevenue from "@/app/admin/components/ecommerce/BestSellersAndTopRevenue";
 import { EcommerceMetrics } from "@/app/admin/components/ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "@/app/admin/components/ecommerce/MonthlySalesChart";

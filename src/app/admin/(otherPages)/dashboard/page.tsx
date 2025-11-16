@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import DashBoard from '@/app/admin/(otherPages)/dashboard/DashBoard';
 import React from 'react'
 

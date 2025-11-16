@@ -68,7 +68,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     set({ notifications: newNotifications, unreadCount: newUnreadCount });
   },
 
-  markAsRead: (notificationId) => {
+  markAsRead: async (notificationId) => {
     const notifications = get().notifications.map(notif => {
       const notifId = notif._id || notif.id;
       if (notifId === notificationId && !notif.isRead) {

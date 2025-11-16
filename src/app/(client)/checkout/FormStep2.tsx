@@ -346,12 +346,19 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
           onSelectVoucher={(voucher) => setVoucher(voucher)}
           onInputVoucher={(code) =>
             setVoucher({
+              _id: '',
               code,
               type: 'code',
               expiredDate: new Date(),
               pricePercent: 0,
               priceOrigin: 0,
-              status: 'active'
+              minPrice: 0,
+              maxUsage: 1,
+              currentUsage: 0,
+              maxDiscountAmount: 0,
+              status: 'active',
+              createdAt: new Date(),
+              updatedAt: new Date(),
             })} // hoặc logic phù hợp
           onClear={() => setVoucher(null)}
           onConfirm={() => setShowVoucherModal(false)}

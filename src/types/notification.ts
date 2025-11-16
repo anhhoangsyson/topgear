@@ -50,7 +50,7 @@ export interface INotification {
     userName?: string;
     laptopName?: string;
     isNegative?: boolean;
-    [key: string]: string | number | object | undefined;
+    [key: string]: string | number | boolean | object | undefined;
   };
   isRead: boolean;
   readAt?: string;

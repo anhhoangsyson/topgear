@@ -1,4 +1,5 @@
-'use client'
+"use client"
+export const dynamic = 'force-dynamic';
 import AdminHeader from '@/app/admin/layout/HeaderAdmin'
 import SidebarAdmin from '@/app/admin/layout/SidebarAdmin'
 import { useSidebar } from '@/context/admin/SidebarContext'

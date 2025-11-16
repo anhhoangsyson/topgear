@@ -1,10 +1,12 @@
 import LoginForm from '@/app/(client)/(auth)/login/LoginForm'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 export default function page() {
   return (
-    <div>
-      <LoginForm />
-    </div>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Đang tải...</div>}>
+      <div>
+        <LoginForm />
+      </div>
+    </Suspense>
   )
 }

@@ -1,10 +1,11 @@
+'use client'
 import React from 'react'
-import ReactQuillWrapper from '@/app/admin/(otherPages)/blog/ReactQuillWrapper';
+import BlogAddClient from './BlogAddClient'
 
-export default function page() {
+export default function Page() {
   return (
     <div>
-            <ReactQuillWrapper/>
+      <BlogAddClient />
     </div>
   )
 }

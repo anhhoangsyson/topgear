@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react'
+export const dynamic = 'force-dynamic';
 import { IBrand, ICategory } from '@/types'
 import UnifiedFilterColumn from '@/components/common/FilterColum/UnifiedFilterColumn'
 import MobileFilterDrawer from '@/components/common/FilterColum/MobileFilterDrawer'

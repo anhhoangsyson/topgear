@@ -10,7 +10,7 @@ export function caculateSalePercent(price: number, priceSale: number) {
   return salePercent;
 }
 
-export function formatPrice(price: string) {
+export function formatPrice(price: string | number) {
   if (price == null || isNaN(Number(price))) return "0 ₫";
 
   return Number(price).toLocaleString("vi-VN", {
@@ -19,8 +19,11 @@ export function formatPrice(price: string) {
   });
 }
 
-export function formatDate(isoString: string): string {
-  const date = new Date(isoString);
+export function formatDate(input?: string | Date | number | null): string {
+  if (!input) return "";
+
+  const date = typeof input === "string" || typeof input === "number" ? new Date(input) : input;
+
   return date
     .toLocaleString("vi-VN", {
       hour: "2-digit",

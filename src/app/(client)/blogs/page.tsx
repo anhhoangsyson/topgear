@@ -61,9 +61,17 @@ export default async function BlogPage() {
                   {/* Date */}
                   <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
                     <Calendar className="w-4 h-4" />
-                    <time dateTime={blog.createdAt}>
-                      {formatDate(blog.createdAt)}
-                    </time>
+                    {
+                      // createdAt can be Date or string in types — normalize to ISO string
+                    }
+                    {(() => {
+                      const createdAtStr = typeof blog.createdAt === 'string' ? blog.createdAt : blog.createdAt.toISOString();
+                      return (
+                        <time dateTime={createdAtStr}>
+                          {formatDate(createdAtStr)}
+                        </time>
+                      )
+                    })()}
                   </div>
 
                   {/* Title */}

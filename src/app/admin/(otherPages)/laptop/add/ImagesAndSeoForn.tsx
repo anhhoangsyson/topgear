@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 
 import { X, Upload, Plus } from 'lucide-react';
 import Image from "next/image";
-import { IImage } from "@/types";
+import { IImage, ISeoMetadata } from "@/types";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/atoms/ui/form";
 import { Button } from "@/components/atoms/ui/Button";
 import { Input } from "@/components/atoms/ui/input";
@@ -23,7 +23,8 @@ interface SuggestedMetadata {
 }
 
 interface ImagesAndSeoFormProps {
-  suggestedMetadata: SuggestedMetadata | null;
+  // Accept any shape for suggested metadata from different callers (keeps compatibility)
+  suggestedMetadata: any | null;
   oldImages?: IImage[]
   isEditMode?: boolean;
 }
@@ -41,10 +42,20 @@ export default function ImagesAndSeoForm({ suggestedMetadata, oldImages }: Image
 
   useEffect(() => {
     if (suggestedMetadata) {
-      setValue("seoMetadata.metaTitle", suggestedMetadata.seoMetadata?.metaTitle || "");
-      setValue("seoMetadata.metaDescription", suggestedMetadata.seoMetadata?.metaDescription || "");
-      setValue("seoMetadata.keywords", suggestedMetadata.seoMetadata?.keywords || []);
-      setValue("tags", suggestedMetadata.tags || []);
+      // Handle both shapes: { seoMetadata: { ... }, tags: [...] } or plain ISeoMetadata
+      if ((suggestedMetadata as SuggestedMetadata).seoMetadata) {
+        const s = (suggestedMetadata as SuggestedMetadata);
+        setValue("seoMetadata.metaTitle", s.seoMetadata?.metaTitle || "");
+        setValue("seoMetadata.metaDescription", s.seoMetadata?.metaDescription || "");
+        setValue("seoMetadata.keywords", s.seoMetadata?.keywords || []);
+        setValue("tags", s.tags || []);
+      } else {
+        const s = suggestedMetadata as ISeoMetadata;
+        setValue("seoMetadata.metaTitle", s.metaTitle || "");
+        setValue("seoMetadata.metaDescription", s.metaDescription || "");
+        setValue("seoMetadata.keywords", s.keywords || []);
+        setValue("tags", []);
+      }
     }
   }, [suggestedMetadata, setValue]);
 

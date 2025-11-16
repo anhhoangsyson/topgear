@@ -13,7 +13,7 @@ export interface IComment {
     email: string;
     avatar?: string;
   };
-  parent_id: string | null;
+  parent_id: string | { _id: string } | null;
   images?: string[];
   isApproved: boolean;
   replies?: IComment[];

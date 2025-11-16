@@ -97,7 +97,7 @@ export const voucherColumns: ColumnDef<IVoucher>[] = [
       const isExpired = expiredDate < new Date();
       return (
         <div className={isExpired ? "text-red-500" : ""}>
-          {formatDate(expiredDate)}
+          {formatDate(expiredDate.toISOString())}
         </div>
       );
     },

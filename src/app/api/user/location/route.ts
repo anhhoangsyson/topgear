@@ -1,4 +1,4 @@
-import { callApi } from "@/app/api/user/route";
+import { callApi } from "@/services/api-client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

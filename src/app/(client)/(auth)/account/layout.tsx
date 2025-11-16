@@ -16,9 +16,14 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         return pathname === `/account/${label}` || (label === 'info' && pathname === '/account');
     };
 
-    const userFullname = session?.user?.fullname || session?.user?.name || 'Người dùng';
+    const userFullname = String((session?.user as any)?.fullname || session?.user?.name || 'Người dùng');
     const userEmail = session?.user?.email || '';
-    const userInitials = userFullname.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    const userInitials = userFullname
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
 
     const menuAccount = [
         {

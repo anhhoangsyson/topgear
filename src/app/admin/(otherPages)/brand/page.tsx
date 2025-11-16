@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { IBrand } from "@/types";
+export const dynamic = 'force-dynamic';
+
 import { brandColumns } from "@/app/admin/(otherPages)/brand/brand-columns";
 import { DataTable } from "@/components/common/data-table";
 import { Button } from "@/components/atoms/ui/Button";
