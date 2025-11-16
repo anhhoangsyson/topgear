@@ -19,7 +19,7 @@ export default function CheckoutClient() {
 
     const [selectedItems, setSelectedItems] = useState<CartItem[]>([]);
     useEffect(() => {
-        const items = searchParams.get("cartItems");
+        const items = searchParams?.get("cartItems");
         if (items) {
             try {
                 // Giải mã và parse chuỗi JSON từ query string

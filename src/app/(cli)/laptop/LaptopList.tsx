@@ -22,12 +22,12 @@ export default function LaptopList() {
                 const params = new URLSearchParams();
                 
                 // Get all params from URL
-                const brand = searchParams.get('brand');
-                const category = searchParams.get('category');
-                const ram = searchParams.get('ram');
-                const cpu = searchParams.get('cpu');
-                const minPrice = searchParams.get('minPrice');
-                const maxPrice = searchParams.get('maxPrice');
+                const brand = searchParams?.get('brand');
+                const category = searchParams?.get('category');
+                const ram = searchParams?.get('ram');
+                const cpu = searchParams?.get('cpu');
+                const minPrice = searchParams?.get('minPrice');
+                const maxPrice = searchParams?.get('maxPrice');
 
                 if (brand) params.set('brand', brand);
                 if (category) params.set('category', category);
@@ -71,21 +71,21 @@ export default function LaptopList() {
 
     // Get active filters for display
     const activeFilters = {
-        brand: searchParams.get('brand')?.split(',') || [],
-        category: searchParams.get('category')?.split(',') || [],
-        ram: searchParams.get('ram')?.split(',') || [],
-        cpu: searchParams.get('cpu')?.split(',') || [],
+        brand: searchParams?.get('brand')?.split(',') || [],
+        category: searchParams?.get('category')?.split(',') || [],
+        ram: searchParams?.get('ram')?.split(',') || [],
+        cpu: searchParams?.get('cpu')?.split(',') || [],
     }
 
     const hasActiveFilters = activeFilters.brand.length > 0 || 
                            activeFilters.category.length > 0 || 
                            activeFilters.ram.length > 0 || 
                            activeFilters.cpu.length > 0 ||
-                           searchParams.get('minPrice') || 
-                           searchParams.get('maxPrice')
+                           searchParams?.get('minPrice') || 
+                           searchParams?.get('maxPrice')
 
     const handleRemoveFilter = (type: string, value?: string) => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(searchParams?.toString() || '');
         
         if (type === 'brand' && value) {
             const brands = activeFilters.brand.filter(b => b !== value);
@@ -197,7 +197,7 @@ export default function LaptopList() {
                                 </button>
                             </span>
                         ))}
-                        {(searchParams.get('minPrice') || searchParams.get('maxPrice')) && (
+                        {(searchParams?.get('minPrice') || searchParams?.get('maxPrice')) && (
                             <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">
                                 Giá
                                 <button

@@ -26,8 +26,8 @@ export default function UnifiedFilterColumn({
   const searchParams = useSearchParams()
 
   // Initialize from URL params
-  const brandParam = searchParams.get('brand')?.split(',') || []
-  const categoryParam = searchParams.get('category')?.split(',') || []
+  const brandParam = searchParams?.get('brand')?.split(',') || []
+  const categoryParam = searchParams?.get('category')?.split(',') || []
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(categoryParam)
   const [selectedBrands, setSelectedBrands] = useState<string[]>(brandParam)

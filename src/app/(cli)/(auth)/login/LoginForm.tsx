@@ -22,7 +22,7 @@ export default function LoginForm() {
 
   // check if user is navigated form other page with message in url
   useEffect(() => {
-    const message = searchParams.get("message");
+    const message = searchParams?.get("message");
     if (message) {
       toast({
         title: "Thông báo",
@@ -113,7 +113,7 @@ export default function LoginForm() {
         });
 
         // Redirect sau khi lưu cookie thành công
-        const callbackUrl = searchParams.get("callbackUrl") || "/";
+        const callbackUrl = searchParams?.get("callbackUrl") || "/";
         router.push(callbackUrl);
         router.refresh(); // Refresh để update session
       } else {

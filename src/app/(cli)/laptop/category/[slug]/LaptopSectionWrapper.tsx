@@ -10,7 +10,7 @@ export default function LaptopSectionWrapper({ slug }: { slug: string }) {
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(searchParams?.toString() || '');
         params.set('category', slug);
         const fetchLaptops = async () => {
             const query = params.toString();

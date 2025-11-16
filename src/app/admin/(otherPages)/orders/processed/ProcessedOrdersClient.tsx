@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 
 export default function ProcessedOrdersClient() {
   const searchParams = useSearchParams();
-  const orderIdFromQuery = searchParams.get('orderId');
+  const orderIdFromQuery = searchParams?.get('orderId');
 
   useEffect(() => {
     const fetchOrders = async () => {

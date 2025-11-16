@@ -10,7 +10,7 @@ export default function LaptopColumn({ slug }: { slug: string }) {
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(searchParams?.toString() || '');
         params.set('brand', slug);
         const fetchLaptops = async () => {
             const query = params.toString();

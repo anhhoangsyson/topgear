@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import img1 from "../../../../public/1607431213-guide-to-finding-out-phone-name.avif";
 import Wraper from "@/components/core/Wraper";
+
+const img1 = "/1607431213-guide-to-finding-out-phone-name.avif";
 import { formatDate } from "@/lib/utils";
 import { Calendar, ArrowRight } from "lucide-react";
 import { IBlog } from "@/types";

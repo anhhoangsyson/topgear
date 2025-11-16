@@ -1,13 +1,15 @@
 import Image from "next/image";
-import img1 from "/public/1607431213-guide-to-finding-out-phone-name.avif";
-import img2 from "/public/5 reasons you should buy a mid range phone over an expensive one.webp";
-import img3 from "/public/34b5bf180145769.6505ae7623131.webp";
-import img4 from "/public/9481555.png";
-import img5 from "/public/chuyenphatnhanh.jpg";
-import bookingOnl from "/public/bookingonline.png";
-import cardGift from "/public/cardgift.png";
 import CategorySection from "@/components/organisms/section/CategorySection/CategorySection";
 export const dynamic = 'force-dynamic';
+
+// Use string paths instead of imports for images
+const img1 = "/1607431213-guide-to-finding-out-phone-name.avif";
+const img2 = "/5 reasons you should buy a mid range phone over an expensive one.webp";
+const img3 = "/34b5bf180145769.6505ae7623131.webp";
+const img4 = "/9481555.png";
+const img5 = "/chuyenphatnhanh.jpg";
+const bookingOnl = "/bookingonline.png";
+const cardGift = "/cardgift.png";
 
 import BrandSection from "@/components/organisms/section/BrandSection/BrandSection";
 import LaptopGroupSection from "@/components/organisms/section/LaptopGroupSection/LaptopGroupSection";
