@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     // Last fallback: try to get from API route
     if (!accessToken) {
         try {
-            const tokenRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL_NEXT_SERVER || 'http://localhost:3000'}/api/user/get-access-token`, {
+            const tokenRes = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL_NEXT_SERVER || 'http://localhost:3000'}/api/user/get-access-token`, {
                 method: 'GET',
             });
             if (tokenRes.ok) {

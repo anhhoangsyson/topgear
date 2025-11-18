@@ -4,7 +4,7 @@ import { callApi } from '@/services/api-client'
 export async function GET() {
     // const accessToken = req.headers.get('Authorization')?.split(' ')[1] || ''
     // const accessToken = req.cookies.get('accessToken')?.value || ''
-    const accessTokenResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL_NEXT_SERVER}/api/user/get-access-token`, {
+    const accessTokenResponse = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL_NEXT_SERVER}/api/user/get-access-token`, {
         method: 'GET',
     });
     const accessTokenData = await accessTokenResponse.json();
