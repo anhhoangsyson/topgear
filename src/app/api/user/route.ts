@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callApi } from '@/services/api-client'
 
-export async function GET() {
-    // const accessToken = req.headers.get('Authorization')?.split(' ')[1] || ''
-    // const accessToken = req.cookies.get('accessToken')?.value || ''
-    const accessTokenResponse = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL_NEXT_SERVER}/api/user/get-access-token`, {
-        method: 'GET',
-    });
-    const accessTokenData = await accessTokenResponse.json();
-    const accessToken = accessTokenData?.accessToken || '';
-
+export async function GET(req: NextRequest) {
     try {
+        // Get access token from cookies
+        const accessToken = req.cookies.get('accessToken')?.value || '';
+
         if (!accessToken) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
