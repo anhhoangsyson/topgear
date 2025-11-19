@@ -1,8 +1,10 @@
 export const dynamic = 'force-dynamic';
 
+import BestSellersAndTopRevenue from "@/app/admin/components/ecommerce/BestSellersAndTopRevenue";
 import { EcommerceMetrics } from "@/app/admin/components/ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "@/app/admin/components/ecommerce/MonthlySalesChart";
 import RecentOrders from "@/app/admin/components/ecommerce/RecentOrders";
+import OrderNotificationWidget from "@/app/admin/components/ecommerce/OrderNotificationWidget";
 import type { Metadata } from "next";
 import React from "react";
 
@@ -15,7 +17,7 @@ interface IDashBoardSummaryResponse {
         name: string;
         sold: number;
     }[];
-    topRevenueProducts: {
+    topRevenueProduct: {
         productId: string;
         name: string;
         revenue: number;
@@ -70,6 +72,8 @@ export const metadata: Metadata = {
 
 export default async function Ecommerce() {
     const data = await fetchData();
+    console.log(data);
+    console.log(data.topRevenueProduct);
 
     if (!data) return <div>Error loading data</div>;
 
@@ -91,15 +95,25 @@ export default async function Ecommerce() {
                 />
             </div>
             <div className="col-span-12">
+                <BestSellersAndTopRevenue
+                    bestSellers={data.bestSellers}
+                    topRevenueProduct={data.topRevenueProduct}
+                />
+            </div>
+            <div className="col-span-12">
                 <MonthlySalesChart
                     monthlySales={data.monthlySalesFull}
                 />
             </div>
             <div className="col-span-12">
+                <OrderNotificationWidget />
+            </div>
+            <div className="col-span-12">
                 <RecentOrders
-                recentOrders={data.recentOrders}
+                    recentOrders={data.recentOrders}
                 />
             </div>
+
         </div>
     );
 }

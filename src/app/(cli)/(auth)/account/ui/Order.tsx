@@ -5,7 +5,8 @@ import { fetchAccessToken } from '@/app/(cli)/(auth)/account/address/ListAddress
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/atoms/ui/Button';
 import { Badge } from '@/components/atoms/ui/badge';
-import { Package } from 'lucide-react';
+import { Package, Star } from 'lucide-react';
+import OrderRatingSection from '@/app/(cli)/(auth)/account/orders/[id]/OrderRatingSection';
 
 interface InititalOrderList {
   _id: string
@@ -15,6 +16,8 @@ interface InititalOrderList {
     productVariantId: string
     productVariantName: string
     quantity: number
+    laptopId?: string
+    images?: string[]
   }[]
   totalAmount: number
   orderStatus: string
@@ -26,6 +29,7 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
   const [orderList, setOrderList] = useState<InititalOrderList[]>(initialOrderList)
   const [filterStatus, setFilterStatus] = useState('Tất cả')
   const [isLoading, setIsLoading] = useState(false)
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null)
 
   const filterOrder = (status: string) => {
     setFilterStatus(status)
@@ -146,16 +150,27 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
                                         <span className="font-bold text-green-600">{formatPrice(order.totalAmount.toString())}</span>
                                     </div>
                                 </div>
-                                <div className="mt-4 pt-4 border-t">
+                                <div className="mt-4 pt-4 border-t flex gap-2">
                                     <Button
                                         disabled={order.orderStatus === 'completed' || order.orderStatus === 'cancelled'}
                                         variant="outline"
                                         size="sm"
-                                        className="w-full text-xs border-red-300 text-red-600 hover:bg-red-500 hover:text-white"
+                                        className="flex-1 text-xs border-red-300 text-red-600 hover:bg-red-500 hover:text-white"
                                         onClick={() => handleCancelingOrder(order._id)}
                                     >
                                         Hủy đơn hàng
                                     </Button>
+                                    {order.orderStatus === 'completed' && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="flex-1 text-xs border-yellow-400 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700 hover:border-yellow-500"
+                                            onClick={() => setExpandedOrderId(expandedOrderId === order._id ? null : order._id)}
+                                        >
+                                            <Star className="w-3 h-3 mr-1" />
+                                            {expandedOrderId === order._id ? 'Ẩn' : 'Đánh giá'}
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
 
@@ -181,18 +196,44 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
                         {formatOrderStatus(order.orderStatus)}
                       </Badge>
                                 </div>
-                                <div className="col-span-12 sm:col-span-2">
+                                <div className="col-span-12 sm:col-span-2 flex gap-2">
                     <Button
                       disabled={order.orderStatus === 'completed' || order.orderStatus === 'cancelled'}
                       variant="outline"
                       size="sm"
-                                        className="w-full sm:w-auto text-xs border-red-300 text-red-600 hover:bg-red-500 hover:text-white hover:border-red-500"
+                                        className="flex-1 text-xs border-red-300 text-red-600 hover:bg-red-500 hover:text-white hover:border-red-500"
                       onClick={() => handleCancelingOrder(order._id)}
                     >
                       Hủy đơn hàng
                     </Button>
+                                    {order.orderStatus === 'completed' && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="flex-1 text-xs border-yellow-400 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700 hover:border-yellow-500"
+                                            onClick={() => setExpandedOrderId(expandedOrderId === order._id ? null : order._id)}
+                                        >
+                                            <Star className="w-3 h-3 mr-1" />
+                                            {expandedOrderId === order._id ? 'Ẩn' : 'Đánh giá'}
+                                        </Button>
+                                    )}
         </div>
       </div>
+
+                            {/* Rating Section - Expanded */}
+                            {expandedOrderId === order._id && order.orderStatus === 'completed' && (
+                                <div className="p-4 border-t bg-gray-50">
+                                    <OrderRatingSection
+                                        orderId={order._id}
+                                        orderStatus={order.orderStatus}
+                                        orderDetails={order.orderDetails.map(item => ({
+                                            laptopId: item.laptopId || item.productId,
+                                            name: item.productName,
+                                            images: item.images ? item.images.map(img => ({ imageUrl: img })) : []
+                                        }))}
+                                    />
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

@@ -328,7 +328,7 @@ const SidebarAdmin: React.FC = () => {
         className={`py-4 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
           }`}
       >
-        <Link href="/">
+        <Link href="/admin/dashboard">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image
