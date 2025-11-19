@@ -12,7 +12,6 @@ const UserInfoSchema = z.object({
     email: z.string().email("Email không hợp lệ"),
     usersname: z.string().min(2, "Tên đăng nhập tối thiểu 2 ký tự"),
     phone: z.string().optional(),
-    address: z.string().optional(),
     sex: z.enum(["male", "female", "other"]),
     avatar: z.string().optional(),
 });
@@ -49,7 +48,6 @@ export default function FormAccountInfo({ userInfo }: { userInfo: UserInfoData }
         email: userInfo?.email || "",
         usersname: userInfo?.usersname || "",
         phone: userInfo?.phone ? String(userInfo.phone) : "",
-        address: userInfo?.address || "",
         sex: (userInfo?.sex as "male" | "female" | "other") || "male",
         avatar: userInfo?.avatar || "",
     };
@@ -192,7 +190,7 @@ export default function FormAccountInfo({ userInfo }: { userInfo: UserInfoData }
                     </div>
 
                     {/* Address */}
-                    <div className="md:col-span-2">
+                    {/* <div className="md:col-span-2">
                         <label className="block mb-2 text-sm font-semibold text-gray-700">
                             Địa chỉ
                         </label>
@@ -204,7 +202,7 @@ export default function FormAccountInfo({ userInfo }: { userInfo: UserInfoData }
                         {errors.address && (
                             <p className="mt-1 text-sm text-red-500">{errors.address.message}</p>
                         )}
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Submit Button */}

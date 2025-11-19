@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useWishlist } from '@/hooks/useWishlist';
-import { IWishlist } from '@/types/wishlist';
 import { ILaptop } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -156,11 +155,11 @@ export default function WishlistPage() {
                     {/* Add to Cart Button */}
                     <Button
                       onClick={(e) => handleAddToCart(laptop, e)}
-                      className="w-full text-sm text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white py-2"
+                      className="w-full text-xs sm:text-sm text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white py-2 flex items-center justify-center gap-1.5"
                       variant="outline"
                     >
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      Thêm vào giỏ hàng
+                      <ShoppingCart className="w-4 h-4 flex-shrink-0" />
+                      <span className="truncate">Thêm vào giỏ hàng</span>
                     </Button>
                   </div>
                 );
