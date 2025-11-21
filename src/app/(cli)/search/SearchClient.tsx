@@ -2,11 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { searchApi, SearchProduct } from "@/services/search-api";
+import { searchApi, SearchProduct, SortOption } from "@/services/search-api";
 import { Button } from "@/components/atoms/ui/Button";
-import { Loader2, Search, Filter } from "lucide-react";
+import { Loader2, Search, ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+const SORT_OPTIONS = [
+  { value: 'relevance' as SortOption, label: 'Phù hợp nhất' },
+  { value: 'price_asc' as SortOption, label: 'Giá thấp đến cao' },
+  { value: 'price_desc' as SortOption, label: 'Giá cao đến thấp' },
+  { value: 'rating' as SortOption, label: 'Đánh giá cao nhất' },
+  { value: 'newest' as SortOption, label: 'Mới nhất' },
+  { value: 'name' as SortOption, label: 'Tên A-Z' },
+];
 
 export default function SearchClient() {
   const searchParams = useSearchParams();
@@ -17,11 +26,7 @@ export default function SearchClient() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-  const [showFilters, setShowFilters] = useState(false);
-
-  // Filters
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>('relevance');
 
   // Fetch search results
   useEffect(() => {
@@ -30,16 +35,11 @@ export default function SearchClient() {
     const fetchResults = async () => {
       setLoading(true);
       try {
-        const filters = {
-          minPrice: minPrice ? Number(minPrice) : undefined,
-          maxPrice: maxPrice ? Number(maxPrice) : undefined,
-        };
-
         const response = await searchApi.searchProducts(
           query,
           currentPage,
           20,
-          filters
+          sortBy
         );
 
         setResults(response.data);
@@ -54,23 +54,12 @@ export default function SearchClient() {
     };
 
     fetchResults();
-  }, [query, currentPage, minPrice, maxPrice]);
+  }, [query, currentPage, sortBy]);
 
-  // Reset page when query or filters change
+  // Reset page when query or sort changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [query, minPrice, maxPrice]);
-
-  const handleApplyFilters = () => {
-    setCurrentPage(1);
-    setShowFilters(false);
-  };
-
-  const handleClearFilters = () => {
-    setMinPrice("");
-    setMaxPrice("");
-    setCurrentPage(1);
-  };
+  }, [query, sortBy]);
 
   if (!query) {
     return (
@@ -97,85 +86,27 @@ export default function SearchClient() {
         </p>
       </div>
 
-      {/* Filter Button - Mobile */}
-      <div className="mb-4 md:hidden">
-        <Button
-          onClick={() => setShowFilters(!showFilters)}
-          variant="outline"
-          className="w-full"
-        >
-          <Filter className="h-4 w-4 mr-2" />
-          {showFilters ? "Ẩn bộ lọc" : "Hiện bộ lọc"}
-        </Button>
+      {/* Sort Options */}
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <ArrowUpDown className="h-4 w-4 text-gray-500" />
+          <label className="text-sm font-medium text-gray-700">Sắp xếp:</label>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+            className="border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Filters Sidebar */}
-        <aside
-          className={`md:w-64 flex-shrink-0 ${
-            showFilters ? "block" : "hidden md:block"
-          }`}
-        >
-          <div className="bg-white border border-gray-200 rounded-lg p-4 sticky top-24">
-            <h2 className="font-semibold text-lg mb-4 flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              Bộ lọc
-            </h2>
-
-            {/* Price Range */}
-            <div className="mb-6">
-              <h3 className="font-medium mb-3 text-gray-900">Khoảng giá</h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm text-gray-600 mb-1 block">
-                    Từ (VND)
-                  </label>
-                  <input
-                    type="number"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    placeholder="0"
-                    className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600 mb-1 block">
-                    Đến (VND)
-                  </label>
-                  <input
-                    type="number"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    placeholder="100000000"
-                    className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-2">
-              <Button
-                onClick={handleApplyFilters}
-                className="flex-1"
-                size="sm"
-              >
-                Áp dụng
-              </Button>
-              <Button
-                onClick={handleClearFilters}
-                variant="outline"
-                className="flex-1"
-                size="sm"
-              >
-                Xóa
-              </Button>
-            </div>
-          </div>
-        </aside>
-
-        {/* Results Grid */}
-        <div className="flex-1">
+      {/* Results Grid */}
+      <div className="w-full">
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -186,9 +117,6 @@ export default function SearchClient() {
               <p className="text-gray-500 text-lg">
                 Không tìm thấy sản phẩm nào
               </p>
-              <Button onClick={handleClearFilters} variant="outline">
-                Xóa bộ lọc
-              </Button>
             </div>
           ) : (
             <>
@@ -202,10 +130,10 @@ export default function SearchClient() {
                   >
                     {/* Product Image */}
                     <div className="relative w-full aspect-square mb-3 bg-gray-100 rounded overflow-hidden">
-                      {product.image ? (
+                      {product.imageUrl ? (
                         <Image
-                          src={product.image}
-                          alt={product.variantName}
+                          src={product.imageUrl}
+                          alt={product.name}
                           fill
                           className="object-contain hover:scale-105 transition-transform duration-300"
                         />
@@ -216,7 +144,7 @@ export default function SearchClient() {
                       )}
 
                       {/* Out of stock overlay */}
-                      {product.variantStock === 0 && (
+                      {product.stock === 0 && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                           <span className="bg-red-500 text-white px-3 py-1 rounded text-sm font-medium">
                             Hết hàng
@@ -226,21 +154,40 @@ export default function SearchClient() {
                     </div>
 
                     {/* Product Info */}
-                    <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 min-h-[3rem]">
-                      {product.variantName}
-                    </h3>
+                    <div className="mb-2">
+                      <h3 className="font-medium text-gray-900 line-clamp-2 min-h-[3rem]">
+                        {product.name}
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {product.modelName} - {product.brand.name}
+                      </p>
+                    </div>
+
+                    {/* Specs */}
+                    <div className="text-xs text-gray-600 mb-2 space-y-1">
+                      <p className="truncate">{product.processor}</p>
+                      <p className="truncate">{product.ram} | {product.storage}</p>
+                    </div>
+
+                    {/* Rating */}
+                    {product.averageRating > 0 && (
+                      <div className="flex items-center gap-1 mb-2">
+                        <span className="text-yellow-500">★</span>
+                        <span className="text-sm font-medium">{product.averageRating.toFixed(1)}</span>
+                      </div>
+                    )}
 
                     {/* Price */}
                     <div className="flex items-baseline gap-2 mb-2">
                       <span className="text-blue-600 font-bold text-lg">
-                        {product.variantPriceSale.toLocaleString("vi-VN", {
+                        {product.salePrice.toLocaleString("vi-VN", {
                           style: "currency",
                           currency: "VND",
                         })}
                       </span>
-                      {product.variantPrice > product.variantPriceSale && (
+                      {product.price > product.salePrice && (
                         <span className="text-gray-400 line-through text-sm">
-                          {product.variantPrice.toLocaleString("vi-VN", {
+                          {product.price.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -249,9 +196,9 @@ export default function SearchClient() {
                     </div>
 
                     {/* Stock Status */}
-                    {product.variantStock > 0 && (
-                      <p className="text-sm text-gray-500">
-                        Còn {product.variantStock} sản phẩm
+                    {product.stock > 0 && (
+                      <p className="text-sm text-green-600">
+                        Còn {product.stock} sản phẩm
                       </p>
                     )}
                   </Link>
@@ -318,7 +265,6 @@ export default function SearchClient() {
             </>
           )}
         </div>
-      </div>
     </div>
   );
 }

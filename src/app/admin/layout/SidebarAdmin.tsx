@@ -59,6 +59,8 @@ const navItems: NavItem[] = [
     icon: <BoxIconLine />,
     subItems: [
       { name: "Danh sách đơn hàng", path: "/admin/orders", pro: false },
+      { name: "Đơn hàng chưa xử lý", path: "/admin/orders/pending", pro: false },
+      { name: "Đơn hàng đã xử lý", path: "/admin/orders/processed", pro: false },
     ],
   },
   // {

@@ -3,6 +3,16 @@ import { io, Socket } from "socket.io-client";
 import { TokenManager } from "@/lib/token-manager";
 import { INotification } from "@/types/notification";
 
+/**
+ * useSocket hook
+ * - Kết nối socket.io khi có `userId` (người dùng đã đăng nhập)
+ * - Sử dụng TokenManager để lấy access token và gửi lên server để authenticate
+ * - Trả về `socketRef.current` để component có thể dùng trực tiếp nếu cần
+ *
+ * Lưu ý:
+ * - Hook tự manage lifecycle: connect khi mount và disconnect khi unmount hoặc userId thay đổi
+ * - Các callback onNotification/onUnreadCountUpdate phải an toàn (catch error bên trong)
+ */
 export function useSocket(
   userId: string | undefined,
   onNotification: (data: INotification) => void,
@@ -20,15 +30,16 @@ export function useSocket(
 
     const connectSocket = async () => {
       try {
-        // Get access token for authentication
+        // Lấy access token từ TokenManager (có thể lưu ở cookie/localStorage)
         const token = await TokenManager.getAccessToken();
         if (!mounted || !token) {
+          // Nếu unmounted hoặc không có token, không tiếp tục
           return;
         }
 
         const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000';
         
-        // Kết nối tới server socket.io
+        // Kết nối tới server socket.io với các tuỳ chọn hợp lý cho reconnect
         const socket = io(socketUrl, {
           transports: ["websocket", "polling"],
           withCredentials: true,
@@ -41,13 +52,13 @@ export function useSocket(
 
         socketRef.current = socket;
 
-        // Lắng nghe sự kiện connection
+        // Khi kết nối thành công, gửi event authenticate kèm token để server xác thực
         socket.on("connect", () => {
           socket.emit("authenticate", token);
         });
 
         socket.on("disconnect", () => {
-          // Silent disconnect
+          // Silent disconnect: có thể log hoặc hiển thị trạng thái nếu cần
         });
 
         socket.on("connect_error", (error: Error) => {
@@ -56,8 +67,9 @@ export function useSocket(
           }
         });
 
+        // Một số event do server emit: authenticated / authentication_error
         socket.on("authenticated", () => {
-          // Silent authentication success
+          // Authentication thành công (thường không cần hành động thêm ở client)
         });
 
         socket.on("authentication_error", (error: { message: string }) => {
@@ -66,6 +78,7 @@ export function useSocket(
           }
         });
 
+        // Sự kiện nhận notification mới từ server
         socket.on("new_notification", (data: INotification) => {
           if (mounted) {
             try {
@@ -78,6 +91,7 @@ export function useSocket(
           }
         });
 
+        // Các sự kiện cập nhật số lượng chưa đọc
         socket.on("notification_read", (data: { notificationId: string; unreadCount: number }) => {
           if (onUnreadCountUpdate && mounted) {
             onUnreadCountUpdate(data.unreadCount);
@@ -108,6 +122,7 @@ export function useSocket(
     connectSocket();
 
     return () => {
+      // Cleanup: set mounted false and disconnect socket nếu đang tồn tại
       mounted = false;
       if (socketRef.current) {
         socketRef.current.disconnect();

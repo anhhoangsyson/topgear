@@ -28,7 +28,7 @@ export default function SearchAutocomplete({
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Debounced fetch suggestions
+  // Debounced fetch suggestions - Using new suggestions API
   const fetchSuggestions = useCallback(async (searchQuery: string) => {
     if (searchQuery.length < 2) {
       setSuggestions([]);
@@ -38,11 +38,11 @@ export default function SearchAutocomplete({
 
     setLoading(true);
     try {
-      const results = await searchApi.getAutocomplete(searchQuery, 5);
+      const results = await searchApi.getSuggestions(searchQuery, 5);
       setSuggestions(results);
       setShowDropdown(results.length > 0);
     } catch (error) {
-      console.error("Autocomplete error:", error);
+      console.error("Suggestions error:", error);
       setSuggestions([]);
     } finally {
       setLoading(false);
@@ -157,10 +157,10 @@ export default function SearchAutocomplete({
               >
                 {/* Product Image */}
                 <div className="relative w-12 h-12 flex-shrink-0 bg-gray-100 rounded">
-                  {suggestion.image ? (
+                  {suggestion.imageUrl ? (
                     <Image
-                      src={suggestion.image}
-                      alt={suggestion.variantName}
+                      src={suggestion.imageUrl}
+                      alt={suggestion.name}
                       fill
                       className="object-contain rounded"
                     />
@@ -174,14 +174,27 @@ export default function SearchAutocomplete({
                 {/* Product Info */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    {suggestion.variantName}
+                    {suggestion.name}
                   </p>
-                  <p className="text-sm text-blue-600 font-semibold">
-                    {suggestion.variantPriceSale.toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                  <p className="text-xs text-gray-500 truncate">
+                    {suggestion.modelName} - {suggestion.brand.name}
                   </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="text-sm text-blue-600 font-semibold">
+                      {suggestion.salePrice.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </p>
+                    {suggestion.price > suggestion.salePrice && (
+                      <p className="text-xs text-gray-400 line-through">
+                        {suggestion.price.toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 {/* Arrow Icon */}

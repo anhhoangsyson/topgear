@@ -1,4 +1,6 @@
 import React, { Suspense } from 'react'
+// Trang danh sách laptop: tải dữ liệu filter (brand/category) ở server-side
+// và render `LaptopList` (component tách biệt, có thể dùng client hooks bên trong).
 export const dynamic = 'force-dynamic';
 import { IBrand, ICategory } from '@/types'
 import UnifiedFilterColumn from '@/components/common/FilterColum/UnifiedFilterColumn'
@@ -7,6 +9,7 @@ import LaptopList from '@/app/(cli)/laptop/LaptopList'
 import { Loader } from '@/components/atoms/feedback/Loader'
 
 async function getBrandList() {
+  // Lấy danh sách thương hiệu từ backend. Sử dụng cache: 'no-store' để luôn lấy dữ liệu mới.
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/brand`, {
       method: 'GET',
@@ -18,12 +21,14 @@ async function getBrandList() {
     }
     return data.data;
   } catch (error) {
+    // Không để lỗi làm vỡ trang: log và trả về mảng rỗng
     console.error('Error fetching brands:', error);
     return [];
   }
 }
 
 async function getCategoryList() {
+  // Lấy danh mục (categories) tương tự như brands
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/category`, {
       method: 'GET',
@@ -57,7 +62,7 @@ export default async function LaptopsPage() {
           </p>
         </div>
 
-        {/* Mobile Filter Button */}
+        {/* Mobile Filter Button - trên mobile sử dụng Drawer để hiển thị bộ lọc */}
         <div className="mb-4 md:hidden">
           <Suspense fallback={<div className="h-10 bg-gray-200 rounded animate-pulse" />}>
             <MobileFilterDrawer

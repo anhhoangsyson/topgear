@@ -1,8 +1,10 @@
 import Image from "next/image";
 import CategorySection from "@/components/organisms/section/CategorySection/CategorySection";
+// Trang Home được đánh dấu `force-dynamic` vì chúng ta gọi backend runtime
+// (tránh prerender tại build-time nếu backend không sẵn sàng).
 export const dynamic = 'force-dynamic';
 
-// Use string paths instead of imports for images
+// Dùng đường dẫn string cho ảnh trong `public/` (tránh import nặng)
 const img1 = "/1607431213-guide-to-finding-out-phone-name.avif";
 const img2 = "/5 reasons you should buy a mid range phone over an expensive one.webp";
 const img3 = "/34b5bf180145769.6505ae7623131.webp";
@@ -81,6 +83,8 @@ const contactInfo = [
 ];
 
 async function fetchBrands() {
+  // Gọi backend để lấy danh sách brand active.
+  // Lưu ý: hàm này chạy ở server component thời điểm request (server-side)
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/brand/active`, {
       method: "GET",
@@ -93,12 +97,14 @@ async function fetchBrands() {
     const data = await res.json();
     return data?.data || [];
   } catch (err) {
+    // Trong môi trường development log để debug, production trả về mảng rỗng
     if (process.env.NODE_ENV === 'development') console.warn('[fetchBrands] fetch failed', err);
     return [];
   }
 }
 
 async function fetchCategories() {
+  // Lấy danh mục (categories)
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/category`, {
       method: "GET",
@@ -113,6 +119,7 @@ async function fetchCategories() {
 }
 
 async function fetchLaptopGroups() {
+  // Lấy các nhóm laptop (nhóm sản phẩm) dùng để hiển thị bộ sưu tập
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop-group`, {
       method: "GET",
@@ -131,6 +138,7 @@ async function fetchLaptopGroups() {
 }
 
 async function fetctLaptopPromods() {
+  // Lấy danh sách laptop (promo/featured) để hiển thị trên trang chủ
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop`, {
       method: "GET",
@@ -157,6 +165,7 @@ export default async function Home() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 md:mt-20 pb-8">
+        {/* SessionSyncer: component server/client đảm bảo session đồng bộ (ví dụ login từ tab khác) */}
         <SessionSyncer />
         <div className="bg-gray-50">
           {/* Category Filter Bar */}
