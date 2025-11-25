@@ -10,8 +10,9 @@ export interface SearchSuggestion {
   name: string;
   modelName: string;
   price: number;
-  salePrice: number;
-  imageUrl: string;
+  discountPrice: number;
+  primaryImage: string;
+  slug: string;
   brand: {
     _id: string;
     name: string;
@@ -23,9 +24,9 @@ export interface SearchProduct {
   name: string;
   modelName: string;
   price: number;
-  salePrice: number;
+  discountPrice: number;
   stock: number;
-  imageUrl: string;
+  images: { imageUrl: string }[];
   processor: string;
   ram: string;
   storage: string;
@@ -34,7 +35,7 @@ export interface SearchProduct {
   description: string;
   tags: string[];
   averageRating: number;
-  brand: {
+  brandId: {
     _id: string;
     name: string;
   };
@@ -153,9 +154,12 @@ export const searchApi = {
         sortBy,
       });
 
-      const response = await fetch(
-        `${API_BASE_URL}/laptop/search?${params.toString()}`
-      );
+      const url = `${API_BASE_URL}/laptop/search?${params.toString()}`;
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('[search-api] search URL:', url);
+      }
+
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error('Search request failed');

@@ -40,7 +40,7 @@ export default function SearchAutocomplete({
     try {
       const results = await searchApi.getSuggestions(searchQuery, 5);
       setSuggestions(results);
-      setShowDropdown(results.length > 0);
+      setShowDropdown(results.length >= 0);
     } catch (error) {
       console.error("Suggestions error:", error);
       setSuggestions([]);
@@ -72,7 +72,7 @@ export default function SearchAutocomplete({
     }
 
     // Navigate to product detail page
-    router.push(`/laptop/${suggestion._id}`);
+    router.push(`/laptop/${suggestion.slug}`);
     setShowDropdown(false);
     setQuery("");
   };
@@ -151,15 +151,15 @@ export default function SearchAutocomplete({
           <div className="p-2">
             {suggestions.map((suggestion) => (
               <button
-                key={suggestion._id}
+                key={suggestion.slug}
                 onClick={() => handleSuggestionClick(suggestion)}
                 className="w-full flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors text-left"
               >
                 {/* Product Image */}
                 <div className="relative w-12 h-12 flex-shrink-0 bg-gray-100 rounded">
-                  {suggestion.imageUrl ? (
+                  {suggestion.primaryImage ? (
                     <Image
-                      src={suggestion.imageUrl}
+                      src={suggestion.primaryImage}
                       alt={suggestion.name}
                       fill
                       className="object-contain rounded"
@@ -181,12 +181,12 @@ export default function SearchAutocomplete({
                   </p>
                   <div className="flex items-center gap-2 mt-1">
                     <p className="text-sm text-blue-600 font-semibold">
-                      {suggestion.salePrice.toLocaleString("vi-VN", {
+                      {suggestion.discountPrice.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
-                      })}
+                      }) || ""}
                     </p>
-                    {suggestion.price > suggestion.salePrice && (
+                    {suggestion.price > suggestion.discountPrice && (
                       <p className="text-xs text-gray-400 line-through">
                         {suggestion.price.toLocaleString("vi-VN", {
                           style: "currency",
@@ -219,6 +219,12 @@ export default function SearchAutocomplete({
             </div>
           )}
         </div>
+      )}
+
+      {showDropdown && suggestions.length === 0 && (
+        <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-center text-gray-500">
+          Không tìm thấy sản phẩm nào.
+        </div>  
       )}
     </div>
   );

@@ -41,6 +41,7 @@ export default function SearchClient() {
           20,
           sortBy
         );
+        console.log('djt me may', response.data);
 
         setResults(response.data);
         setTotalPages(response.pagination.totalPages);
@@ -107,164 +108,164 @@ export default function SearchClient() {
 
       {/* Results Grid */}
       <div className="w-full">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-            </div>
-          ) : results.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <Search className="h-16 w-16 text-gray-300" />
-              <p className="text-gray-500 text-lg">
-                Không tìm thấy sản phẩm nào
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Results Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
-                {results.map((product) => (
-                  <Link
-                    key={product._id}
-                    href={`/laptop/${product._id}`}
-                    className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow"
-                  >
-                    {/* Product Image */}
-                    <div className="relative w-full aspect-square mb-3 bg-gray-100 rounded overflow-hidden">
-                      {product.imageUrl ? (
-                        <Image
-                          src={product.imageUrl}
-                          alt={product.name}
-                          fill
-                          className="object-contain hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Search className="h-12 w-12 text-gray-300" />
-                        </div>
-                      )}
-
-                      {/* Out of stock overlay */}
-                      {product.stock === 0 && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                          <span className="bg-red-500 text-white px-3 py-1 rounded text-sm font-medium">
-                            Hết hàng
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="mb-2">
-                      <h3 className="font-medium text-gray-900 line-clamp-2 min-h-[3rem]">
-                        {product.name}
-                      </h3>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {product.modelName} - {product.brand.name}
-                      </p>
-                    </div>
-
-                    {/* Specs */}
-                    <div className="text-xs text-gray-600 mb-2 space-y-1">
-                      <p className="truncate">{product.processor}</p>
-                      <p className="truncate">{product.ram} | {product.storage}</p>
-                    </div>
-
-                    {/* Rating */}
-                    {product.averageRating > 0 && (
-                      <div className="flex items-center gap-1 mb-2">
-                        <span className="text-yellow-500">★</span>
-                        <span className="text-sm font-medium">{product.averageRating.toFixed(1)}</span>
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          </div>
+        ) : results.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <Search className="h-16 w-16 text-gray-300" />
+            <p className="text-gray-500 text-lg">
+              Không tìm thấy sản phẩm nào
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Results Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+              {results.map((product) => (
+                <Link
+                  key={product._id}
+                  href={`/laptop/${product._id}`}
+                  className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow"
+                >
+                  {/* Product Image */}
+                  <div className="relative w-full aspect-square mb-3 bg-gray-100 rounded overflow-hidden">
+                    {product.images?.[0]?.imageUrl ? (
+                      <Image
+                        src={product.images[0].imageUrl}
+                        alt={product.name}
+                        fill
+                        className="object-contain hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Search className="h-12 w-12 text-gray-300" />
                       </div>
                     )}
 
-                    {/* Price */}
-                    <div className="flex items-baseline gap-2 mb-2">
-                      <span className="text-blue-600 font-bold text-lg">
-                        {product.salePrice.toLocaleString("vi-VN", {
+                    {/* Out of stock overlay */}
+                    {product.stock === 0 && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <span className="bg-red-500 text-white px-3 py-1 rounded text-sm font-medium">
+                          Hết hàng
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="mb-2">
+                    <h3 className="font-medium text-gray-900 line-clamp-2 min-h-[3rem]">
+                      {product.name}
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {product.modelName} - {product.brandId.name}
+                    </p>
+                  </div>
+
+                  {/* Specs */}
+                  <div className="text-xs text-gray-600 mb-2 space-y-1">
+                    <p className="truncate">{product.processor}</p>
+                    <p className="truncate">{product.ram} | {product.storage}</p>
+                  </div>
+
+                  {/* Rating */}
+                  {product.averageRating > 0 && (
+                    <div className="flex items-center gap-1 mb-2">
+                      <span className="text-yellow-500">★</span>
+                      <span className="text-sm font-medium">{product.averageRating.toFixed(1)}</span>
+                    </div>
+                  )}
+
+                  {/* Price */}
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-blue-600 font-bold text-lg">
+                      {product.discountPrice.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </span>
+                    {product.price > product.discountPrice && (
+                      <span className="text-gray-400 line-through text-sm">
+                        {product.price.toLocaleString("vi-VN", {
                           style: "currency",
                           currency: "VND",
                         })}
                       </span>
-                      {product.price > product.salePrice && (
-                        <span className="text-gray-400 line-through text-sm">
-                          {product.price.toLocaleString("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Stock Status */}
-                    {product.stock > 0 && (
-                      <p className="text-sm text-green-600">
-                        Còn {product.stock} sản phẩm
-                      </p>
                     )}
-                  </Link>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mt-8">
-                  <Button
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    variant="outline"
-                  >
-                    Trước
-                  </Button>
-
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1)
-                      .filter((page) => {
-                        // Show first, last, current, and adjacent pages
-                        return (
-                          page === 1 ||
-                          page === totalPages ||
-                          Math.abs(page - currentPage) <= 1
-                        );
-                      })
-                      .map((page, index, array) => {
-                        // Add ellipsis
-                        const prevPage = array[index - 1];
-                        const showEllipsis = prevPage && page - prevPage > 1;
-
-                        return (
-                          <React.Fragment key={page}>
-                            {showEllipsis && (
-                              <span className="px-2 text-gray-400">...</span>
-                            )}
-                            <Button
-                              onClick={() => setCurrentPage(page)}
-                              variant={
-                                currentPage === page ? "default" : "outline"
-                              }
-                              size="sm"
-                              className="min-w-[40px]"
-                            >
-                              {page}
-                            </Button>
-                          </React.Fragment>
-                        );
-                      })}
                   </div>
 
-                  <Button
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
-                    disabled={currentPage === totalPages}
-                    variant="outline"
-                  >
-                    Sau
-                  </Button>
+                  {/* Stock Status */}
+                  {product.stock > 0 && (
+                    <p className="text-sm text-green-600">
+                      Còn {product.stock} sản phẩm
+                    </p>
+                  )}
+                </Link>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-8">
+                <Button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  variant="outline"
+                >
+                  Trước
+                </Button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((page) => {
+                      // Show first, last, current, and adjacent pages
+                      return (
+                        page === 1 ||
+                        page === totalPages ||
+                        Math.abs(page - currentPage) <= 1
+                      );
+                    })
+                    .map((page, index, array) => {
+                      // Add ellipsis
+                      const prevPage = array[index - 1];
+                      const showEllipsis = prevPage && page - prevPage > 1;
+
+                      return (
+                        <React.Fragment key={page}>
+                          {showEllipsis && (
+                            <span className="px-2 text-gray-400">...</span>
+                          )}
+                          <Button
+                            onClick={() => setCurrentPage(page)}
+                            variant={
+                              currentPage === page ? "default" : "outline"
+                            }
+                            size="sm"
+                            className="min-w-[40px]"
+                          >
+                            {page}
+                          </Button>
+                        </React.Fragment>
+                      );
+                    })}
                 </div>
-              )}
-            </>
-          )}
-        </div>
+
+                <Button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  variant="outline"
+                >
+                  Sau
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
