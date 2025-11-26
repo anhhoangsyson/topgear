@@ -126,7 +126,7 @@ export default function SearchClient() {
               {results.map((product) => (
                 <Link
                   key={product._id}
-                  href={`/laptop/${product._id}`}
+                  href={`/laptop/${product.slug}`}
                   className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow"
                 >
                   {/* Product Image */}

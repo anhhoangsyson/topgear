@@ -22,6 +22,7 @@ export interface SearchSuggestion {
 export interface SearchProduct {
   _id: string;
   name: string;
+  slug?: string;
   modelName: string;
   price: number;
   discountPrice: number;
