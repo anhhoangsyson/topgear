@@ -6,8 +6,11 @@ import Image from 'next/image';
 import Link from 'next/link'
 import React from 'react'
 import { ShoppingCart } from 'lucide-react'
+import { toSlug } from '@/lib/toSlug';
 
 export default function ListOrderDetails({ orderDetails }: { orderDetails: OrderDetail[] }) {
+    console.log(orderDetails);
+    
     return (
         <div className="space-y-4">
             {orderDetails.map((item: OrderDetail, index: number) => (
@@ -65,7 +68,7 @@ export default function ListOrderDetails({ orderDetails }: { orderDetails: Order
                                 {formatPrice(item.subTotal)}
                             </p>
                         </div>
-                        <Link href={item.slug ? `/laptop/${item.slug}` : '#'} className="w-full sm:w-auto">
+                        <Link href={item.slug ? `/laptop/${item.slug}` : toSlug(item.name)} className="w-full sm:w-auto">
                             <Button
                                 variant="outline"
                                 size="sm"

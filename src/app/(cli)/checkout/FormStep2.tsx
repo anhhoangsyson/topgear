@@ -160,6 +160,7 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
       else {
         const errorData = await response.json();
         const errorMessage = errorData.message || 'Có lỗi xảy ra trong quá trình đặt hàng';
+        console.log(errorMessage);
         
         // Check if error is related to stock
         const isStockError = errorMessage.includes('không đủ hàng') || 
