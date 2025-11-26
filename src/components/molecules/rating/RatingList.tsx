@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { IRating } from '@/types/rating';
 import RatingStars from './RatingStars';
 import { formatDate } from '@/lib/utils';
-import { User } from 'lucide-react';
+import { User, MessageSquare, Shield } from 'lucide-react';
+import { Badge } from '@/components/atoms/ui/badge';
 
 interface RatingListProps {
   ratings: IRating[];
@@ -70,6 +71,33 @@ function UserAvatarRatingItem({
             <p className="text-gray-700 text-sm mt-2 whitespace-pre-wrap">
               {rating.comment}
             </p>
+          )}
+
+          {/* Admin Reply Section */}
+          {rating.adminReply && (
+            <div className="mt-4 ml-0 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                    <Shield className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge variant="default" className="text-xs bg-blue-600">
+                      <MessageSquare className="w-3 h-3 mr-1" />
+                      Phản hồi từ Admin
+                    </Badge>
+                    <span className="text-xs text-gray-600">
+                      {formatDate(rating.adminReply.repliedAt)}
+                    </span>
+                  </div>
+                  <p className="text-gray-800 text-sm whitespace-pre-wrap leading-relaxed">
+                    {rating.adminReply.content}
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

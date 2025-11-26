@@ -14,6 +14,7 @@ import {
   BoxIconLine,
   ChatIcon
 } from "@/app/admin/icons/index";
+import { Star } from "lucide-react";
 import { useSidebar } from "@/context/admin/SidebarContext";
 
 type NavItem = {
@@ -109,6 +110,13 @@ const othersItems: NavItem[] = [
     name: "Bình luận",
     subItems: [
       { name: "Quản lý bình luận", path: "/admin/comments", pro: false },
+    ],
+  },
+  {
+    icon: <Star className="w-5 h-5" />,
+    name: "Đánh giá",
+    subItems: [
+      { name: "Quản lý đánh giá", path: "/admin/ratings", pro: false },
     ],
   },
   {

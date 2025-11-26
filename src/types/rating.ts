@@ -1,3 +1,15 @@
+export type RatingStatus = 'visible' | 'hidden';
+
+export interface IAdminReply {
+  content: string;
+  adminId: string | {
+    _id: string;
+    fullname: string;
+    email: string;
+  };
+  repliedAt: string;
+}
+
 export interface IRating {
   _id: string;
   orderId: string | {
@@ -19,6 +31,8 @@ export interface IRating {
   } | null;
   rating: number; // 1-5
   comment?: string; // max 1000 characters
+  status: RatingStatus; // visible | hidden
+  adminReply?: IAdminReply; // Admin reply
   createdAt: string;
   updatedAt?: string;
 }
@@ -49,5 +63,68 @@ export interface ICreateRatingRequest {
 export interface IUpdateRatingRequest {
   rating?: number;
   comment?: string;
+}
+
+// Admin-specific interfaces
+export interface IAdminUpdateRatingRequest {
+  status?: RatingStatus;
+  adminNote?: string;
+  rating?: number;
+  comment?: string;
+}
+
+export interface IAdminReplyRequest {
+  content: string; // 1-2000 characters
+}
+
+export interface IAdminUpdateStatusRequest {
+  status: RatingStatus; // 'visible' | 'hidden'
+}
+
+export interface IRatingFilter {
+  page?: number;
+  limit?: number;
+  userId?: string;
+  laptopId?: string;
+  orderId?: string;
+  rating?: number;
+  status?: RatingStatus;
+  sortBy?: string; // e.g., "createdAt:desc" or "rating:desc"
+}
+
+export interface IAdminRatingListResponse {
+  items: IRating[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages?: number;
+  };
+}
+
+export interface IAdminRatingStats {
+  totalRatings: number;
+  averageRating: number;
+  distribution: Array<{
+    rating: number;
+    count: number;
+  }>;
+  ratingsByMonth: Array<{
+    month: string;
+    count: number;
+  }>;
+  topRatedLaptops: Array<{
+    laptopId: string;
+    average: number;
+    count: number;
+  }>;
+  byRating?: {
+    [key: string]: number; // "1": 10, "2": 20, etc. (computed from distribution)
+  };
+  byStatus?: {
+    pending: number;
+    approved: number;
+    rejected: number;
+  };
 }
 

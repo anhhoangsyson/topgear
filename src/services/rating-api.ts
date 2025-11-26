@@ -29,12 +29,12 @@ const RATING_BASE_URL = getBaseUrl();
  */
 export const createRating = async (data: ICreateRatingRequest): Promise<IRating> => {
   const token = await TokenManager.getAccessToken();
-  
+
   if (!token) {
     throw new Error('Không có quyền truy cập. Vui lòng đăng nhập lại.');
   }
 
-  const response = await fetch(`${RATING_BASE_URL}/ratings`, {
+  const response = await fetch(`${RATING_BASE_URL}/rating`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -65,12 +65,12 @@ export const createRating = async (data: ICreateRatingRequest): Promise<IRating>
  */
 export const updateRating = async (ratingId: string, data: IUpdateRatingRequest): Promise<IRating> => {
   const token = await TokenManager.getAccessToken();
-  
+
   if (!token) {
     throw new Error('Không có quyền truy cập. Vui lòng đăng nhập lại.');
   }
 
-  const response = await fetch(`${RATING_BASE_URL}/ratings/${ratingId}`, {
+  const response = await fetch(`${RATING_BASE_URL}/rating/${ratingId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -101,12 +101,12 @@ export const updateRating = async (ratingId: string, data: IUpdateRatingRequest)
  */
 export const deleteRating = async (ratingId: string): Promise<void> => {
   const token = await TokenManager.getAccessToken();
-  
+
   if (!token) {
     throw new Error('Không có quyền truy cập. Vui lòng đăng nhập lại.');
   }
 
-  const response = await fetch(`${RATING_BASE_URL}/ratings/${ratingId}`, {
+  const response = await fetch(`${RATING_BASE_URL}/rating/${ratingId}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -131,7 +131,7 @@ export const deleteRating = async (ratingId: string): Promise<void> => {
  * Get ratings by order ID
  */
 export const getRatingsByOrder = async (orderId: string): Promise<IRating[]> => {
-  const response = await fetch(`${RATING_BASE_URL}/ratings/order/${orderId}`, {
+  const response = await fetch(`${RATING_BASE_URL}/rating/order/${orderId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ export const getRatingsByOrder = async (orderId: string): Promise<IRating[]> => 
  * Get ratings by laptop ID with pagination
  */
 export const getRatingsByLaptop = async (laptopId: string, page: number = 1, limit: number = 20): Promise<IRatingListResponse> => {
-  const response = await fetch(`${RATING_BASE_URL}/ratings/laptop/${laptopId}?page=${page}&limit=${limit}`, {
+  const response = await fetch(`${RATING_BASE_URL}/rating/laptop/${laptopId}?page=${page}&limit=${limit}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -187,7 +187,7 @@ export const getRatingsByLaptop = async (laptopId: string, page: number = 1, lim
  * Get rating statistics for a laptop
  */
 export const getLaptopRatingStats = async (laptopId: string): Promise<IRatingStats> => {
-  const response = await fetch(`${RATING_BASE_URL}/ratings/laptop/${laptopId}/stats`, {
+  const response = await fetch(`${RATING_BASE_URL}/rating/laptop/${laptopId}/stats`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -216,12 +216,12 @@ export const getLaptopRatingStats = async (laptopId: string): Promise<IRatingSta
  */
 export const getMyRatings = async (page: number = 1, limit: number = 20): Promise<IRatingListResponse> => {
   const token = await TokenManager.getAccessToken();
-  
+
   if (!token) {
     throw new Error('Không có quyền truy cập. Vui lòng đăng nhập lại.');
   }
 
-  const response = await fetch(`${RATING_BASE_URL}/ratings/user/my-ratings?page=${page}&limit=${limit}`, {
+  const response = await fetch(`${RATING_BASE_URL}/rating/user/my-ratings?page=${page}&limit=${limit}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -246,7 +246,7 @@ export const getMyRatings = async (page: number = 1, limit: number = 20): Promis
  * Get rating by ID
  */
 export const getRatingById = async (ratingId: string): Promise<IRating> => {
-  const response = await fetch(`${RATING_BASE_URL}/ratings/${ratingId}`, {
+  const response = await fetch(`${RATING_BASE_URL}/rating/${ratingId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
