@@ -6,6 +6,7 @@ import { ListRelatedLaptop } from "@/components/molecules/cards/ListRelatedLapto
 import LaptopRatingSection from "@/components/molecules/rating/LaptopRatingSection";
 
 const DetailLaptopPage = ({ data }: { data: ILaptop }) => {
+  
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
       <Wraper>

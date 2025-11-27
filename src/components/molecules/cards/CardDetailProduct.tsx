@@ -12,10 +12,11 @@ import { ShoppingCart, ExternalLink, ChevronRight, Tag, Award } from "lucide-rea
 import { Badge } from "@/components/atoms/ui/badge";
 
 const CardDetailLaptop = ({ data }: { data: ILaptop }) => {
+
   const [thumbnail, setThumbnail] = useState(data.images[0]?.imageUrl);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showFullDesc, setShowFullDesc] = useState(false);
-  
+
   const handleClickImage = (index: number) => {
     setThumbnail(data.images[index]?.imageUrl);
     setSelectedImageIndex(index);
@@ -53,7 +54,7 @@ const CardDetailLaptop = ({ data }: { data: ILaptop }) => {
     window.location.href = "/cart";
   };
 
-  const discountPercentage = data.discountPrice && data.price 
+  const discountPercentage = data.discountPrice && data.price
     ? Math.round(((data.price - data.discountPrice) / data.price) * 100)
     : 0;
 
@@ -159,7 +160,7 @@ const CardDetailLaptop = ({ data }: { data: ILaptop }) => {
               <div className="flex items-center gap-1">
                 <Tag className="w-4 h-4" />
                 <span>Thương hiệu:</span>
-                <Link 
+                <Link
                   href={`/laptop?brand=${data.brandId._id}`}
                   className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
                 >
@@ -170,7 +171,7 @@ const CardDetailLaptop = ({ data }: { data: ILaptop }) => {
               <div className="flex items-center gap-1">
                 <Award className="w-4 h-4" />
                 <span>Danh mục:</span>
-                <Link 
+                <Link
                   href={`/laptop?category=${data.categoryId._id}`}
                   className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
                 >
@@ -200,22 +201,28 @@ const CardDetailLaptop = ({ data }: { data: ILaptop }) => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <Button
-              onClick={() => handleAddToCart(data)}
-              className="flex-1 bg-blue-600 text-white py-2.5 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm sm:text-base min-w-0"
-            >
-              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
-              <span className="truncate">Thêm vào giỏ hàng</span>
-            </Button>
-            <Button
-              onClick={() => handleBuyNow(data)}
-              variant="outline"
-              className="flex-1 border-2 border-blue-600 text-blue-600 py-2.5 sm:py-3 rounded-lg hover:bg-blue-50 transition-colors font-semibold text-sm sm:text-base min-w-0"
-            >
-              <span className="truncate">Mua ngay</span>
-            </Button>
-          </div>
+          {data.stock > 0 ? (
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <Button
+                onClick={() => handleAddToCart(data)}
+                className="flex-1 bg-blue-600 text-white py-2.5 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm sm:text-base min-w-0"
+              >
+                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
+                <span className="truncate">Thêm vào giỏ hàng</span>
+              </Button>
+              <Button
+                onClick={() => handleBuyNow(data)}
+                variant="outline"
+                className="flex-1 border-2 border-blue-600 text-blue-600 py-2.5 sm:py-3 rounded-lg hover:bg-blue-50 transition-colors font-semibold text-sm sm:text-base min-w-0"
+              >
+                <span className="truncate">Mua ngay</span>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <div className="text-red-600 font-semibold">Hết hàng</div>
+            </div>
+          )}
 
           {/* Rating Section */}
           <div className="p-4 sm:p-5 rounded-lg border border-gray-200 bg-gray-50">
