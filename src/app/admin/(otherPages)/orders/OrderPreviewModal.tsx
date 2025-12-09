@@ -24,14 +24,12 @@ const getStatusBadgeVariant = (status: string) => {
     switch (status) {
         case "pending":
             return "secondary";
-        case "payment_pending":
-            return "outline";
-        case "payment_success":
+        case "shipping":
             return "default";
         case "completed":
             return "default";
         case "cancelled":
-        case "payment_cancelling":
+        case "cancelling":
             return "destructive";
         default:
             return "outline";
@@ -67,13 +65,15 @@ export default function OrderPreviewModal({ order, open, onClose, onOrderUpdate 
     const total = order.totalAmount;
 
     const visibleStatuses = [
-        { value: "pending", label: "Chờ xử lý" },
-        { value: "payment_pending", label: "Chờ thanh toán" },
-        { value: "payment_cancelling", label: "Đang hủy thanh toán" },
-        { value: "payment_success", label: "Thanh toán thành công" },
+        { value: "pending", label: "Đang chờ xử lý" },
+        { value: "shipping", label: "Đang giao hàng" },
         { value: "completed", label: "Hoàn thành" },
         { value: "cancelled", label: "Đã hủy" },
+        { value: "cancelling", label: "Yêu cầu hủy đơn" },
     ];
+
+    // Admin không thể chọn cancelling, chỉ có user mới yêu cầu hủy
+    const adminEditableStatuses = visibleStatuses.filter(s => s.value !== "cancelling");
 
     const isStatusEditable = !["completed", "cancelled"].includes(currentStatus);
 
@@ -106,10 +106,10 @@ export default function OrderPreviewModal({ order, open, onClose, onOrderUpdate 
                 throw new Error(errorData.message || "Cập nhật trạng thái thất bại");
             }
 
-            const responseData = await response.json().catch(() => ({}));
-            const updatedOrder = responseData.data || { ...order, orderStatus: newStatus };
+            // Giữ nguyên thông tin order, chỉ cập nhật status
+            const updatedOrder = { ...order, orderStatus: newStatus };
             setCurrentStatus(newStatus);
-            
+
             // Call callback to update parent
             if (onOrderUpdate) {
                 onOrderUpdate(updatedOrder);
@@ -214,11 +214,9 @@ export default function OrderPreviewModal({ order, open, onClose, onOrderUpdate 
                                                         <SelectValue placeholder="Chọn trạng thái" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {visibleStatuses
-                                                            .filter(status => status.value !== "completed" && status.value !== "cancelled")
-                                                            .map((status) => (
-                                                                <SelectItem 
-                                                                    key={status.value} 
+                                                        {adminEditableStatuses.map((status) => (
+                                                                <SelectItem
+                                                                    key={status.value}
                                                                     value={status.value}
                                                                 >
                                                                     {status.label}

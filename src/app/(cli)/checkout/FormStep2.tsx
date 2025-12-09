@@ -140,11 +140,27 @@ export default function Step2({ customerInfo, selectedItems }: Step2Props) {
         selectedItems.map((item) => { useCartStore.getState().removeFromCart(item._id) }); // Xóa sản phẩm đã chọn khỏi giỏ hàng
 
         const result = await response.json();
+        console.log('Full response from backend:', result);
 
         if (paymentMethod === 'zalopay') {
           // Redirect đến urlPayment nếu là ZaloPay
-          const paymentUrl = result.data.payment.paymentUrl;
-          window.location.href = paymentUrl;
+          const paymentUrl = result?.data?.payment?.paymentUrl || result?.data?.paymentUrl || result?.paymentUrl;
+          console.log('Payment URL:', paymentUrl);
+
+          if (!paymentUrl) {
+            console.error('Payment URL not found in response:', result);
+            toast({
+              title: 'Lỗi thanh toán',
+              description: 'Không tìm thấy URL thanh toán ZaloPay. Vui lòng thử lại.',
+              duration: 3000,
+              variant: 'destructive',
+            });
+            setIsLoading(false);
+            return;
+          }
+
+          // Sử dụng window.location.assign thay vì href để đảm bảo redirect
+          window.location.assign(paymentUrl);
         } else {
 
           const orderId = result?.data?.data?._id;

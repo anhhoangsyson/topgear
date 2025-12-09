@@ -42,7 +42,7 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
       setOrderList(filterd)
     }
   }
-  const orderStatus = ['Tất cả', 'Chưa thanh toán', 'Đã thanh toán', 'Đang chờ xử lý', 'Đã hoàn thành', 'Đã hủy']
+  const orderStatus = ['Tất cả', 'Đang chờ xử lý', 'Đang giao hàng', 'Đang chờ hủy', 'Đã hủy', 'Đã hoàn thành']
 
   const handleCancelingOrder = async (orderId: string) => {
     setIsLoading(true)
@@ -80,7 +80,10 @@ export default function OrdersList({ initialOrderList }: { initialOrderList: Ini
         duration: 1000,
       })
       window.location.reload()
-    } catch {
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Lỗi khi hủy đơn hàng:", error);
+      }
     }
     finally {
       setIsLoading(false)

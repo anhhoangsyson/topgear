@@ -52,8 +52,10 @@ export function formatOrderStatus(status: string): string {
       return "Đã hủy";
     case "payment_cancelling":
       return "Đang chờ hủy";
+    case "shipping":
+      return "Đang giao hàng";
     default:
-      return "Không xác định";
+      return "Đang giao hàng";
   }
 }
 

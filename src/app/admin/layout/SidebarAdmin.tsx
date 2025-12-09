@@ -11,8 +11,7 @@ import {
   ListIcon,
   PageIcon,
   TableIcon,
-  BoxIconLine,
-  ChatIcon
+  BoxIconLine
 } from "@/app/admin/icons/index";
 import { Star } from "lucide-react";
 import { useSidebar } from "@/context/admin/SidebarContext";
@@ -103,12 +102,6 @@ const othersItems: NavItem[] = [
     subItems: [
       { name: "Danh sách blog", path: "/admin/blog", pro: false },
       { name: "Tạo blog mới", path: "/admin/blog/add", pro: false },
-    ],
-  },
-  {
-    icon: <ChatIcon />,
-    name: "Bình luận",
-    subItems: [
       { name: "Quản lý bình luận", path: "/admin/comments", pro: false },
     ],
   },

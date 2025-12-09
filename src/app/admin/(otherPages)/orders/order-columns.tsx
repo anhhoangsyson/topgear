@@ -33,14 +33,12 @@ const getStatusBadgeVariant = (status: string) => {
     switch (status) {
         case "pending":
             return "secondary";
-        case "payment_pending":
-            return "outline";
-        case "payment_success":
+        case "shipping":
             return "default";
         case "completed":
             return "default";
         case "cancelled":
-        case "payment_cancelling":
+        case "cancelling":
             return "destructive";
         default:
             return "outline";
@@ -224,14 +222,23 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
             cell: ({ row }) => {
                 const order = row.original;
 
-                const visibleStatuses = [
+                // Admin không thể chọn cancelling trong dropdown, chỉ user mới có thể yêu cầu hủy
+                const adminEditableStatuses = [
                     "pending",
-                    "payment_pending",
-                    "payment_cancelling",
-                    "payment_success",
+                    "shipping",
                     "completed",
                     "cancelled",
                 ];
+
+                // Tất cả statuses để hiển thị badge (bao gồm cancelling)
+                const allStatuses = [
+                    "pending",
+                    "shipping",
+                    "completed",
+                    "cancelled",
+                    "cancelling",
+                ];
+
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 const [currentStatus, setCurrentStatus] = useState(order.orderStatus);
                 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -294,7 +301,7 @@ export function orderColumns(onShowOrderPreview: (order: IOrderWithDetails) => v
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-56 z-50 bg-white shadow-lg rounded-md p-2">
-                                        {visibleStatuses.map((status) => (
+                                        {adminEditableStatuses.map((status) => (
                                             <DropdownMenuItem
                                                 className={`cursor-pointer bg-white mb-4 hover:outline-none`}
                                                 key={status}
