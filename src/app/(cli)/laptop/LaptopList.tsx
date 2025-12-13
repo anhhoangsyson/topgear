@@ -39,7 +39,7 @@ export default function LaptopList() {
                 const query = params.toString();
                 const url = query 
                     ? `${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop/filter?${query}`
-                    : `${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop`;
+                    : `${process.env.NEXT_PUBLIC_EXPRESS_API_URL}/laptop?isActive=true`;
 
                 const res = await fetch(url, {
                     method: 'GET',

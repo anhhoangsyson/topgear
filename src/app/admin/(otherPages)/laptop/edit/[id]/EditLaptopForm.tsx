@@ -393,18 +393,38 @@ export default function EditLaptopForm({ laptop }: { laptop: ILaptop }) {
                 }
             });
 
+            // Debug: Log dữ liệu TRƯỚC KHI GỬI
+            console.log("=== DATA ĐƯỢC GỬI LÊN ===");
+            console.log("URL:", `${process.env.NEXT_PUBLIC_API_URL}/laptop/${laptop._id}`);
+            console.log("Method: PUT");
+            console.log("FormData entries:");
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ':', pair[1]);
+            }
+
             // Gửi dữ liệu lên server
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/laptop/${laptop._id}`, {
                 method: "PUT",
                 body: formData,
             })
 
-            await res.json();
+            const result = await res.json();
+
+            // Debug: Xem response từ backend
+            console.log("Backend response status:", res.status);
+            console.log("Backend response data:", result);
 
             if (res.ok) {
                 toast({
                     title: "Edit laptop thành công",
                     description: `Laptop "${data.name}" đã edit.`,
+                });
+            } else {
+                // Hiển thị lỗi từ backend nếu có
+                toast({
+                    variant: "destructive",
+                    title: "Lỗi từ server",
+                    description: result.message || "Không thể edit laptop.",
                 });
             }
 
@@ -510,7 +530,7 @@ export default function EditLaptopForm({ laptop }: { laptop: ILaptop }) {
                                     type="submit"
                                     disabled={isSubmitting}
                                 >
-                                    Tạo Laptop
+                                    Cập nhật Laptop
                                 </Button>
                             )}
                         </CardFooter>
