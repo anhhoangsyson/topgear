@@ -83,18 +83,18 @@ export default function OrderRatingSection({ orderId, orderStatus, orderDetails 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-          <h2 className="text-xl font-semibold text-gray-900">Đánh giá đơn hàng</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Đánh giá sản phẩm</h2>
         </div>
         <Dialog open={showRatingForm} onOpenChange={setShowRatingForm}>
           <DialogTrigger asChild>
-            <Button
+            {/* <Button
               variant="default"
               size="sm"
               onClick={() => setSelectedLaptopId(null)}
             >
               <MessageSquare className="w-4 h-4 mr-2" />
-              Đánh giá đơn hàng
-            </Button>
+              Đánh giá đơn hàng cccc
+            </Button> */}
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
